@@ -9,7 +9,6 @@ import { lightTheme } from './src/theme/lightTheme';
 const theme = {
     ...DefaultTheme,
     myOwnProperty: true,
-    // Specify custom property in nested object
     colors: {
         ...DefaultTheme.colors,
         colors: lightTheme.colors
