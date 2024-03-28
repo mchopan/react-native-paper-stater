@@ -1,44 +1,11 @@
 export const darkTheme = {
-    "colors": {
-        "primary": "rgb(163, 201, 255)",
-        "onPrimary": "rgb(0, 49, 92)",
-        "primaryContainer": "rgb(0, 72, 130)",
-        "onPrimaryContainer": "rgb(211, 227, 255)",
-        "secondary": "rgb(152, 203, 255)",
-        "onSecondary": "rgb(0, 51, 84)",
-        "secondaryContainer": "rgb(0, 74, 119)",
-        "onSecondaryContainer": "rgb(207, 229, 255)",
-        "tertiary": "rgb(164, 201, 255)",
-        "onTertiary": "rgb(0, 49, 93)",
-        "tertiaryContainer": "rgb(0, 72, 131)",
-        "onTertiaryContainer": "rgb(212, 227, 255)",
-        "error": "rgb(255, 180, 171)",
-        "onError": "rgb(105, 0, 5)",
-        "errorContainer": "rgb(147, 0, 10)",
-        "onErrorContainer": "rgb(255, 180, 171)",
-        "background": "rgb(26, 28, 30)",
-        "onBackground": "rgb(227, 226, 230)",
-        "surface": "rgb(26, 28, 30)",
-        "onSurface": "rgb(227, 226, 230)",
-        "surfaceVariant": "rgb(67, 71, 78)",
-        "onSurfaceVariant": "rgb(195, 198, 207)",
-        "outline": "rgb(141, 145, 153)",
-        "outlineVariant": "rgb(67, 71, 78)",
-        "shadow": "rgb(0, 0, 0)",
-        "scrim": "rgb(0, 0, 0)",
-        "inverseSurface": "rgb(227, 226, 230)",
-        "inverseOnSurface": "rgb(47, 48, 51)",
-        "inversePrimary": "rgb(24, 96, 165)",
-        "elevation": {
-            "level0": "transparent",
-            "level1": "rgb(33, 37, 41)",
-            "level2": "rgb(37, 42, 48)",
-            "level3": "rgb(41, 47, 55)",
-            "level4": "rgb(42, 49, 57)",
-            "level5": "rgb(45, 52, 62)"
-        },
-        "surfaceDisabled": "rgba(227, 226, 230, 0.12)",
-        "onSurfaceDisabled": "rgba(227, 226, 230, 0.38)",
-        "backdrop": "rgba(45, 49, 55, 0.4)"
+    colors: {
+        "primary": "#3D5A80",
+        "secondary": "#9CB4CF",
+        "tertiary": "#E6EEFF",
+        "title": "#FFFFFF",
+        "background": "#FFF",
+        "error": "rgb(186, 26, 26)",
+        "gray": "#646464"
     }
 }

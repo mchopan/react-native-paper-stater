@@ -1,23 +1,21 @@
 import * as React from 'react';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
-import MyDrawer from './src/navigation/DrawerExapmle';
+// import MyDrawer from './src/navigation/DrawerExapmle';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {adaptNavigationTheme} from 'react-native-paper';
+import {adaptNavigationTheme, useTheme} from 'react-native-paper';
+import AuthNavigation from './src/navigation/auth';
+import {StatusBar} from 'react-native';
 
 const {LightTheme} = adaptNavigationTheme({reactNavigationLight: DefaultTheme});
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const theme = useTheme();
   return (
-    <NavigationContainer theme={LightTheme}>
-      <Stack.Navigator>
-        <Stack.Screen
-          options={{headerShown: false}}
-          name="Home"
-          component={MyDrawer}
-        />
-      </Stack.Navigator>
+    <NavigationContainer>
+      <StatusBar backgroundColor={theme.colors.primary} />
+      <AuthNavigation />
     </NavigationContainer>
   );
 }
