@@ -11,6 +11,10 @@ import BookingDetailsScreen from '../../screens/BookingDetailsScreen'
 import MyProfileScreen from '../../screens/MyProfileScreen'
 import MenuScreen from '../../screens/MenuScreen'
 import HomeScreen from '../../screens/HomeScreen'
+import RequestsScreen from '../../screens/RequestsScreen'
+import ShipmentDetails from '../../screens/ShipmentDetails'
+import ConfirmationScreen from '../../screens/ConfirmationScreen'
+import BookingSummaryScreen from '../../screens/BookingSummaryScreen'
 const Stack = createNativeStackNavigator()
 
 const AuthNavigation = () => {
@@ -22,7 +26,7 @@ const AuthNavigation = () => {
                 backgroundColor: theme.colors.primary,
             },
             headerTintColor: "white",
-        }} initialRouteName='Welcome'>
+        }} initialRouteName='Booking Summary'>
             <Stack.Screen options={{ headerShown: false }} name='Welcome' component={WelcomsScreen} />
             <Stack.Screen name='Login' component={Login} />
             <Stack.Screen name='Registration' component={Registration} />
@@ -31,6 +35,11 @@ const AuthNavigation = () => {
             <Stack.Screen name='Home Screen' component={HomeScreen} />
             <Stack.Screen name='Booking Details' component={BookingDetailsScreen} />
             <Stack.Screen name='My Profile' component={MyProfileScreen} />
+            <Stack.Screen name='Requests' component={RequestsScreen} />
+            <Stack.Screen name='Shipment Details' component={ShipmentDetails} />
+            <Stack.Screen name='Confirmation' component={ConfirmationScreen} />
+            <Stack.Screen name='Booking Summary' component={BookingSummaryScreen} />
+
         </Stack.Navigator>
     )
 }
