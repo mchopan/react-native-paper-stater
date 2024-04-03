@@ -3,7 +3,7 @@ import React from 'react'
 import Card from './Card'
 import { Text } from 'react-native-paper'
 import { Colors } from '../../theme/colors'
-import Spacer from './Spacer'
+import Spacer from '../Spacer'
 import DottenLine from '../DottenLine'
 import CustomButton from '../CustomButton'
 

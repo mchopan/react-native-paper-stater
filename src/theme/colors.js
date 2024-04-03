@@ -9,5 +9,6 @@ export const Colors = {
     "placeholder": 'white',
     "error": "rgb(186, 26, 26)",
     "gray": "#646464",
-    "verified": "#0095FF"
+    "verified": "#0095FF",
+    "orange": "#E66613"
 }

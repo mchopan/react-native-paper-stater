@@ -7,7 +7,7 @@ import CustomSelect from '../CustomSelect'
 import { Colors } from '../../theme/colors'
 import CustomButton from '../CustomButton'
 
-const BookTruckCard = () => {
+const BookTruckCard = ({ navigation }) => {
 
     const cityOptions = Object.entries(indianCities).map(([cityName, cityData]) => ({
         label: cityName,
@@ -19,10 +19,11 @@ const BookTruckCard = () => {
 
     const handleSubmit = () => {
         console.log("jejej")
+        navigation.navigate("Find Load")
     }
 
     return (
-        <Card>
+        <Card padding={20}>
             <View style={styles.mainFormContainer}>
                 <Text style={styles.heading}>Want to book a truck?</Text>
                 <CustomSelect

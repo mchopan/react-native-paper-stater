@@ -1,13 +1,12 @@
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import CustomInput from '../../components/CustomInput'
 import { IconButton, Text, useTheme } from 'react-native-paper'
 import { Colors } from '../../theme/colors'
 import CustomButton from '../../components/CustomButton'
+import { USER_TYPES, UserTypeContext } from '../../store/MyContext'
 
-const MyProfileScreen = ({ navigation }) => {
-
-    const theme = useTheme()
+const DealerProfile = ({ navigation }) => {
 
     const [name, setName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
@@ -19,7 +18,6 @@ const MyProfileScreen = ({ navigation }) => {
         console.log("login successfull : p")
         navigation.navigate("Home Screen")
     }
-
     return (
         <View style={styles.mainContainer}>
             <View style={styles.profile}>
@@ -75,6 +73,99 @@ const MyProfileScreen = ({ navigation }) => {
                 <CustomButton mode='contained' label="Update" onPress={handleSubmit} />
             </View>
         </View>
+    )
+}
+
+const DriverProfile = ({ navigation }) => {
+
+    const [name, setName] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [companyName, setCompanyName] = useState("");
+    const [GSTNumber, setGSTNumber] = useState("");
+
+    const handleSubmit = () => {
+        // todo handle update dealer 
+        console.log("login successfull : p")
+        navigation.navigate("Home Screen")
+    }
+
+    return (
+        <View style={styles.mainContainer}>
+            <View style={styles.profile}>
+                <View style={{
+                    overflow: "hidden",
+                    width: 120,
+                    height: 120,
+                    borderRadius: 60,
+                }}>
+                    <Image style={{ position: "absolute", width: 130, height: 130 }} source={require("../../assets/profile.png")} />
+                </View>
+                <IconButton
+                    style={styles.iconStyles}
+                    icon={require("../../assets/editIcon.png")}
+                    size={20}
+                    onPress={() => console.log('chnage profile')}
+                />
+            </View>
+            <View style={styles.overlay}>
+                <View style={styles.mainFormContainer}>
+                    <CustomInput
+                        type='text'
+                        label="Name"
+                        placeholder=""
+                        onChangeText={(text) => setName(text)}
+                        value={name}
+                    />
+                    <CustomInput
+                        type='text'
+                        label="Phone Number"
+                        placeholder=""
+                        onChangeText={(text) => setPhoneNumber(text)}
+                        value={phoneNumber}
+                    />
+                    <CustomInput
+                        type='text'
+                        label="Address"
+                        placeholder=""
+                        onChangeText={(text) => setCompanyName(text)}
+                        value={companyName}
+                    />
+                    <CustomInput
+                        type='text'
+                        label="Vehicle Type"
+                        placeholder=""
+                        onChangeText={(text) => setGSTNumber(text)}
+                        value={GSTNumber}
+                    />
+                    <CustomInput
+                        type='text'
+                        label="Driving License Number"
+                        placeholder=""
+                        onChangeText={(text) => setGSTNumber(text)}
+                        value={GSTNumber}
+                    />
+                    <CustomInput
+                        type='text'
+                        label="Vehicle Registration Number"
+                        placeholder=""
+                        onChangeText={(text) => setGSTNumber(text)}
+                        value={GSTNumber}
+                    />
+                </View>
+            </View>
+
+            <View style={styles.buttonContainer}>
+                <CustomButton mode='contained' label="Update" onPress={handleSubmit} />
+            </View>
+        </View>
+    )
+}
+
+
+const MyProfileScreen = ({ navigation }) => {
+    const { userType } = useContext(UserTypeContext)
+    return (
+        userType == USER_TYPES.DEALER ? <DealerProfile /> : <DriverProfile />
     )
 }
 

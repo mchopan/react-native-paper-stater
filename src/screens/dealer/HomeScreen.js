@@ -27,7 +27,7 @@ const HomeScreen = ({ navigation }) => {
                 </View>
                 <ShipmentCard />
                 <RequestCard />
-                <BookTruckCard />
+                <BookTruckCard navigation={navigation} />
             </ScrollView>
         </ImageBackground>
     )

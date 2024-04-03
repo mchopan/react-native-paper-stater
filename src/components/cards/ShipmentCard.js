@@ -7,7 +7,7 @@ import Card from './Card'
 const ShipmentCard = () => {
     const theme = useTheme()
     return (
-        <Card direction={"row"}>
+        <Card padding={20} direction={"row"}>
             <View style={styles.leftText}>
                 <Text style={[styles.heading]}>Shipment</Text>
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>

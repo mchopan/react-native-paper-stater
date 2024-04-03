@@ -21,7 +21,7 @@ const MenuScreen = ({ navigation }) => {
 
     const handleSubmit = () => {
         // Todo Handle form submission
-        navigation.navigate("Booking Details")
+        navigation.navigate("Find Truck")
     };
 
     return (

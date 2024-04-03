@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, Image } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import MyProfileScreen from '../screens/dealer/MyProfileScreen';
+import MyProfileScreen from '../screens/commonScreens/MyProfileScreen';
 import BookingSummaryScreen from '../screens/BookingSummaryScreens/BookingSummaryScreen';
 import MenuScreen from '../screens/dealer/MenuScreen';
 import { Colors } from '../theme/colors';
 import PlainLine from '../components/cards/PlainLine';
+import HomeScreen from '../screens/dealer/HomeScreen';
+import { USER_TYPES, UserTypeContext } from '../store/MyContext';
 
 const Drawer = createDrawerNavigator();
 
@@ -48,6 +50,9 @@ const CustomDrawerContent = (props) => {
 };
 
 function DrawerNavigation() {
+
+    const { userType } = useContext(UserTypeContext)
+
     return (
         <Drawer.Navigator
             drawerContent={(props) => <CustomDrawerContent {...props} />}
@@ -60,7 +65,7 @@ function DrawerNavigation() {
                 drawerLabelSyle: { marginLeft: -30 }
             }}
         >
-            <Drawer.Screen name="Home" component={MenuScreen} />
+            <Drawer.Screen name="Home" component={userType == USER_TYPES.DEALER ? MenuScreen : HomeScreen} />
             <Drawer.Screen name="My Profile" component={MyProfileScreen} />
             <Drawer.Screen name="Booking Summary" component={BookingSummaryScreen} />
         </Drawer.Navigator>

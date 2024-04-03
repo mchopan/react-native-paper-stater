@@ -24,7 +24,7 @@ const SmallCard = () => {
 
 const RequestCard = () => {
     return (
-        <Card direction={"column"} >
+        <Card padding={20} direction={"column"} >
             <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
                 <Text style={{ color: Colors.primary, fontWeight: "800", fontSize: 14, fontFamily: "GothicA1-Regular" }}>Requests</Text>
                 <TouchableOpacity style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 5 }}>

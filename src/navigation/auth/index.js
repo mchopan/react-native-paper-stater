@@ -13,7 +13,9 @@ import ConfirmationScreen from '../../screens/commonScreens/ConfirmationScreen'
 import BookingSummaryScreen from '../../screens/BookingSummaryScreens/BookingSummaryScreen'
 import DrawerNavigation from '../DrawerNavigation'
 import DriverRegistration from '../../screens/driver/DriverRegistration'
-import DriverMenuScreen from '../../screens/driver/DriverMenuScreen'
+import FindLoadScreen from '../../screens/driver/FindLoadScreen'
+import LoadDetailsScreen from '../../screens/driver/LoadDetailsScreen'
+import FindTruckScreen from '../../screens/dealer/FindTruckScreen'
 const Stack = createNativeStackNavigator()
 
 const AuthNavigation = () => {
@@ -26,6 +28,7 @@ const AuthNavigation = () => {
             },
             headerTintColor: "white",
         }} initialRouteName='Welcome'>
+
             {/* Common Stack */}
             <Stack.Screen options={{ headerShown: false }} name='Welcome' component={WelcomsScreen} />
             <Stack.Screen name='Login' component={Login} />
@@ -39,10 +42,13 @@ const AuthNavigation = () => {
             <Stack.Screen name='Requests' component={RequestsScreen} />
             <Stack.Screen name='Shipment Details' component={ShipmentDetails} />
             <Stack.Screen name='Booking Summary' component={BookingSummaryScreen} />
+            <Stack.Screen name='Find Truck' component={FindTruckScreen} />
 
             {/* Driver Stack */}
             <Stack.Screen name='Driver Registration' component={DriverRegistration} />
-            <Stack.Screen name='Driver Menu Screen' component={DriverMenuScreen} />
+            <Stack.Screen options={{ headerShown: false }} name='Driver Menu Screen' component={DrawerNavigation} />
+            <Stack.Screen name='Find Load' component={FindLoadScreen} />
+            <Stack.Screen name='Load Details' component={LoadDetailsScreen} />
         </Stack.Navigator>
     )
 }
