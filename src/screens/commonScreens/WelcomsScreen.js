@@ -1,19 +1,33 @@
 import { Image, StyleSheet, View } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
 import { useTheme } from 'react-native-paper'
-import CustomButton from '../components/CustomButton'
-import { Colors } from '../theme/colors'
+import CustomButton from '../../components/CustomButton'
+import { Colors } from '../../theme/colors'
+import { UserTypeContext } from '../../store/MyContext'
+import SelectTruckCard from '../../components/cards/SelectTruckCard'
 
 const WelcomeScreen = ({ navigation }) => {
-    const theme = useTheme()
+
+    const { setUserAsDriver, setUserAsDealer } = useContext(UserTypeContext);
+
+    const handleDealer = () => {
+        setUserAsDealer()
+        navigation.navigate("Registration")
+    }
+
+    const handleDriver = () => {
+        setUserAsDriver()
+        navigation.navigate("Driver Registration")
+
+    }
     return (
         <View style={styles.container}>
             <View style={styles.logoContainer}>
-                <Image source={require('../assets/quickload-splash.png')} style={styles.logo} />
+                <Image source={require('../../assets/quickload-splash.png')} style={styles.logo} />
             </View>
             <View style={styles.buttonGroup}>
-                <CustomButton label='I’m Dealer' mode='contained' onPress={() => navigation.navigate("Registration")} />
-                <CustomButton label='I’m Driver' mode='outlined' onPress={() => console.log("pressed")} />
+                <CustomButton label='I’m Dealer' mode='contained' onPress={handleDealer} />
+                <CustomButton label='I’m Driver' mode='outlined' onPress={handleDriver} />
             </View>
         </View>
     )

@@ -1,9 +1,9 @@
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
-import CustomInput from '../components/CustomInput'
+import CustomInput from '../../components/CustomInput'
 import { IconButton, Text, useTheme } from 'react-native-paper'
-import { Colors } from '../theme/colors'
-import CustomButton from '../components/CustomButton'
+import { Colors } from '../../theme/colors'
+import CustomButton from '../../components/CustomButton'
 
 const MyProfileScreen = ({ navigation }) => {
 
@@ -29,11 +29,11 @@ const MyProfileScreen = ({ navigation }) => {
                     height: 120,
                     borderRadius: 60,
                 }}>
-                    <Image style={{ position: "absolute", width: 130, height: 130 }} source={require("../assets/profile.png")} />
+                    <Image style={{ position: "absolute", width: 130, height: 130 }} source={require("../../assets/profile.png")} />
                 </View>
                 <IconButton
                     style={styles.iconStyles}
-                    icon={require("../assets/editIcon.png")}
+                    icon={require("../../assets/editIcon.png")}
                     size={20}
                     onPress={() => console.log('chnage profile')}
                 />

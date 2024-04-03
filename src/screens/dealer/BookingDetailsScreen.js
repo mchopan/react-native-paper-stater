@@ -1,9 +1,9 @@
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
-import { Colors } from '../theme/colors';
-import CustomInput from '../components/CustomInput';
-import CustomSelect from '../components/CustomSelect';
-import CustomButton from '../components/CustomButton';
+import { Colors } from '../../theme/colors';
+import CustomInput from '../../components/CustomInput';
+import CustomSelect from '../../components/CustomSelect';
+import CustomButton from '../../components/CustomButton';
 
 
 
@@ -87,7 +87,7 @@ const BookingDetailsScreen = ({ navigation }) => {
                                 return (
                                     <Image
                                         style={{ width: 25, marginRight: 10 }}
-                                        source={require('../assets/dateIcon.png')}
+                                        source={require('../../assets/dateIcon.png')}
                                         resizeMode="contain"
                                     />
                                 );
@@ -104,7 +104,7 @@ const BookingDetailsScreen = ({ navigation }) => {
                                 return (
                                     <Image
                                         style={{ width: 25, marginRight: 10 }}
-                                        source={require('../assets/vehicleIcon.png')}
+                                        source={require('../../assets/vehicleIcon.png')}
                                         resizeMode="contain"
                                     />
                                 );
@@ -121,7 +121,7 @@ const BookingDetailsScreen = ({ navigation }) => {
                                 return (
                                     <Image
                                         style={{ width: 25, marginRight: 10 }}
-                                        source={require('../assets/goodsIcon.png')}
+                                        source={require('../../assets/goodsIcon.png')}
                                         resizeMode="contain"
                                     />
                                 );
@@ -138,7 +138,7 @@ const BookingDetailsScreen = ({ navigation }) => {
                                 return (
                                     <Image
                                         style={{ width: 25, marginRight: 10 }}
-                                        source={require('../assets/weightIcon.png')}
+                                        source={require('../../assets/weightIcon.png')}
                                         resizeMode="contain"
                                     />
                                 );
@@ -155,7 +155,7 @@ const BookingDetailsScreen = ({ navigation }) => {
                                 return (
                                     <Image
                                         style={{ width: 25, marginRight: 10 }}
-                                        source={require('../assets/paymentIcon.png')}
+                                        source={require('../../assets/paymentIcon.png')}
                                         resizeMode="contain"
                                     />
                                 );
@@ -173,7 +173,7 @@ const BookingDetailsScreen = ({ navigation }) => {
                                 return (
                                     <Image
                                         style={{ width: 25, marginRight: 10 }}
-                                        source={require('../assets/paymentTypeIcon.png')}
+                                        source={require('../../assets/paymentTypeIcon.png')}
                                         resizeMode="contain"
                                     />
                                 );

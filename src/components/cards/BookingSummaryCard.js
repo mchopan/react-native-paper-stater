@@ -1,6 +1,5 @@
 import { Image, StyleSheet, View } from 'react-native'
 import React from 'react'
-import Card from './Card'
 import { Text } from 'react-native-paper'
 import { Colors } from '../../theme/colors'
 import PlainLine from './PlainLine'

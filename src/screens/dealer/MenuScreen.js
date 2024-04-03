@@ -1,11 +1,11 @@
 import { ImageBackground, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import { useTheme } from 'react-native-paper'
-import { Colors } from '../theme/colors'
-import CustomButton from '../components/CustomButton'
-import CustomSelect from '../components/CustomSelect'
-import indianCities from '../assets/indianCities.json'
-import { textVariants } from '../theme/styleVariants'
+import { Colors } from '../../theme/colors'
+import CustomButton from '../../components/CustomButton'
+import CustomSelect from '../../components/CustomSelect'
+import indianCities from '../../assets/indianCities.json'
+import { textVariants } from '../../theme/styleVariants'
 
 
 const MenuScreen = ({ navigation }) => {
@@ -26,7 +26,7 @@ const MenuScreen = ({ navigation }) => {
 
     return (
         <View style={{ flex: 1 }}>
-            <ImageBackground style={{ flex: 1 }} source={require("../assets/mapbg.png")}>
+            <ImageBackground style={{ flex: 1 }} source={require("../../assets/mapbg.png")}>
                 <View style={styles.overlay}>
                     <View style={styles.mainFormContainer}>
                         <Text style={textVariants.textSubHeading}>Book a Truck</Text>

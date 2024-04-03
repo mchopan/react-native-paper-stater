@@ -1,20 +1,19 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import Login from '../../screens/Login'
-import WelcomsScreen from '../../screens/WelcomsScreen'
-import Registration from '../../screens/Registration'
-import { Colors } from '../../theme/colors'
+import Login from '../../screens/commonScreens/Login'
+import WelcomsScreen from '../../screens/commonScreens/WelcomsScreen'
+import Registration from '../../screens/dealer/Registration'
 import { useTheme } from 'react-native-paper'
-import OtpScreen from '../../screens/OtpScreen'
-import BookingDetailsScreen from '../../screens/BookingDetailsScreen'
-import MyProfileScreen from '../../screens/MyProfileScreen'
-import MenuScreen from '../../screens/MenuScreen'
-import HomeScreen from '../../screens/HomeScreen'
-import RequestsScreen from '../../screens/RequestsScreen'
-import ShipmentDetails from '../../screens/ShipmentDetails'
-import ConfirmationScreen from '../../screens/ConfirmationScreen'
-import BookingSummaryScreen from '../../screens/BookingSummaryScreen'
+import OtpScreen from '../../screens/commonScreens/OtpScreen'
+import HomeScreen from '../../screens/dealer/HomeScreen'
+import RequestsScreen from '../../screens/dealer/RequestsScreen'
+import ShipmentDetails from '../../screens/dealer/ShipmentDetails'
+import ConfirmationScreen from '../../screens/commonScreens/ConfirmationScreen'
+import BookingSummaryScreen from '../../screens/BookingSummaryScreens/BookingSummaryScreen'
+import DrawerNavigation from '../DrawerNavigation'
+import DriverRegistration from '../../screens/driver/DriverRegistration'
+import DriverMenuScreen from '../../screens/driver/DriverMenuScreen'
 const Stack = createNativeStackNavigator()
 
 const AuthNavigation = () => {
@@ -26,20 +25,24 @@ const AuthNavigation = () => {
                 backgroundColor: theme.colors.primary,
             },
             headerTintColor: "white",
-        }} initialRouteName='Booking Summary'>
+        }} initialRouteName='Welcome'>
+            {/* Common Stack */}
             <Stack.Screen options={{ headerShown: false }} name='Welcome' component={WelcomsScreen} />
             <Stack.Screen name='Login' component={Login} />
-            <Stack.Screen name='Registration' component={Registration} />
             <Stack.Screen name='Verification' component={OtpScreen} />
-            <Stack.Screen name='Menu Screen' component={MenuScreen} />
+            <Stack.Screen name='Confirmation' component={ConfirmationScreen} />
+
+            {/* Dealer Stack */}
+            <Stack.Screen name='Registration' component={Registration} />
+            <Stack.Screen options={{ headerShown: false }} name='Menu Screen' component={DrawerNavigation} />
             <Stack.Screen name='Home Screen' component={HomeScreen} />
-            <Stack.Screen name='Booking Details' component={BookingDetailsScreen} />
-            <Stack.Screen name='My Profile' component={MyProfileScreen} />
             <Stack.Screen name='Requests' component={RequestsScreen} />
             <Stack.Screen name='Shipment Details' component={ShipmentDetails} />
-            <Stack.Screen name='Confirmation' component={ConfirmationScreen} />
             <Stack.Screen name='Booking Summary' component={BookingSummaryScreen} />
 
+            {/* Driver Stack */}
+            <Stack.Screen name='Driver Registration' component={DriverRegistration} />
+            <Stack.Screen name='Driver Menu Screen' component={DriverMenuScreen} />
         </Stack.Navigator>
     )
 }

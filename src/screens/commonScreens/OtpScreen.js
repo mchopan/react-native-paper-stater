@@ -1,9 +1,9 @@
 import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { OtpInput } from "react-native-otp-entry";
-import { Colors } from '../theme/colors';
+import { Colors } from '../../theme/colors';
 import { useTheme } from 'react-native-paper';
-import CustomButton from '../components/CustomButton';
+import CustomButton from '../../components/CustomButton';
 
 const OtpScreen = ({ navigation }) => {
 
@@ -18,7 +18,7 @@ const OtpScreen = ({ navigation }) => {
     return (
         <View style={styles.mainContainer}>
             <View style={styles.logoContainer}>
-                <Image source={require('../assets/quickload-splash.png')} style={styles.logo} />
+                <Image source={require('../../assets/quickload-splash.png')} style={styles.logo} />
             </View>
             <View style={styles.textContainer}>
                 <Text style={styles.textStyle}>

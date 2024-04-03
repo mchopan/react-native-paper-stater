@@ -1,9 +1,9 @@
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import CustomButton from '../components/CustomButton'
-import Card from '../components/cards/Card'
-import { Colors } from '../theme/colors'
-import DottenLine from '../components/DottenLine'
+import CustomButton from '../../components/CustomButton'
+import Card from '../../components/cards/Card'
+import { Colors } from '../../theme/colors'
+import DottenLine from '../../components/DottenLine'
 import Timeline from 'react-native-timeline-flatlist'
 
 
@@ -18,7 +18,7 @@ const ConfirmationScreen = () => {
     return (
         <View style={{ flex: 1, }}>
             <View style={{ alignItems: "center", marginTop: 50 }}>
-                <Image style={{ height: 200, width: 200, resizeMode: "contain" }} source={require("../assets/confirm.png")} />
+                <Image style={{ height: 200, width: 200, resizeMode: "contain" }} source={require("../../assets/confirm.png")} />
             </View>
             <View style={{ marginTop: 20 }}>
                 <Card>

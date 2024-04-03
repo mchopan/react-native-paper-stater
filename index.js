@@ -5,6 +5,7 @@ import { name as appName } from './app.json';
 import App from './App';
 import { darkTheme } from './src/theme/darkTheme';
 import { lightTheme } from './src/theme/lightTheme';
+import { UserTypeProvider } from './src/store/MyContext';
 
 
 const LightTheme = {
@@ -36,9 +37,11 @@ export default function Main() {
 
 
     return (
-        <PaperProvider theme={updatedTheme}>
-            <App />
-        </PaperProvider>
+        <UserTypeProvider>
+            <PaperProvider theme={updatedTheme}>
+                <App />
+            </PaperProvider>
+        </UserTypeProvider>
     );
 }
 

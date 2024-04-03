@@ -2,9 +2,9 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Colors } from '../../theme/colors'
 
-const Card = ({ children, direction }) => {
+const Card = ({ children, direction, padding }) => {
     return (
-        <View style={[styles.cardContainer, { flexDirection: direction == "row" ? "row" : "column" }]}>
+        <View style={[styles.cardContainer, { padding: padding || 0, flexDirection: direction == "row" ? "row" : "column" }]}>
             {children}
         </View >
     )
@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
         borderColor: Colors.gray,
         borderWidth: 1,
         flexDirection: "row",
-        padding: 20,
+        // padding: 20,
         backgroundColor: Colors.tertiary,
         margin: 10,
         borderRadius: 10,

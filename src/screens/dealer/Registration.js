@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { ImageBackground, StyleSheet, View, ScrollView } from 'react-native';
-import { Colors } from '../theme/colors';
-import CustomInput from '../components/CustomInput';
-import CustomButton from '../components/CustomButton';
+import { Colors } from '../../theme/colors';
+import CustomInput from '../../components/CustomInput';
+import CustomButton from '../../components/CustomButton';
 
 const Registration = ({ navigation }) => {
+
     const [formData, setFormData] = useState({
         name: '',
         phoneNumber: '',
@@ -29,7 +30,7 @@ const Registration = ({ navigation }) => {
     return (
         <View style={{ flex: 1 }}>
             <ImageBackground
-                source={require('../assets/quickload-splash.png')}
+                source={require('../../assets/quickload-splash.png')}
                 style={styles.backgroundImage}
                 resizeMode="cover"
             >
@@ -105,7 +106,8 @@ const styles = StyleSheet.create({
     },
     overlay: {
         gap: 100,
-        marginBottom: 20,
+        marginTop: 50,
+        marginBottom: 50,
         flex: 1,
         // backgroundColor: "red",
         width: '100%',

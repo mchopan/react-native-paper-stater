@@ -1,20 +1,21 @@
-import { ImageBackground, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ImageBackground, ScrollView, StyleSheet, View } from 'react-native'
 import React from 'react'
 import { useTheme } from 'react-native-paper'
-import CustomButton from '../components/CustomButton'
-import ShipmentCard from '../components/cards/ShipmentCard'
-import RequestCard from '../components/cards/RequestCard'
-import BookTruckCard from '../components/cards/BookTruckCard'
+import CustomButton from '../../components/CustomButton'
+import ShipmentCard from '../../components/cards/ShipmentCard'
+import RequestCard from '../../components/cards/RequestCard'
+import BookTruckCard from '../../components/cards/BookTruckCard'
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
     const theme = useTheme()
 
     const handleSubmit = () => {
         console.log("helo")
+        navigation.navigate("Booking Summary")
     }
 
     return (
-        <ImageBackground style={{ flex: 1, }} source={require("../assets/mapbg.png")}>
+        <ImageBackground style={{ flex: 1, }} source={require("../../assets/mapbg.png")}>
             <ScrollView>
                 <View style={{ margin: 10 }}>
                     <View style={[styles.buttonContainer, {

@@ -8,5 +8,6 @@ export const Colors = {
     "whiteBackground": "#FFFFFF",
     "placeholder": 'white',
     "error": "rgb(186, 26, 26)",
-    "gray": "#646464"
+    "gray": "#646464",
+    "verified": "#0095FF"
 }

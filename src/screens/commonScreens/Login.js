@@ -1,11 +1,16 @@
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useContext, useState } from 'react'
 import { useTheme } from 'react-native-paper'
-import { Colors } from '../theme/colors'
-import CustomInput from '../components/CustomInput'
-import CustomButton from '../components/CustomButton'
+import { Colors } from '../../theme/colors'
+import CustomInput from '../../components/CustomInput'
+import CustomButton from '../../components/CustomButton'
+import { USER_TYPES, UserTypeContext } from '../../store/MyContext'
 
-const Login = ({ navigation }) => {
+const Login = ({ navigation, route }) => {
+
+
+    const { userType } = useContext(UserTypeContext);
+
     const theme = useTheme()
 
     const [formData, setFormData] = useState({
@@ -25,14 +30,18 @@ const Login = ({ navigation }) => {
     };
 
     const handleSubmit = () => {
-        // Todo Handle form submission
-        navigation.navigate("Menu Screen")
+        if (userType == USER_TYPES.DEALER) {
+            navigation.navigate("Menu Screen")
+        }
+        else {
+            navigation.navigate("Driver Menu Screen")
+        }
     };
 
     return (
         <View style={styles.mainContainer}>
             <View style={styles.logoContainer}>
-                <Image source={require('../assets/quickload-splash.png')} style={styles.logo} />
+                <Image source={require('../../assets/quickload-splash.png')} style={styles.logo} />
             </View>
 
             <View style={styles.overlay}>
@@ -72,7 +81,6 @@ export default Login
 const styles = StyleSheet.create({
     mainContainer: {
         backgroundColor: Colors.whiteBackground,
-        // backgroundColor: "#504444",
         flex: 1,
     },
     logoContainer: {

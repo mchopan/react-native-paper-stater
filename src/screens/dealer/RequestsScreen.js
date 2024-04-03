@@ -1,13 +1,13 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import ShipmemtRequestCard from '../components/cards/ShipmemtRequestCard'
-import CustomButton from '../components/CustomButton'
+import ShipmemtRequestCard from '../../components/cards/ShipmemtRequestCard'
+import CustomButton from '../../components/CustomButton'
 
 const RequestsScreen = ({ navigation }) => {
     return (
         <View style={{ flex: 1, }}>
             <View style={{ alignItems: "center", }}>
-                <Image style={{ height: 200, width: 200 }} source={require("../assets/marker.png")} />
+                <Image style={{ height: 200, width: 200 }} source={require("../../assets/marker.png")} />
             </View>
             <View style={{ marginTop: 20 }}>
                 <ShipmemtRequestCard />

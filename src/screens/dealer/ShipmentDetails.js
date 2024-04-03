@@ -1,10 +1,10 @@
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import Card from '../components/cards/Card'
+import Card from '../../components/cards/Card'
 import { Text } from 'react-native-paper'
-import { Colors } from '../theme/colors'
-import DottenLine from '../components/DottenLine'
-import CustomButton from '../components/CustomButton'
+import { Colors } from '../../theme/colors'
+import DottenLine from '../../components/DottenLine'
+import CustomButton from '../../components/CustomButton'
 
 const ShipmentDetails = ({ navigation }) => {
     return (
@@ -20,7 +20,7 @@ const ShipmentDetails = ({ navigation }) => {
                                 Lal Chowk ,Srinagar
                             </Text>
                             <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-                                <Image style={{ width: 15, height: 15 }} source={require("../assets/MapPin.png")} />
+                                <Image style={{ width: 15, height: 15 }} source={require("../../assets/MapPin.png")} />
                                 <Text style={{ fontSize: 12, fontWeight: "700", fontFamily: "GothicA1-Regular", color: Colors.gray }}>
                                     Jammu & Kashmir
                                 </Text>
@@ -28,7 +28,7 @@ const ShipmentDetails = ({ navigation }) => {
                         </View>
                     </View>
                     <View style={{ alignItems: "center", justifyContent: "center" }}>
-                        <Image style={{ width: 100, height: 80, borderRadius: 10 }} source={require("../assets/mapSmall.png")} />
+                        <Image style={{ width: 100, height: 80, borderRadius: 10 }} source={require("../../assets/mapSmall.png")} />
                     </View>
                 </View >
             </Card >
