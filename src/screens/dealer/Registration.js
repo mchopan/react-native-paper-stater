@@ -8,7 +8,6 @@ const Registration = ({ navigation }) => {
 
     const [formData, setFormData] = useState({
         name: '',
-        phoneNumber: '',
         companyName: '',
         GSTNumber: '',
         password: '',
@@ -24,7 +23,7 @@ const Registration = ({ navigation }) => {
 
     const handleSubmit = () => {
         // Todo Handle form submission
-        navigation.navigate("Verification")
+        navigation.navigate("Login")
     };
 
     return (
@@ -43,14 +42,6 @@ const Registration = ({ navigation }) => {
                                 placeholder="Enter your name"
                                 onChangeText={(text) => handleInputChange('name', text)}
                                 value={formData.name}
-                            />
-                            <CustomInput
-                                type='text'
-                                label="Phone Number"
-                                placeholder="Enter your phone number"
-                                onChangeText={(text) => handleInputChange('phoneNumber', text)}
-                                value={formData.phoneNumber}
-                                keyboardType="phone-pad"
                             />
                             <CustomInput
                                 type='text'

@@ -1,18 +1,25 @@
 import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
 import { OtpInput } from "react-native-otp-entry";
 import { Colors } from '../../theme/colors';
 import { useTheme } from 'react-native-paper';
 import CustomButton from '../../components/CustomButton';
+import { USER_TYPES, UserTypeContext } from '../../store/MyContext';
 
 const OtpScreen = ({ navigation }) => {
+
+
+    const { userType } = useContext(UserTypeContext);
 
     const theme = useTheme()
 
     const handleSubmit = () => {
-        console.log("handleVerify")
-        // todo handle verify
-        navigation.navigate("Login")
+        if (userType == USER_TYPES.DRIVER) {
+            navigation.navigate("Driver Registration")
+        }
+        else {
+            navigation.navigate("Registration")
+        }
     }
 
     return (

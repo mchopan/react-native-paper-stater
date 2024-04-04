@@ -1,4 +1,4 @@
-import { ImageBackground, StyleSheet, Text, View } from 'react-native'
+import { FlatList, ImageBackground, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import { useTheme } from 'react-native-paper'
 import { Colors } from '../../theme/colors'
@@ -6,6 +6,8 @@ import CustomButton from '../../components/CustomButton'
 import CustomSelect from '../../components/CustomSelect'
 import indianCities from '../../assets/indianCities.json'
 import { textVariants } from '../../theme/styleVariants'
+import RouteRateMonitorCard from '../../components/cards/RouteRateMonitorCard'
+import Card from '../../components/cards/Card'
 
 
 const MenuScreen = ({ navigation }) => {
@@ -29,7 +31,7 @@ const MenuScreen = ({ navigation }) => {
             <ImageBackground style={{ flex: 1 }} source={require("../../assets/mapbg.png")}>
                 <View style={styles.overlay}>
                     <View style={styles.mainFormContainer}>
-                        <Text style={textVariants.textSubHeading}>Book a Truck</Text>
+                        <Text style={[textVariants.textSubHeading, { color: Colors.primary }]}>Want to book a truck?</Text>
                         <CustomSelect
                             mode='outlined'
                             placeholder='Pick Up City Location'
@@ -48,11 +50,26 @@ const MenuScreen = ({ navigation }) => {
                             onChange={(text) => { console.log(text, "drop"); setDropLocation(text) }
                             }
                         />
+                        <CustomButton mode='contained' label="Find Now" onPress={handleSubmit} />
+
                     </View>
                 </View>
-                <View style={styles.buttonContainer}>
-                    <CustomButton mode='contained' label="Book Now" onPress={handleSubmit} />
+                <View style={{ flex: 1, margin: 10 }}>
+                    <Card overflow={"hidden"} flex={1} padding={20}>
+                        <View >
+                            <Text style={[textVariants.textSubHeading, { color: Colors.primary }]}>Route Rate Monitor</Text>
+                            <FlatList
+                                data={[1, 2, 3, 4, 5, 1, 2, 3, 4, 5]}
+                                renderItem={() => {
+                                    return (
+                                        <RouteRateMonitorCard />
+                                    )
+                                }}
+                            />
+                        </View>
+                    </Card>
                 </View>
+
             </ImageBackground>
         </View>
     )
@@ -72,7 +89,7 @@ const styles = StyleSheet.create({
     mainFormContainer: {
         gap: 20,
         width: '90%',
-        backgroundColor: Colors.secondary,
+        backgroundColor: Colors.tertiary,
         borderRadius: 10,
         padding: 20,
         shadowColor: '#000',

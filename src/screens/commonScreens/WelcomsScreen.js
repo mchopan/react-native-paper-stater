@@ -12,12 +12,12 @@ const WelcomeScreen = ({ navigation }) => {
 
     const handleDealer = () => {
         setUserAsDealer()
-        navigation.navigate("Registration")
+        navigation.navigate("Registrater Number")
     }
 
     const handleDriver = () => {
         setUserAsDriver()
-        navigation.navigate("Driver Registration")
+        navigation.navigate("Registrater Number")
 
     }
     return (

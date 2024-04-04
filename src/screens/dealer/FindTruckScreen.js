@@ -1,11 +1,10 @@
-import { FlatList, ImageBackground, StyleSheet, Text, View } from 'react-native'
+import { FlatList, ImageBackground, StyleSheet, View } from 'react-native'
 import React from 'react'
 import { Colors } from '../../theme/colors'
 import CustomButton from '../../components/CustomButton'
-import SelectLoadCard from '../../components/cards/SelectLoadCard'
-import LoadDetailsCard from '../../components/cards/LoadDetailsCard'
-
+import SelectTruckCard from '../../components/cards/SelectTruckCard'
 const FindTruckScreen = ({ navigation }) => {
+
 
     const handleSubmit = () => {
         console.log("helo")
@@ -23,9 +22,7 @@ const FindTruckScreen = ({ navigation }) => {
                 </View>
             </View>
             <FlatList data={[1, 2, 3, 4, 5]} renderItem={() => (
-                <>
-                    <SelectLoadCard navigation={navigation} />
-                </>
+                <SelectTruckCard navigation={navigation} />
             )} />
         </ImageBackground>
     )

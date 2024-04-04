@@ -16,6 +16,7 @@ import DriverRegistration from '../../screens/driver/DriverRegistration'
 import FindLoadScreen from '../../screens/driver/FindLoadScreen'
 import LoadDetailsScreen from '../../screens/driver/LoadDetailsScreen'
 import FindTruckScreen from '../../screens/dealer/FindTruckScreen'
+import GenerateOtpScreen from '../../screens/commonScreens/GenerateOtpScreen'
 const Stack = createNativeStackNavigator()
 
 const AuthNavigation = () => {
@@ -34,6 +35,8 @@ const AuthNavigation = () => {
             <Stack.Screen name='Login' component={Login} />
             <Stack.Screen name='Verification' component={OtpScreen} />
             <Stack.Screen name='Confirmation' component={ConfirmationScreen} />
+            <Stack.Screen name='Registrater Number' component={GenerateOtpScreen} />
+
 
             {/* Dealer Stack */}
             <Stack.Screen name='Registration' component={Registration} />

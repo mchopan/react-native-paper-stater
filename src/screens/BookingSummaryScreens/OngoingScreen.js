@@ -8,8 +8,7 @@ const OngoingScreen = () => {
         <FlatList data={[1, 2, 3, 4]} renderItem={() => {
             return (
                 <>
-                    <SelectTruckCard />
-                    <SelectLoadCard />
+                    <Text> Working on It </Text>
                 </>
             )
         }}

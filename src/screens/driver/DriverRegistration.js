@@ -10,7 +10,6 @@ import CustomUpload from '../../components/CustomUpload';
 const DriverRegistration = ({ navigation }) => {
     const [formData, setFormData] = useState({
         name: '',
-        phoneNumber: '',
         address: '',
         vehicleType: '',
         licenseNumber: '',
@@ -28,27 +27,9 @@ const DriverRegistration = ({ navigation }) => {
 
     const handleSubmit = () => {
         // Todo Handle form submission
-        navigation.setParams({ isDealer: false });
-        navigation.navigate("Verification")
+        navigation.navigate("Login")
     };
 
-    // Function to handle attachment selection
-    const handleAttach = async () => {
-        try {
-            const results = await DocumentPicker.pick({
-                type: [DocumentPicker.types.images],
-            });
-            const file = results[0];
-            setSelectedFile(file)
-        } catch (err) {
-            if (DocumentPicker.isCancel(err)) {
-                console.log(err)
-            }
-            else {
-                console.log(err)
-            }
-        }
-    }
 
     return (
         <View style={{ flex: 1 }}>
@@ -66,14 +47,6 @@ const DriverRegistration = ({ navigation }) => {
                                 placeholder="Enter your name"
                                 onChangeText={(text) => handleInputChange('name', text)}
                                 value={formData.name}
-                            />
-                            <CustomInput
-                                type='text'
-                                label="Phone Number"
-                                placeholder="Enter your phone number"
-                                onChangeText={(text) => handleInputChange('phoneNumber', text)}
-                                value={formData.phoneNumber}
-                                keyboardType="phone-pad"
                             />
                             <CustomInput
                                 type='text'
