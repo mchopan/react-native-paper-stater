@@ -4,16 +4,16 @@ import { useTheme } from 'react-native-paper'
 import { Colors } from '../../theme/colors'
 import CustomInput from '../../components/CustomInput'
 import CustomButton from '../../components/CustomButton'
-import { USER_TYPES, UserTypeContext } from '../../store/MyContext'
+import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext'
+import { MyContext } from '../../store/MyContext'
 
 const GenerateOtpScreen = ({ navigation, route }) => {
 
 
     const { userType } = useContext(UserTypeContext);
+    const { phoneNumber, setPhoneNumber } = useContext(MyContext);
 
     const theme = useTheme()
-
-    const [phoneNumber, setPhoneNumber] = useState();
 
 
     const handleSubmit = () => {
@@ -35,6 +35,7 @@ const GenerateOtpScreen = ({ navigation, route }) => {
                 <View style={styles.mainFormContainer}>
                     <CustomInput
                         type='text'
+                        keyboardType='phone-pad'
                         label="Mobile Number"
                         placeholder="Enter your mobile number"
                         onChangeText={(text) => setPhoneNumber(text)}

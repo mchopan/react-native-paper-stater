@@ -4,7 +4,7 @@ import CustomInput from '../../components/CustomInput'
 import { IconButton, Text, useTheme } from 'react-native-paper'
 import { Colors } from '../../theme/colors'
 import CustomButton from '../../components/CustomButton'
-import { USER_TYPES, UserTypeContext } from '../../store/MyContext'
+import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext'
 
 const DealerProfile = ({ navigation }) => {
 

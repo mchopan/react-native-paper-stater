@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { ImageBackground, StyleSheet, View, ScrollView } from 'react-native';
 import { Colors } from '../../theme/colors';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
+import { MyContext } from '../../store/MyContext';
+import DealerRegistrationService from '../../api/dealerRegistrationService';
+import Toast from 'react-native-toast-message';
 
 const Registration = ({ navigation }) => {
+
+    const { phoneNumber } = useContext(MyContext);
+
 
     const [formData, setFormData] = useState({
         name: '',
@@ -21,9 +27,24 @@ const Registration = ({ navigation }) => {
         });
     };
 
-    const handleSubmit = () => {
-        // Todo Handle form submission
-        navigation.navigate("Login")
+    const handleSubmit = async () => {
+        try {
+            const data = { ...formData, phoneNumber }
+            const res = await DealerRegistrationService.signUp(data)
+            if (res.status == 201) {
+                Toast.show({
+                    type: 'success',
+                    text1: 'Account Created Successfully',
+                });
+                navigation.navigate("Login")
+            }
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Error while creating account',
+                text2: `${error.message}`,
+            });
+        }
     };
 
     return (

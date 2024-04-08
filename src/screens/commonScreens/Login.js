@@ -4,22 +4,24 @@ import { useTheme } from 'react-native-paper'
 import { Colors } from '../../theme/colors'
 import CustomInput from '../../components/CustomInput'
 import CustomButton from '../../components/CustomButton'
-import { USER_TYPES, UserTypeContext } from '../../store/MyContext'
+import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext'
+import DealerRegistrationService from '../../api/dealerRegistrationService'
+import Toast from 'react-native-toast-message';
+import { MyContext } from '../../store/MyContext'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 
 const Login = ({ navigation, route }) => {
 
-
+    const { setIsAuthenticated } = React.useContext(MyContext);
     const { userType } = useContext(UserTypeContext);
 
     const theme = useTheme()
 
     const [formData, setFormData] = useState({
-        name: '',
         phoneNumber: '',
-        companyName: '',
-        GSTNumber: '',
         password: '',
-        confirmPassword: ''
     });
 
     const handleInputChange = (name, value) => {
@@ -29,9 +31,27 @@ const Login = ({ navigation, route }) => {
         });
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (userType == USER_TYPES.DEALER) {
-            navigation.navigate("Menu Screen")
+            try {
+                const res = await DealerRegistrationService.login(formData)
+                console.log(res.data, "login res")
+                if (res.status == 200) {
+                    await AsyncStorage.setItem('dealerData', JSON.stringify(res.data));
+                    setIsAuthenticated(true)
+                    Toast.show({
+                        type: 'success',
+                        text1: 'Login Successfully',
+                    });
+                    navigation.navigate("Menu Screen")
+                }
+            } catch (error) {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Error while login',
+                    text2: `${error.message}`
+                });
+            }
         }
         else {
             navigation.navigate("Driver Menu Screen")
@@ -47,6 +67,7 @@ const Login = ({ navigation, route }) => {
             <View style={styles.overlay}>
                 <View style={styles.mainFormContainer}>
                     <CustomInput
+                        keyboardType='phone-pad'
                         type='text'
                         label="Mobile Number"
                         placeholder="Enter your mobile number"
@@ -61,9 +82,16 @@ const Login = ({ navigation, route }) => {
                         value={formData.password}
                         secureTextEntry={true}
                     />
+
+                    <View style={{ flexDirection: "row", gap: 5, }}>
+                        <Text style={{ fontFamily: "GothicA1-Regular", color: Colors.gray, fontWeight: "400" }}>don't have an account yet?</Text>
+                        <TouchableOpacity onPress={() => navigation.navigate("Registrater Number")}>
+                            <Text style={{ fontFamily: "GothicA1-Regular", color: Colors.primary, fontWeight: "500" }}>Create One</Text>
+                        </TouchableOpacity>
+                    </View>
                     <View style={styles.resendOtpContainer}>
                         <TouchableOpacity>
-                            <Text style={{ color: theme.colors.primary, fontWeight: "500" }}>Forgot Password?</Text>
+                            <Text style={{ fontFamily: "GothicA1-Regular", color: theme.colors.primary, fontWeight: "600" }}>Forgot Password?</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -121,7 +149,6 @@ const styles = StyleSheet.create({
     resendOtpContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
-        paddingHorizontal: 20,
         alignSelf: 'flex-end',
     },
     overlay: {

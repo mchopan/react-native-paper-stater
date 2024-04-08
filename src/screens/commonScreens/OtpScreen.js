@@ -4,7 +4,7 @@ import { OtpInput } from "react-native-otp-entry";
 import { Colors } from '../../theme/colors';
 import { useTheme } from 'react-native-paper';
 import CustomButton from '../../components/CustomButton';
-import { USER_TYPES, UserTypeContext } from '../../store/MyContext';
+import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext';
 
 const OtpScreen = ({ navigation }) => {
 

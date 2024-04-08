@@ -1,21 +1,16 @@
 import React, { createContext, useState } from 'react';
 
-export const USER_TYPES = {
-    DRIVER: 'driver',
-    DEALER: 'dealer',
-};
+export const MyContext = createContext();
 
-export const UserTypeContext = createContext();
+export const MyContextProvider = ({ children }) => {
 
-export const UserTypeProvider = ({ children }) => {
-    const [userType, setUserType] = useState(null);
+    const [phoneNumber, setPhoneNumber] = useState()
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    const setUserAsDriver = () => setUserType(USER_TYPES.DRIVER);
-    const setUserAsDealer = () => setUserType(USER_TYPES.DEALER);
 
     return (
-        <UserTypeContext.Provider value={{ userType, setUserAsDriver, setUserAsDealer }}>
+        <MyContext.Provider value={{ isAuthenticated, setIsAuthenticated, phoneNumber, setPhoneNumber }}>
             {children}
-        </UserTypeContext.Provider>
+        </MyContext.Provider>
     );
 };

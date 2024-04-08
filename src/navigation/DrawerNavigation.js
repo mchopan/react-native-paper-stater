@@ -1,14 +1,19 @@
-import React, { useContext } from 'react';
-import { View, Text, Image } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { View, Text, Image, Alert } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import MyProfileScreen from '../screens/commonScreens/MyProfileScreen';
-import BookingSummaryScreen from '../screens/BookingSummaryScreens/BookingSummaryScreen';
+import BookingSummaryScreen from '../screens/bookingSummaryScreens/BookingSummaryScreen';
 import MenuScreen from '../screens/dealer/MenuScreen';
 import { Colors } from '../theme/colors';
 import PlainLine from '../components/cards/PlainLine';
 import HomeScreen from '../screens/dealer/HomeScreen';
-import { USER_TYPES, UserTypeContext } from '../store/MyContext';
+import { USER_TYPES, UserTypeContext } from '../store/UserTypeContext';
+import { getUserData } from '../../App';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MyContext } from '../store/MyContext';
+import Toast from 'react-native-toast-message';
+import { useNavigation } from '@react-navigation/native';
 
 const Drawer = createDrawerNavigator();
 
@@ -24,6 +29,59 @@ const CustomDrawerItem = ({ label, icon, onPress }) => (
 
 // Custom Drawer Content Component
 const CustomDrawerContent = (props) => {
+
+    const navigation = useNavigation()
+
+    const [user, setUser] = useState()
+
+    const { setIsAuthenticated } = React.useContext(MyContext);
+
+
+    const fetchUserData = async () => {
+        const userDetails = await getUserData();
+        setUser(userDetails.user)
+    };
+
+    fetchUserData();
+
+    const showDeleteAlert = () => {
+        Alert.alert(
+            'Logout Confirmation',
+            'Are you sure you want to logout?',
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Logout',
+                    onPress: () => handleLogout(),
+                    style: 'destructive',
+                },
+            ],
+            { cancelable: false }
+        );
+    };
+
+    const handleLogout = async () => {
+        try {
+            await AsyncStorage.clear();
+            setIsAuthenticated(false)
+            navigation.navigate("Welcome")
+            Toast.show({
+                type: 'success',
+                text1: 'Logout successfully',
+            });
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Error while logout',
+                text2: 'Opps',
+            });
+            console.error('Error deleting group:', error);
+        }
+    };
+
     return (
         <View style={{ flex: 1, backgroundColor: Colors.primary }}>
             <DrawerContentScrollView   {...props} >
@@ -32,8 +90,8 @@ const CustomDrawerContent = (props) => {
                         <Image style={{ width: 60, height: 60 }} source={require('../assets/profile.png')} />
                     </View>
                     <View>
-                        <Text style={{ color: 'white', fontFamily: 'GothicA1-Regular', fontSize: 15, fontWeight: '700' }}>Manzoor Chopan</Text>
-                        <Text style={{ color: 'white', fontFamily: 'GothicA1-Regular', fontSize: 17, fontWeight: '500' }}>7780883346</Text>
+                        <Text style={{ color: 'white', fontFamily: 'GothicA1-Regular', fontSize: 15, fontWeight: '700' }}>{user?.name}</Text>
+                        <Text style={{ color: 'white', fontFamily: 'GothicA1-Regular', fontSize: 17, fontWeight: '500' }}>{user?.phoneNumber}</Text>
                     </View>
                 </View>
                 <PlainLine />
@@ -43,7 +101,7 @@ const CustomDrawerContent = (props) => {
                 <CustomDrawerItem label="Refer a Friend" icon={require('../assets/referafriend.png')} onPress={() => props.navigation.navigate('Home')} />
                 <CustomDrawerItem label="Call Support" icon={require('../assets/callsupport.png')} onPress={() => props.navigation.navigate('Home')} />
                 <CustomDrawerItem label="About Us" icon={require('../assets/aboutus.png')} onPress={() => props.navigation.navigate('Home')} />
-                <CustomDrawerItem label="Log Out" icon={require('../assets/logout.png')} onPress={() => props.navigation.navigate('Home')} />
+                <CustomDrawerItem label="Log Out" icon={require('../assets/logout.png')} onPress={showDeleteAlert} />
             </DrawerContentScrollView>
         </View>
     );

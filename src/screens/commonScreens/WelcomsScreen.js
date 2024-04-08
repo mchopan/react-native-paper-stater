@@ -3,7 +3,7 @@ import React, { useContext } from 'react'
 import { useTheme } from 'react-native-paper'
 import CustomButton from '../../components/CustomButton'
 import { Colors } from '../../theme/colors'
-import { UserTypeContext } from '../../store/MyContext'
+import { UserTypeContext } from '../../store/UserTypeContext'
 import SelectTruckCard from '../../components/cards/SelectTruckCard'
 
 const WelcomeScreen = ({ navigation }) => {
@@ -12,13 +12,12 @@ const WelcomeScreen = ({ navigation }) => {
 
     const handleDealer = () => {
         setUserAsDealer()
-        navigation.navigate("Registrater Number")
+        navigation.navigate("Login")
     }
 
     const handleDriver = () => {
         setUserAsDriver()
-        navigation.navigate("Registrater Number")
-
+        navigation.navigate("Login")
     }
     return (
         <View style={styles.container}>
