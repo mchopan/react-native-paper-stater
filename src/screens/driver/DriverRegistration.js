@@ -1,21 +1,28 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { ImageBackground, StyleSheet, View, ScrollView } from 'react-native';
 import { Colors } from '../../theme/colors';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
-import DocumentPicker from 'react-native-document-picker';
-import { Button } from 'react-native-paper';
 import CustomUpload from '../../components/CustomUpload';
+import { MyContext } from '../../store/MyContext';
+import DriverRegistrationService from '../../api/driverRegistrationService';
+import Toast from 'react-native-toast-message';
 
 const DriverRegistration = ({ navigation }) => {
+
+    const { phoneNumber, } = useContext(MyContext);
+
     const [formData, setFormData] = useState({
         name: '',
         address: '',
         vehicleType: '',
-        licenseNumber: '',
-        registrationNumber: '',
+        drivingLicenseNumber: '',
+        vehicleRegistrationNumber: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        vehicleRcFile: null,
+        vehicleInsuranceFile: null,
+        identityDocumentFile: null
     });
 
     const handleInputChange = (name, value) => {
@@ -25,9 +32,53 @@ const DriverRegistration = ({ navigation }) => {
         });
     };
 
-    const handleSubmit = () => {
-        // Todo Handle form submission
-        navigation.navigate("Login")
+    const handleFileSelect = (file, type) => { // Callback to update state with selected file
+        setFormData({
+            ...formData,
+            [type]: file
+        });
+    };
+    const handleSubmit = async () => {
+        try {
+
+            const formDataToSend = new FormData();
+            formDataToSend.append('phoneNumber', phoneNumber);
+            formDataToSend.append('name', formData.name);
+            formDataToSend.append('address', formData.address);
+            formDataToSend.append('vehicleType', formData.vehicleType);
+            formDataToSend.append('drivingLicenseNumber', formData.drivingLicenseNumber);
+            formDataToSend.append('vehicleRegistrationNumber', formData.vehicleRegistrationNumber);
+            formDataToSend.append('password', formData.password);
+            formDataToSend.append('confirmPassword', formData.confirmPassword);
+            formDataToSend.append('vehicleRcFile', formData.vehicleRcFile);
+            formDataToSend.append('vehicleInsuranceFile', formData.vehicleInsuranceFile);
+            formDataToSend.append('identityDocumentFile', formData.identityDocumentFile);
+
+            console.log(formDataToSend, "formData")
+
+            const config = {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            };
+
+            const res = await DriverRegistrationService.driverSignUp(formDataToSend, config);
+            if (res.status == 201) {
+                Toast.show({
+                    type: 'success',
+                    text1: 'Account Created Successfully',
+                });
+                navigation.navigate("Login")
+            }
+
+        } catch (error) {
+            console.log(error.message)
+            Toast.show({
+                type: 'error',
+                text1: 'Error while creating account',
+                text2: `${error.message}`,
+            });
+        }
     };
 
 
@@ -76,9 +127,11 @@ const DriverRegistration = ({ navigation }) => {
                                 onChangeText={(text) => handleInputChange('registrationNumber', text)}
                                 value={formData.registrationNumber}
                             />
-                            <CustomUpload label="Upload Vehicle RC" />
-                            <CustomUpload label="Upload Vehicle Insurance" />
-                            <CustomUpload label="Upload Identity Document" />
+
+                            <CustomUpload label="Upload Vehicle RC" onFileSelect={(file) => handleFileSelect(file, 'vehicleRcFile')} />
+                            <CustomUpload label="Upload Vehicle Insurance" onFileSelect={(file) => handleFileSelect(file, 'vehicleInsuranceFile')} />
+                            <CustomUpload label="Upload Identity Document" onFileSelect={(file) => handleFileSelect(file, 'identityDocumentFile')} />
+
                             <CustomInput
                                 type='password'
                                 label="Password"

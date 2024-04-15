@@ -5,11 +5,14 @@ import { Colors } from '../../theme/colors';
 import { useTheme } from 'react-native-paper';
 import CustomButton from '../../components/CustomButton';
 import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext';
+import { MyContext } from '../../store/MyContext';
 
 const OtpScreen = ({ navigation }) => {
 
 
     const { userType } = useContext(UserTypeContext);
+    const { phoneNumber } = useContext(MyContext);
+
 
     const theme = useTheme()
 
@@ -32,7 +35,7 @@ const OtpScreen = ({ navigation }) => {
                     Please enter the OTP
                 </Text>
                 <Text style={styles.message}>
-                    We have sent a verification code to <Text style={[styles.message, { fontWeight: "600" }]}>+91-0123456789</Text>
+                    We have sent a verification code to <Text style={[styles.message, { fontWeight: "600" }]}>+91-{phoneNumber}</Text>
                 </Text>
             </View>
             <OtpInput

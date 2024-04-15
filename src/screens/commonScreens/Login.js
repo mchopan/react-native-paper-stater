@@ -9,6 +9,7 @@ import DealerRegistrationService from '../../api/dealerRegistrationService'
 import Toast from 'react-native-toast-message';
 import { MyContext } from '../../store/MyContext'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DriverRegistrationService from '../../api/driverRegistrationService'
 
 
 
@@ -24,6 +25,7 @@ const Login = ({ navigation, route }) => {
         password: '',
     });
 
+
     const handleInputChange = (name, value) => {
         setFormData({
             ...formData,
@@ -35,7 +37,6 @@ const Login = ({ navigation, route }) => {
         if (userType == USER_TYPES.DEALER) {
             try {
                 const res = await DealerRegistrationService.login(formData)
-                console.log(res.data, "login res")
                 if (res.status == 200) {
                     await AsyncStorage.setItem('dealerData', JSON.stringify(res.data));
                     setIsAuthenticated(true)
@@ -54,7 +55,24 @@ const Login = ({ navigation, route }) => {
             }
         }
         else {
-            navigation.navigate("Driver Menu Screen")
+            try {
+                const res = await DriverRegistrationService.driverLogin(formData)
+                if (res.status == 200) {
+                    await AsyncStorage.setItem('driverData', JSON.stringify(res.data));
+                    setIsAuthenticated(true)
+                    Toast.show({
+                        type: 'success',
+                        text1: 'Login Successfully',
+                    });
+                    navigation.navigate("Driver Menu Screen")
+                }
+            } catch (error) {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Error while login',
+                    text2: `${error.message}`
+                });
+            }
         }
     };
 

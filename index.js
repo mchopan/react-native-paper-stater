@@ -7,6 +7,7 @@ import { darkTheme } from './src/theme/darkTheme';
 import { lightTheme } from './src/theme/lightTheme';
 import { UserTypeProvider } from './src/store/UserTypeContext';
 import { MyContextProvider } from './src/store/MyContext';
+import { startNetworkLogging } from 'react-native-network-logger';
 
 
 const LightTheme = {
@@ -20,6 +21,9 @@ const DarkTheme = {
 }
 
 export default function Main() {
+
+
+    startNetworkLogging()
 
     const colorScheme = useColorScheme();
 

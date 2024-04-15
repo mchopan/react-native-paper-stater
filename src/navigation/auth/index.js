@@ -8,6 +8,7 @@ import OtpScreen from '../../screens/commonScreens/OtpScreen'
 import ConfirmationScreen from '../../screens/commonScreens/ConfirmationScreen'
 import DriverRegistration from '../../screens/driver/DriverRegistration'
 import GenerateOtpScreen from '../../screens/commonScreens/GenerateOtpScreen'
+import NetworkLogs from '../../screens/NetworkLogs'
 const Stack = createNativeStackNavigator()
 
 const AuthNavigation = () => {
@@ -27,7 +28,7 @@ const AuthNavigation = () => {
             <Stack.Screen name='Verification' component={OtpScreen} />
             <Stack.Screen name='Confirmation' component={ConfirmationScreen} />
             <Stack.Screen name='Registrater Number' component={GenerateOtpScreen} />
-
+            <Stack.Screen name='Network Logs' component={NetworkLogs} />
 
             {/* Dealer Stack */}
             <Stack.Screen name='Registration' component={Registration} />

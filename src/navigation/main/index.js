@@ -10,6 +10,7 @@ import DrawerNavigation from '../DrawerNavigation'
 import FindLoadScreen from '../../screens/driver/FindLoadScreen'
 import LoadDetailsScreen from '../../screens/driver/LoadDetailsScreen'
 import FindTruckScreen from '../../screens/dealer/FindTruckScreen'
+import NetworkLogs from '../../screens/NetworkLogs'
 
 const Stack = createNativeStackNavigator()
 
@@ -32,6 +33,7 @@ const MainNavigation = () => {
             <Stack.Screen name='Booking Summary' component={BookingSummaryScreen} />
             <Stack.Screen name='Find Truck' component={FindTruckScreen} />
 
+            <Stack.Screen name='Network Logs' component={NetworkLogs} />
             {/* Driver Stack */}
             <Stack.Screen options={{ headerShown: false }} name='Driver Menu Screen' component={DrawerNavigation} />
             <Stack.Screen name='Find Load' component={FindLoadScreen} />

@@ -1,9 +1,9 @@
 import axiosInstance from './axiosInstance';
 
-class DealerRegistrationService {
-    static async signUp(data) {
+class DriverRegistrationService {
+    static async driverSignUp(data, config) {
         try {
-            const response = await axiosInstance.post(`register`, data);
+            const response = await axiosInstance.post(`registerDriver`, data, config);
             return response;
         } catch (error) {
             console.error('Signup Error:', error);
@@ -11,9 +11,9 @@ class DealerRegistrationService {
         }
     }
 
-    static async login(data) {
+    static async driverLogin(data) {
         try {
-            const response = await axiosInstance.post(`login`, data);
+            const response = await axiosInstance.post(`loginDriver`, data);
             return response;
         } catch (error) {
             console.error('Signup Error:', error);
@@ -22,4 +22,4 @@ class DealerRegistrationService {
     }
 }
 
-export default DealerRegistrationService;
+export default DriverRegistrationService;

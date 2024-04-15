@@ -1,20 +1,23 @@
 import { Image, Pressable, StyleSheet } from 'react-native';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button, Text } from 'react-native-paper';
 import DocumentPicker from 'react-native-document-picker';
 import { Colors } from '../theme/colors';
+import { MyContext } from '../store/MyContext';
 
-const CustomUpload = ({ label }) => {
-  const [selectedFile, setSelectedFile] = useState(null);
+const CustomUpload = ({ label, onFileSelect }) => { // Add onFileSelect prop
+
+  const [selectedFile, setSelectedFile] = useState();
 
   // Function to handle attachment selection
   const handleAttach = async () => {
     try {
       const results = await DocumentPicker.pick({
-        type: [DocumentPicker.types.images],
+        type: [DocumentPicker.types.allFiles],
       });
       const file = results[0];
       setSelectedFile(file);
+      onFileSelect(file)
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         console.log(err);
@@ -24,10 +27,14 @@ const CustomUpload = ({ label }) => {
     }
   };
 
-  return <Pressable style={styles.Pressable} onPress={handleAttach}>
-    <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 14, fontWeight: "600", color: Colors.gray }}>{selectedFile ? selectedFile.name : label}</Text>
-    <Image tintColor={Colors.primary} style={{ height: 20, width: 20 }} source={require("../assets/uploadicon.png")} />
-  </Pressable>
+  return (
+    <Pressable style={styles.Pressable} onPress={handleAttach}>
+      <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 14, fontWeight: "600", color: Colors.gray }}>
+        {selectedFile ? selectedFile.name : label}
+      </Text>
+      <Image tintColor={Colors.primary} style={{ height: 20, width: 20 }} source={require("../assets/uploadicon.png")} />
+    </Pressable>
+  );
 };
 
 export default CustomUpload;

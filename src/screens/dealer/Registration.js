@@ -20,6 +20,9 @@ const Registration = ({ navigation }) => {
         confirmPassword: ''
     });
 
+    const [gstNumberError, setGstNumberError] = useState("")
+    const [passwordError, setPasswordError] = useState("")
+
     const handleInputChange = (name, value) => {
         setFormData({
             ...formData,
@@ -29,6 +32,27 @@ const Registration = ({ navigation }) => {
 
     const handleSubmit = async () => {
         try {
+            // Validate GST number
+            if (!/^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[A-Z\d]{1}$/.test(formData.GSTNumber)) {
+                setGstNumberError("Invalid GST number format")
+                return
+                // throw new Error('Invalid GST number format');
+            }
+
+            // Validate password
+            if (formData.password !== formData.confirmPassword) {
+                // throw new Error('Passwords do not match');
+                setPasswordError("Passwords do not match")
+                return
+            }
+
+            if (formData.password.length < 6) {
+                // throw new Error('Password must be at least 6 characters long');
+                setPasswordError("Password must be at least 6 characters long")
+                return
+
+            }
+
             const data = { ...formData, phoneNumber }
             const res = await DealerRegistrationService.signUp(data)
             if (res.status == 201) {
@@ -41,8 +65,7 @@ const Registration = ({ navigation }) => {
         } catch (error) {
             Toast.show({
                 type: 'error',
-                text1: 'Error while creating account',
-                text2: `${error.message}`,
+                text1: `${error.message}`,
             });
         }
     };
@@ -77,6 +100,10 @@ const Registration = ({ navigation }) => {
                                 placeholder="Enter your GST number"
                                 onChangeText={(text) => handleInputChange('GSTNumber', text)}
                                 value={formData.GSTNumber}
+                                maxLength={15}
+                                hasError={!!gstNumberError} // Use phoneNumberError state to determine if there's an error
+                                errorMessage={gstNumberError} // Pass error message to display
+
                             />
                             <CustomInput
                                 type='password'
@@ -85,6 +112,9 @@ const Registration = ({ navigation }) => {
                                 onChangeText={(text) => handleInputChange('password', text)}
                                 value={formData.password}
                                 secureTextEntry={true}
+                                hasError={!!passwordError}
+                                passwordErrorMassage={passwordError}
+
                             />
                             <CustomInput
                                 type='password'
@@ -93,6 +123,9 @@ const Registration = ({ navigation }) => {
                                 onChangeText={(text) => handleInputChange('confirmPassword', text)}
                                 value={formData.confirmPassword}
                                 secureTextEntry={true}
+                                hasError={!!passwordError}
+                                passwordErrorMassage={passwordError}
+
                             />
                         </ScrollView>
                     </View>

@@ -7,32 +7,31 @@ import Toast from 'react-native-toast-message';
 import {MyContext} from './src/store/MyContext';
 import MainNavigation from './src/navigation/main';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-export const getUserData = async () => {
-  try {
-    const userDataString = await AsyncStorage.getItem('dealerData');
-    if (userDataString !== null) {
-      // User data found in local storage, parse and return
-      const userData = JSON.parse(userDataString);
-      return userData;
-    } else {
-      // No user data found in local storage
-      return null;
-    }
-  } catch (error) {
-    // Error retrieving user data
-    console.error('Error retrieving user data:', error);
-    return null;
-  }
-};
+import {USER_TYPES, UserTypeContext} from './src/store/UserTypeContext';
 
 export default function App() {
   const theme = useTheme();
   const {isAuthenticated, setIsAuthenticated} = React.useContext(MyContext);
 
   const getUserData = async () => {
+    let userDataString = null;
     try {
-      const userDataString = await AsyncStorage.getItem('dealerData');
+      // Check if dealer data exists
+      const dealerDataString = await AsyncStorage.getItem('dealerData');
+      console.log(dealerDataString, 'daa');
+      if (dealerDataString !== null) {
+        userDataString = dealerDataString;
+      }
+
+      // If userDataString is still null, check for driver data
+      if (!userDataString) {
+        const driverDataString = await AsyncStorage.getItem('driverData');
+        if (driverDataString !== null) {
+          userDataString = driverDataString;
+        }
+      }
+
+      // Parse and return userDataString if it exists, otherwise return null
       if (userDataString !== null) {
         const userData = JSON.parse(userDataString);
         setIsAuthenticated(true);
@@ -42,7 +41,6 @@ export default function App() {
         return null;
       }
     } catch (error) {
-      // Error retrieving user data
       console.error('Error retrieving user data:', error);
       return null;
     }

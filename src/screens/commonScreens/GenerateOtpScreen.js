@@ -15,15 +15,21 @@ const GenerateOtpScreen = ({ navigation, route }) => {
 
     const theme = useTheme()
 
+    const [phoneNumberError, setPhoneNumberError] = useState('');
+
 
     const handleSubmit = () => {
-        if (userType == USER_TYPES.DEALER) {
+        if (phoneNumber?.length !== 10) {
+            setPhoneNumberError("please enter your phone number")
+            return null
+        }
+        if (!!phoneNumber) {
             navigation.navigate("Verification")
         }
-        else {
-            navigation.navigate("Verification")
-        }
+
     };
+
+
 
     return (
         <View style={styles.mainContainer}>
@@ -34,11 +40,21 @@ const GenerateOtpScreen = ({ navigation, route }) => {
             <View style={styles.overlay}>
                 <View style={styles.mainFormContainer}>
                     <CustomInput
+                        maxLength={10}
+                        hasError={!!phoneNumberError}
+                        errorMessage={phoneNumberError}
                         type='text'
                         keyboardType='phone-pad'
                         label="Mobile Number"
                         placeholder="Enter your mobile number"
-                        onChangeText={(text) => setPhoneNumber(text)}
+                        onChangeText={(text) => {
+                            setPhoneNumber(text)
+                            if (text.length !== 10) {
+                                setPhoneNumberError('Phone number must be 10 digits');
+                            } else {
+                                setPhoneNumberError('');
+                            }
+                        }}
                         value={phoneNumber}
                     />
                 </View>

@@ -19,6 +19,10 @@ const WelcomeScreen = ({ navigation }) => {
         setUserAsDriver()
         navigation.navigate("Login")
     }
+
+    const handleNetwork = () => {
+        navigation.navigate("Network Logs")
+    }
     return (
         <View style={styles.container}>
             <View style={styles.logoContainer}>
@@ -27,6 +31,7 @@ const WelcomeScreen = ({ navigation }) => {
             <View style={styles.buttonGroup}>
                 <CustomButton label='I’m Dealer' mode='contained' onPress={handleDealer} />
                 <CustomButton label='I’m Driver' mode='outlined' onPress={handleDriver} />
+                <CustomButton label='Network' mode='outlined' onPress={handleNetwork} />
             </View>
         </View>
     )

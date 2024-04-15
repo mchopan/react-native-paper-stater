@@ -30,6 +30,39 @@ const CustomDrawerItem = ({ label, icon, onPress }) => (
 // Custom Drawer Content Component
 const CustomDrawerContent = (props) => {
 
+    const getUserData = async () => {
+        let userDataString = null;
+        try {
+            // Check if dealer data exists
+            const dealerDataString = await AsyncStorage.getItem('dealerData');
+            console.log(dealerDataString, 'daa');
+            if (dealerDataString !== null) {
+                userDataString = dealerDataString;
+            }
+
+            // If userDataString is still null, check for driver data
+            if (!userDataString) {
+                const driverDataString = await AsyncStorage.getItem('driverData');
+                if (driverDataString !== null) {
+                    userDataString = driverDataString;
+                }
+            }
+
+            // Parse and return userDataString if it exists, otherwise return null
+            if (userDataString !== null) {
+                const userData = JSON.parse(userDataString);
+                setIsAuthenticated(true);
+                return userData;
+            } else {
+                // No user data found in local storage
+                return null;
+            }
+        } catch (error) {
+            console.error('Error retrieving user data:', error);
+            return null;
+        }
+    };
+
     const navigation = useNavigation()
 
     const [user, setUser] = useState()
