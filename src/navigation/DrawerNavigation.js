@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, Image, Alert } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -11,7 +11,7 @@ import HomeScreen from '../screens/dealer/HomeScreen';
 import { USER_TYPES, UserTypeContext } from '../store/UserTypeContext';
 import { getUserData } from '../../App';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { MyContext } from '../store/MyContext';
+import { MyContext, MyContextProvider } from '../store/MyContext';
 import Toast from 'react-native-toast-message';
 import { useNavigation } from '@react-navigation/native';
 
@@ -30,21 +30,26 @@ const CustomDrawerItem = ({ label, icon, onPress }) => (
 // Custom Drawer Content Component
 const CustomDrawerContent = (props) => {
 
+    const { setUserAsDriver, setUserAsDealer } = useContext(UserTypeContext)
+
     const getUserData = async () => {
         let userDataString = null;
         try {
             // Check if dealer data exists
             const dealerDataString = await AsyncStorage.getItem('dealerData');
-            console.log(dealerDataString, 'daa');
+            // console.log(dealerDataString, 'dealer');
             if (dealerDataString !== null) {
                 userDataString = dealerDataString;
+                setUserAsDealer()
             }
 
             // If userDataString is still null, check for driver data
             if (!userDataString) {
                 const driverDataString = await AsyncStorage.getItem('driverData');
+                // console.log(driverDataString, 'driver');
                 if (driverDataString !== null) {
                     userDataString = driverDataString;
+                    setUserAsDriver()
                 }
             }
 
@@ -65,17 +70,18 @@ const CustomDrawerContent = (props) => {
 
     const navigation = useNavigation()
 
-    const [user, setUser] = useState()
-
-    const { setIsAuthenticated } = React.useContext(MyContext);
+    const { setIsAuthenticated, user, setUser } = React.useContext(MyContext);
 
 
     const fetchUserData = async () => {
         const userDetails = await getUserData();
-        setUser(userDetails.user)
+        console.log(userDetails, "userDetails")
+        setUser(userDetails)
     };
 
-    fetchUserData();
+    useEffect(() => {
+        fetchUserData();
+    }, [])
 
     const showDeleteAlert = () => {
         Alert.alert(
@@ -111,7 +117,7 @@ const CustomDrawerContent = (props) => {
                 text1: 'Error while logout',
                 text2: 'Opps',
             });
-            console.error('Error deleting group:', error);
+            console.error(' Logout Error:', error);
         }
     };
 
@@ -120,7 +126,7 @@ const CustomDrawerContent = (props) => {
             <DrawerContentScrollView   {...props} >
                 <View style={{ padding: 30, flexDirection: 'row', justifyContent: 'center', gap: 10, alignItems: 'center', marginTop: 20 }}>
                     <View style={{ borderRadius: 40, overflow: 'hidden', backgroundColor: 'black' }}>
-                        <Image style={{ width: 60, height: 60 }} source={require('../assets/profile.png')} />
+                        <Image style={{ width: 60, height: 60 }} source={!user ? require('../assets/profile.png') : { uri: user.imageFile }} />
                     </View>
                     <View>
                         <Text style={{ color: 'white', fontFamily: 'GothicA1-Regular', fontSize: 15, fontWeight: '700' }}>{user?.name}</Text>

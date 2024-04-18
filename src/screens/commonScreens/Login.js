@@ -1,6 +1,6 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useContext, useState } from 'react'
-import { useTheme } from 'react-native-paper'
+import { ActivityIndicator, useTheme } from 'react-native-paper'
 import { Colors } from '../../theme/colors'
 import CustomInput from '../../components/CustomInput'
 import CustomButton from '../../components/CustomButton'
@@ -10,10 +10,12 @@ import Toast from 'react-native-toast-message';
 import { MyContext } from '../../store/MyContext'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DriverRegistrationService from '../../api/driverRegistrationService'
+import Loading from '../../components/Loading'
 
 
 
 const Login = ({ navigation, route }) => {
+
 
     const { setIsAuthenticated } = React.useContext(MyContext);
     const { userType } = useContext(UserTypeContext);
@@ -25,6 +27,8 @@ const Login = ({ navigation, route }) => {
         password: '',
     });
 
+    const [isLoading, setIsLoading] = useState(false)
+
 
     const handleInputChange = (name, value) => {
         setFormData({
@@ -34,16 +38,26 @@ const Login = ({ navigation, route }) => {
     };
 
     const handleSubmit = async () => {
+        if (formData.phoneNumber == '' || formData.password == '') {
+            Toast.show({
+                type: 'info',
+                text1: 'please enter you phone number & password',
+            });
+            return null
+        }
+        setIsLoading(true)
         if (userType == USER_TYPES.DEALER) {
             try {
                 const res = await DealerRegistrationService.login(formData)
+                console.log(res.data.user, "login data")
                 if (res.status == 200) {
-                    await AsyncStorage.setItem('dealerData', JSON.stringify(res.data));
+                    await AsyncStorage.setItem('dealerData', JSON.stringify(res.data.user));
                     setIsAuthenticated(true)
                     Toast.show({
                         type: 'success',
                         text1: 'Login Successfully',
                     });
+                    setIsLoading(false)
                     navigation.navigate("Menu Screen")
                 }
             } catch (error) {
@@ -52,6 +66,7 @@ const Login = ({ navigation, route }) => {
                     text1: 'Error while login',
                     text2: `${error.message}`
                 });
+                setIsLoading(false)
             }
         }
         else {
@@ -64,6 +79,7 @@ const Login = ({ navigation, route }) => {
                         type: 'success',
                         text1: 'Login Successfully',
                     });
+                    setIsLoading(false)
                     navigation.navigate("Driver Menu Screen")
                 }
             } catch (error) {
@@ -72,8 +88,10 @@ const Login = ({ navigation, route }) => {
                     text1: 'Error while login',
                     text2: `${error.message}`
                 });
+                setIsLoading(false)
             }
         }
+        setIsLoading(false)
     };
 
     return (
@@ -118,7 +136,10 @@ const Login = ({ navigation, route }) => {
             <View style={styles.buttonContainer}>
                 <CustomButton mode='contained' label="Login" onPress={handleSubmit} />
             </View>
-        </View>
+            {
+                isLoading && <Loading />
+            }
+        </View >
     )
 }
 

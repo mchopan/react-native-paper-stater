@@ -11,6 +11,16 @@ class DriverRegistrationService {
         }
     }
 
+    static async updateDriver(data, id) {
+        try {
+            const response = await axiosInstance.put(`updateDriver/${id}`, data);
+            return response;
+        } catch (error) {
+            console.error('Update Error:', error);
+            throw error;
+        }
+    }
+
     static async driverLogin(data) {
         try {
             const response = await axiosInstance.post(`loginDriver`, data);

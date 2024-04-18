@@ -1,23 +1,100 @@
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Image, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
 import React, { useContext, useState } from 'react'
 import CustomInput from '../../components/CustomInput'
 import { IconButton, Text, useTheme } from 'react-native-paper'
 import { Colors } from '../../theme/colors'
 import CustomButton from '../../components/CustomButton'
 import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext'
+import { MyContext } from '../../store/MyContext'
+import { useNavigation } from '@react-navigation/native'
+import DriverRegistrationService from '../../api/driverRegistrationService'
+import DealerRegistrationService from '../../api/dealerRegistrationService'
+import Toast from 'react-native-toast-message'
+import Loading from '../../components/Loading'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import DocumentPicker from 'react-native-document-picker';
 
-const DealerProfile = ({ navigation }) => {
+const DealerProfile = ({ }) => {
+    const navigation = useNavigation()
+    const { user } = React.useContext(MyContext);
 
-    const [name, setName] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [companyName, setCompanyName] = useState("");
-    const [GSTNumber, setGSTNumber] = useState("");
 
-    const handleSubmit = () => {
-        // todo handle update dealer 
-        console.log("login successfull : p")
-        navigation.navigate("Home Screen")
+
+    const [isLoading, setIsLoading] = useState(false)
+
+    const [name, setName] = useState(user.name || "");
+    const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber || "");
+    const [companyName, setCompanyName] = useState(user.companyName || "");
+    const [gstNumber, setGstNumber] = useState(user.gstNumber || "");
+    const [imageUrl, setImageUrl] = useState(user?.imageFile || null)
+    const handleSubmit = async () => {
+        setIsLoading(true)
+        try {
+            const data = { name, phoneNumber, companyName, gstNumber };
+            const res = await DealerRegistrationService.updateDealer(data, user._id)
+            console.log(res.data, "updated successfully")
+            if (res.status == 200) {
+                await AsyncStorage.setItem('dealerData', JSON.stringify(res.data.dealer));
+                Toast.show({
+                    type: 'success',
+                    text1: 'updated Successfully',
+                });
+                setIsLoading(false)
+                // navigation.navigate("Menu Screen")
+            }
+        } catch (error) {
+            console.log(error.message)
+            setIsLoading(false)
+        }
+        setIsLoading(false)
+        // console.log("login successfull : p")
+        // navigation.navigate("Home Screen")
     }
+
+    const handleAttach = async () => {
+        try {
+            const results = await DocumentPicker.pick({
+                type: [DocumentPicker.types.images],
+            });
+            const file = results[0];
+
+            if (file) {
+                setIsLoading(true)
+                const formData = new FormData()
+                formData.append('name', name)
+                formData.append('phoneNumber', phoneNumber)
+                formData.append('companyName', companyName)
+                formData.append('gstNumber', gstNumber)
+                formData.append('imageFile', file)
+
+                const config = {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                };
+                const res = await DealerRegistrationService.updateDealer(formData, user._id, config)
+                if (res.status == 200) {
+                    setImageUrl(res.data.dealer.imageFile)
+                    await AsyncStorage.setItem('dealerData', JSON.stringify(res.data.dealer));
+                    Toast.show({
+                        type: 'success',
+                        text1: 'profile updated',
+                    });
+                    setIsLoading(false)
+                    // navigation.navigate("Menu Screen")
+                }
+            }
+            setIsLoading(false)
+
+        } catch (err) {
+            if (DocumentPicker.isCancel(err)) {
+                console.log(err);
+            } else {
+                console.log(err);
+            }
+        }
+    };
+
     return (
         <View style={styles.mainContainer}>
             <View style={styles.profile}>
@@ -27,17 +104,17 @@ const DealerProfile = ({ navigation }) => {
                     height: 120,
                     borderRadius: 60,
                 }}>
-                    <Image style={{ position: "absolute", width: 130, height: 130 }} source={require("../../assets/profile.png")} />
+                    <Image style={{ position: "absolute", width: 130, height: 130 }} source={!imageUrl ? require('../../assets/profile.png') : { uri: imageUrl }} />
                 </View>
                 <IconButton
                     style={styles.iconStyles}
                     icon={require("../../assets/editIcon.png")}
                     size={20}
-                    onPress={() => console.log('chnage profile')}
+                    onPress={handleAttach}
                 />
             </View>
             <View style={styles.overlay}>
-                <View style={styles.mainFormContainer}>
+                <ScrollView contentContainerStyle={styles.mainFormContainer}>
                     <CustomInput
                         type='text'
                         label="Name"
@@ -63,26 +140,33 @@ const DealerProfile = ({ navigation }) => {
                         type='text'
                         label="GST Number"
                         placeholder=""
-                        onChangeText={(text) => setGSTNumber(text)}
-                        value={GSTNumber}
+                        onChangeText={(text) => setGstNumber(text)}
+                        value={gstNumber}
                     />
-                </View>
+                </ScrollView>
             </View>
-
             <View style={styles.buttonContainer}>
                 <CustomButton mode='contained' label="Update" onPress={handleSubmit} />
             </View>
+            {
+                isLoading && <Loading />
+            }
         </View>
     )
 }
 
-const DriverProfile = ({ navigation }) => {
+const DriverProfile = ({ }) => {
 
-    const [name, setName] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [companyName, setCompanyName] = useState("");
-    const [GSTNumber, setGSTNumber] = useState("");
+    const navigation = useNavigation()
 
+    const { user } = React.useContext(MyContext);
+
+    const [name, setName] = useState(user.name || "");
+    const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber || "");
+    const [address, setAddress] = useState(user.address || "");
+    const [vehicleType, setVehicleType] = useState(user.vehicleType || "");
+    const [driverLicenceNumber, setDriverLicenceNumber] = useState(user.drivingLicenseNumber || "")
+    const [vehicleRegistrationNumber, setVehicleRegistrationNumber] = useState(user.vehicleRegistrationNumber || "")
     const handleSubmit = () => {
         // todo handle update dealer 
         console.log("login successfull : p")
@@ -108,7 +192,7 @@ const DriverProfile = ({ navigation }) => {
                 />
             </View>
             <View style={styles.overlay}>
-                <View style={styles.mainFormContainer}>
+                <ScrollView contentContainerStyle={styles.mainFormContainer}>
                     <CustomInput
                         type='text'
                         label="Name"
@@ -127,31 +211,31 @@ const DriverProfile = ({ navigation }) => {
                         type='text'
                         label="Address"
                         placeholder=""
-                        onChangeText={(text) => setCompanyName(text)}
-                        value={companyName}
+                        onChangeText={(text) => setAddress(text)}
+                        value={address}
                     />
                     <CustomInput
                         type='text'
                         label="Vehicle Type"
                         placeholder=""
-                        onChangeText={(text) => setGSTNumber(text)}
-                        value={GSTNumber}
+                        onChangeText={(text) => setVehicleType(text)}
+                        value={vehicleType}
                     />
                     <CustomInput
                         type='text'
                         label="Driving License Number"
                         placeholder=""
-                        onChangeText={(text) => setGSTNumber(text)}
-                        value={GSTNumber}
+                        onChangeText={(text) => setDriverLicenceNumber(text)}
+                        value={driverLicenceNumber}
                     />
                     <CustomInput
                         type='text'
                         label="Vehicle Registration Number"
                         placeholder=""
-                        onChangeText={(text) => setGSTNumber(text)}
-                        value={GSTNumber}
+                        onChangeText={(text) => setVehicleRegistrationNumber(text)}
+                        value={vehicleRegistrationNumber}
                     />
-                </View>
+                </ScrollView>
             </View>
 
             <View style={styles.buttonContainer}>
@@ -197,14 +281,14 @@ const styles = StyleSheet.create({
     },
     overlay: {
         gap: 100,
-        marginBottom: 20,
+        marginBottom: 60,
+        padding: 10,
         flex: 1,
         width: '100%',
-        alignItems: 'center',
-
     },
     mainFormContainer: {
         gap: 20,
+        alignSelf: "center",
         width: '90%',
         backgroundColor: Colors.whiteBackground,
         borderRadius: 10,

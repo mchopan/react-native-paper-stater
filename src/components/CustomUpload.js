@@ -1,16 +1,16 @@
-import { Image, Pressable, StyleSheet } from 'react-native';
-import React, { useContext, useState } from 'react';
-import { Button, Text } from 'react-native-paper';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
+import React, { useState } from 'react';
+import { HelperText, Text } from 'react-native-paper';
 import DocumentPicker from 'react-native-document-picker';
 import { Colors } from '../theme/colors';
-import { MyContext } from '../store/MyContext';
 
-const CustomUpload = ({ label, onFileSelect }) => { // Add onFileSelect prop
+const CustomUpload = ({ label, onFileSelect, fileNotSelected, errorMessage, hasError }) => { // Add onFileSelect prop
 
   const [selectedFile, setSelectedFile] = useState();
 
   // Function to handle attachment selection
   const handleAttach = async () => {
+
     try {
       const results = await DocumentPicker.pick({
         type: [DocumentPicker.types.allFiles],
@@ -28,12 +28,17 @@ const CustomUpload = ({ label, onFileSelect }) => { // Add onFileSelect prop
   };
 
   return (
-    <Pressable style={styles.Pressable} onPress={handleAttach}>
-      <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 14, fontWeight: "600", color: Colors.gray }}>
-        {selectedFile ? selectedFile.name : label}
-      </Text>
-      <Image tintColor={Colors.primary} style={{ height: 20, width: 20 }} source={require("../assets/uploadicon.png")} />
-    </Pressable>
+    <View style={{ marginBottom: -5, gap: -7 }}>
+      <Pressable style={[styles.Pressable, { borderColor: fileNotSelected ? "#db0909" : Colors.gray, }]} onPress={handleAttach}>
+        <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 14, fontWeight: "600", color: Colors.gray }}>
+          {selectedFile ? selectedFile.name : label}
+        </Text>
+        <Image tintColor={Colors.primary} style={{ height: 20, width: 20 }} source={require("../assets/uploadicon.png")} />
+      </Pressable>
+      <HelperText type="error" visible={fileNotSelected}>
+        {errorMessage}
+      </HelperText>
+    </View>
   );
 };
 

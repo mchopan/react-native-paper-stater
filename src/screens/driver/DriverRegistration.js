@@ -7,6 +7,7 @@ import CustomUpload from '../../components/CustomUpload';
 import { MyContext } from '../../store/MyContext';
 import DriverRegistrationService from '../../api/driverRegistrationService';
 import Toast from 'react-native-toast-message';
+import Spacer from '../../components/Spacer';
 
 const DriverRegistration = ({ navigation }) => {
 
@@ -25,20 +26,98 @@ const DriverRegistration = ({ navigation }) => {
         identityDocumentFile: null
     });
 
+    const [errors, setErrors] = useState({
+        nameError: '',
+        addressError: '',
+        vehicleTypeError: '',
+        drivingLicenseNumberError: '',
+        vehicleRegistrationNumberError: '',
+        passwordError: '',
+        confirmPasswordError: '',
+        vehicleRcFileError: '',
+        vehicleInsuranceFileError: '',
+        identityDocumentFileError: ''
+    });
+
+    const [fileNotSelected, setFileNotSelected] = useState(false)
+
+
+
     const handleInputChange = (name, value) => {
         setFormData({
             ...formData,
             [name]: value
         });
+
+        console.log(name, "field")
+
+        switch (name) {
+            case 'name':
+                setErrors({ ...errors, nameError: value.trim() === '' ? 'Name is required' : '' }); // Check if the name is empty
+                break;
+            case 'address':
+                setErrors({ ...errors, addressError: value.trim() === '' ? 'Address is required' : '' }); // Check if the address is empty
+                break;
+            case 'vehicleType':
+                setErrors({ ...errors, vehicleTypeError: value.trim() === '' ? 'Vehicle type is required' : '' }); // Check if the vehicle type is empty
+                break;
+            case 'licenseNumber':
+                setErrors({ ...errors, drivingLicenseNumberError: value.trim() === '' ? 'License number is required' : '' });
+                break;
+            case 'registrationNumber':
+                setErrors({ ...errors, vehicleRegistrationNumberError: value.trim() === '' ? 'Registration number is required' : '' });
+                break;
+            case 'password':
+                setErrors({ ...errors, passwordError: value.length < 6 ? 'Password must be at least 6 characters long' : '' }); // Check if the password length is less than 6 characters
+                break;
+            case 'confirmPassword':
+                setErrors({ ...errors, confirmPasswordError: value !== formData.password ? 'Passwords do not match' : '' }); // Check if the confirm password matches the password
+                break;
+            default:
+                break;
+        }
     };
 
     const handleFileSelect = (file, type) => { // Callback to update state with selected file
+        // setFileNotSelected(true)
         setFormData({
             ...formData,
             [type]: file
         });
     };
     const handleSubmit = async () => {
+        const stringFields = [
+            "name",
+            "address",
+            "vehicleType",
+            "licenseNumber",
+            "registrationNumber",
+            "password",
+            "confirmPassword"
+        ];
+
+        const isEmpty = stringFields.some(field => formData[field].trim() === '');
+
+        const isFileEmpty = Object.values(formData).some(value => value === null && typeof value !== 'string'); // Check if the value is null and not a string
+
+        console.log(isEmpty, "&&", isFileEmpty)
+
+        if (isEmpty) {
+            Toast.show({
+                type: 'info',
+                text1: 'all fields are required',
+            });
+            return
+        }
+        setFileNotSelected(false)
+        if (isFileEmpty) {
+            setFileNotSelected(true)
+            Toast.show({
+                type: 'info',
+                text1: 'documents fields are required',
+            });
+            return
+        }
         try {
 
             const formDataToSend = new FormData();
@@ -93,6 +172,8 @@ const DriverRegistration = ({ navigation }) => {
                     <View style={styles.container}>
                         <ScrollView contentContainerStyle={styles.formContainer}>
                             <CustomInput
+                                hasError={!!errors.nameError}
+                                errorMessage={errors.nameError}
                                 type='text'
                                 label="Name"
                                 placeholder="Enter your name"
@@ -100,6 +181,8 @@ const DriverRegistration = ({ navigation }) => {
                                 value={formData.name}
                             />
                             <CustomInput
+                                hasError={!!errors.addressError}
+                                errorMessage={errors.addressError}
                                 type='text'
                                 label="Address"
                                 placeholder="Enter your address"
@@ -107,6 +190,8 @@ const DriverRegistration = ({ navigation }) => {
                                 value={formData.address}
                             />
                             <CustomInput
+                                hasError={!!errors.vehicleTypeError}
+                                errorMessage={errors.vehicleTypeError}
                                 type='text'
                                 label="Vehicle Type"
                                 placeholder="Enter your vehicle type"
@@ -114,6 +199,8 @@ const DriverRegistration = ({ navigation }) => {
                                 value={formData.vehicleType}
                             />
                             <CustomInput
+                                hasError={!!errors.drivingLicenseNumberError}
+                                errorMessage={errors.drivingLicenseNumberError}
                                 type='text'
                                 label="Driving License Number"
                                 placeholder="Enter your license number"
@@ -121,6 +208,8 @@ const DriverRegistration = ({ navigation }) => {
                                 value={formData.licenseNumber}
                             />
                             <CustomInput
+                                hasError={!!errors.vehicleTypeError}
+                                errorMessage={errors.vehicleTypeError}
                                 type='text'
                                 label="Vehicle Registration Number"
                                 placeholder="Enter your registration number"
@@ -128,11 +217,15 @@ const DriverRegistration = ({ navigation }) => {
                                 value={formData.registrationNumber}
                             />
 
-                            <CustomUpload label="Upload Vehicle RC" onFileSelect={(file) => handleFileSelect(file, 'vehicleRcFile')} />
-                            <CustomUpload label="Upload Vehicle Insurance" onFileSelect={(file) => handleFileSelect(file, 'vehicleInsuranceFile')} />
-                            <CustomUpload label="Upload Identity Document" onFileSelect={(file) => handleFileSelect(file, 'identityDocumentFile')} />
+                            <CustomUpload errorMessage={"please select the vehicle Rc document"} hasError={!!errors.vehicleRcFileError} fileNotSelected={fileNotSelected} label="Upload Vehicle RC" onFileSelect={(file) => handleFileSelect(file, 'vehicleRcFile')} />
+
+                            <CustomUpload errorMessage={"please select the vehicle insurance document"} hasError={!!errors.vehicleInsuranceFileError} fileNotSelected={fileNotSelected} label="Upload Vehicle Insurance" onFileSelect={(file) => handleFileSelect(file, 'vehicleInsuranceFile')} />
+
+                            <CustomUpload errorMessage={"please select the identity document document"} hasError={!!errors.identityDocumentFileError} fileNotSelected={fileNotSelected} label="Upload Identity Document" onFileSelect={(file) => handleFileSelect(file, 'identityDocumentFile')} />
 
                             <CustomInput
+                                hasError={!!errors.passwordError}
+                                passwordErrorMassage={errors.passwordError}
                                 type='password'
                                 label="Password"
                                 placeholder="Enter your password"
@@ -141,6 +234,8 @@ const DriverRegistration = ({ navigation }) => {
                                 secureTextEntry={true}
                             />
                             <CustomInput
+                                hasError={!!errors.confirmPasswordError}
+                                passwordErrorMassage={errors.confirmPasswordError}
                                 type='password'
                                 label="Confirm Password"
                                 placeholder="Confirm your password"

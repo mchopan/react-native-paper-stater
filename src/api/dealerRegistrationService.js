@@ -10,6 +10,15 @@ class DealerRegistrationService {
             throw error;
         }
     }
+    static async updateDealer(data, id, config) {
+        try {
+            const response = await axiosInstance.put(`updateDealer/${id}`, data, config);
+            return response;
+        } catch (error) {
+            console.error('Update Error:', error);
+            throw error;
+        }
+    }
 
     static async login(data) {
         try {

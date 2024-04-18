@@ -6,6 +6,7 @@ import CustomButton from '../../components/CustomButton';
 import { MyContext } from '../../store/MyContext';
 import DealerRegistrationService from '../../api/dealerRegistrationService';
 import Toast from 'react-native-toast-message';
+import Loading from '../../components/Loading';
 
 const Registration = ({ navigation }) => {
 
@@ -15,51 +16,74 @@ const Registration = ({ navigation }) => {
     const [formData, setFormData] = useState({
         name: '',
         companyName: '',
-        GSTNumber: '',
+        gstNumber: '',
         password: '',
         confirmPassword: ''
     });
 
     const [gstNumberError, setGstNumberError] = useState("")
     const [passwordError, setPasswordError] = useState("")
+    const [error, setError] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
+
 
     const handleInputChange = (name, value) => {
+        if (name === 'gstNumber') {
+            if (!/^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[A-Z\d]{1}$/.test(value)) {
+                setGstNumberError("Invalid GST number format");
+                setError(true)
+            } else {
+                setGstNumberError("");
+                setError(false)
+
+            }
+        } else if (name === 'password' || name === 'confirmPassword') {
+            if (name === 'confirmPassword' && value !== formData.password) {
+                setPasswordError("Passwords do not match");
+                setError(true)
+            } else if (value.length < 6) {
+                setPasswordError("Password must be at least 6 characters long");
+            } else {
+                setPasswordError("");
+                setError(false)
+
+            }
+        }
+
+        // Update form data
         setFormData({
             ...formData,
             [name]: value
         });
     };
 
+
     const handleSubmit = async () => {
+        if (formData.name == '' || formData.companyName == '' || formData.gstNumber == '') {
+            Toast.show({
+                type: 'info',
+                text1: 'All fields are required',
+            });
+            return null
+        }
+        if (error) {
+            Toast.show({
+                type: 'info',
+                text1: 'All fields are required',
+            });
+            return null
+        }
+        setIsLoading(true)
         try {
-            // Validate GST number
-            if (!/^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[A-Z\d]{1}$/.test(formData.GSTNumber)) {
-                setGstNumberError("Invalid GST number format")
-                return
-                // throw new Error('Invalid GST number format');
-            }
-
-            // Validate password
-            if (formData.password !== formData.confirmPassword) {
-                // throw new Error('Passwords do not match');
-                setPasswordError("Passwords do not match")
-                return
-            }
-
-            if (formData.password.length < 6) {
-                // throw new Error('Password must be at least 6 characters long');
-                setPasswordError("Password must be at least 6 characters long")
-                return
-
-            }
-
             const data = { ...formData, phoneNumber }
             const res = await DealerRegistrationService.signUp(data)
+            console.log(res.data)
             if (res.status == 201) {
                 Toast.show({
                     type: 'success',
                     text1: 'Account Created Successfully',
                 });
+                setIsLoading(false)
                 navigation.navigate("Login")
             }
         } catch (error) {
@@ -67,7 +91,9 @@ const Registration = ({ navigation }) => {
                 type: 'error',
                 text1: `${error.message}`,
             });
+            setIsLoading(false)
         }
+        setIsLoading(false)
     };
 
     return (
@@ -98,8 +124,8 @@ const Registration = ({ navigation }) => {
                                 type='text'
                                 label="GST Number"
                                 placeholder="Enter your GST number"
-                                onChangeText={(text) => handleInputChange('GSTNumber', text)}
-                                value={formData.GSTNumber}
+                                onChangeText={(text) => handleInputChange('gstNumber', text)}
+                                value={formData.gstNumber}
                                 maxLength={15}
                                 hasError={!!gstNumberError} // Use phoneNumberError state to determine if there's an error
                                 errorMessage={gstNumberError} // Pass error message to display
@@ -134,6 +160,9 @@ const Registration = ({ navigation }) => {
             <View style={styles.buttonContainer}>
                 <CustomButton mode='contained' label="Register" onPress={handleSubmit} />
             </View>
+            {
+                isLoading && <Loading />
+            }
         </View>
     );
 };
