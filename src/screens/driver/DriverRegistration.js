@@ -8,10 +8,14 @@ import { MyContext } from '../../store/MyContext';
 import DriverRegistrationService from '../../api/driverRegistrationService';
 import Toast from 'react-native-toast-message';
 import Spacer from '../../components/Spacer';
+import Loading from '../../components/Loading';
 
 const DriverRegistration = ({ navigation }) => {
 
     const { phoneNumber, } = useContext(MyContext);
+
+    const [isLoading, setIsLoading] = useState(false)
+
 
     const [formData, setFormData] = useState({
         name: '',
@@ -39,7 +43,10 @@ const DriverRegistration = ({ navigation }) => {
         identityDocumentFileError: ''
     });
 
-    const [fileNotSelected, setFileNotSelected] = useState(false)
+
+    const [rcError, setRcError] = useState(false)
+    const [insuranceError, setInsuranceError] = useState(false)
+    const [identityError, setIdentityError] = useState(false)
 
 
 
@@ -48,9 +55,6 @@ const DriverRegistration = ({ navigation }) => {
             ...formData,
             [name]: value
         });
-
-        console.log(name, "field")
-
         switch (name) {
             case 'name':
                 setErrors({ ...errors, nameError: value.trim() === '' ? 'Name is required' : '' }); // Check if the name is empty
@@ -61,10 +65,10 @@ const DriverRegistration = ({ navigation }) => {
             case 'vehicleType':
                 setErrors({ ...errors, vehicleTypeError: value.trim() === '' ? 'Vehicle type is required' : '' }); // Check if the vehicle type is empty
                 break;
-            case 'licenseNumber':
+            case 'drivingLicenseNumber':
                 setErrors({ ...errors, drivingLicenseNumberError: value.trim() === '' ? 'License number is required' : '' });
                 break;
-            case 'registrationNumber':
+            case 'vehicleRegistrationNumber':
                 setErrors({ ...errors, vehicleRegistrationNumberError: value.trim() === '' ? 'Registration number is required' : '' });
                 break;
             case 'password':
@@ -78,7 +82,7 @@ const DriverRegistration = ({ navigation }) => {
         }
     };
 
-    const handleFileSelect = (file, type) => { // Callback to update state with selected file
+    const handleFileSelect = (file, type) => {
         // setFileNotSelected(true)
         setFormData({
             ...formData,
@@ -86,38 +90,48 @@ const DriverRegistration = ({ navigation }) => {
         });
     };
     const handleSubmit = async () => {
+        setIsLoading(true)
         const stringFields = [
             "name",
             "address",
             "vehicleType",
-            "licenseNumber",
-            "registrationNumber",
+            "drivingLicenseNumber",
+            "vehicleRegistrationNumber",
             "password",
             "confirmPassword"
         ];
+        setRcError(false)
+        setInsuranceError(false)
+        setIdentityError(false)
 
-        const isEmpty = stringFields.some(field => formData[field].trim() === '');
-
-        const isFileEmpty = Object.values(formData).some(value => value === null && typeof value !== 'string'); // Check if the value is null and not a string
-
-        console.log(isEmpty, "&&", isFileEmpty)
+        const isEmpty = stringFields.some(field => formData[field].trim() == '');
 
         if (isEmpty) {
+            setIsLoading(false)
             Toast.show({
                 type: 'info',
-                text1: 'all fields are required',
+                text1: 'All Fields Are Required',
             });
             return
         }
-        setFileNotSelected(false)
-        if (isFileEmpty) {
-            setFileNotSelected(true)
-            Toast.show({
-                type: 'info',
-                text1: 'documents fields are required',
-            });
+
+        if (formData.vehicleRcFile == null) {
+            setRcError(true)
+            setIsLoading(false)
             return
         }
+
+        if (formData.vehicleInsuranceFile == null) {
+            setInsuranceError(true)
+            setIsLoading(false)
+            return
+        }
+        if (formData.identityDocumentFile == null) {
+            setIdentityError(true)
+            setIsLoading(false)
+            return
+        }
+
         try {
 
             const formDataToSend = new FormData();
@@ -133,8 +147,6 @@ const DriverRegistration = ({ navigation }) => {
             formDataToSend.append('vehicleInsuranceFile', formData.vehicleInsuranceFile);
             formDataToSend.append('identityDocumentFile', formData.identityDocumentFile);
 
-            console.log(formDataToSend, "formData")
-
             const config = {
                 headers: {
                     'Content-Type': 'multipart/form-data'
@@ -143,6 +155,7 @@ const DriverRegistration = ({ navigation }) => {
 
             const res = await DriverRegistrationService.driverSignUp(formDataToSend, config);
             if (res.status == 201) {
+                setIsLoading(false)
                 Toast.show({
                     type: 'success',
                     text1: 'Account Created Successfully',
@@ -151,7 +164,8 @@ const DriverRegistration = ({ navigation }) => {
             }
 
         } catch (error) {
-            console.log(error.message)
+            console.log(error)
+            setIsLoading(false)
             Toast.show({
                 type: 'error',
                 text1: 'Error while creating account',
@@ -159,7 +173,6 @@ const DriverRegistration = ({ navigation }) => {
             });
         }
     };
-
 
     return (
         <View style={{ flex: 1 }}>
@@ -204,24 +217,24 @@ const DriverRegistration = ({ navigation }) => {
                                 type='text'
                                 label="Driving License Number"
                                 placeholder="Enter your license number"
-                                onChangeText={(text) => handleInputChange('licenseNumber', text)}
-                                value={formData.licenseNumber}
+                                onChangeText={(text) => handleInputChange('drivingLicenseNumber', text)}
+                                value={formData.drivingLicenseNumber}
                             />
                             <CustomInput
-                                hasError={!!errors.vehicleTypeError}
-                                errorMessage={errors.vehicleTypeError}
+                                hasError={!!errors.vehicleRegistrationNumberError}
+                                errorMessage={errors.vehicleRegistrationNumberError}
                                 type='text'
                                 label="Vehicle Registration Number"
                                 placeholder="Enter your registration number"
-                                onChangeText={(text) => handleInputChange('registrationNumber', text)}
-                                value={formData.registrationNumber}
+                                onChangeText={(text) => handleInputChange('vehicleRegistrationNumber', text)}
+                                value={formData.vehicleRegistrationNumber}
                             />
 
-                            <CustomUpload errorMessage={"please select the vehicle Rc document"} hasError={!!errors.vehicleRcFileError} fileNotSelected={fileNotSelected} label="Upload Vehicle RC" onFileSelect={(file) => handleFileSelect(file, 'vehicleRcFile')} />
+                            <CustomUpload errorMessage={"RC is required*"} hasError={!!errors.vehicleRcFileError} fileNotSelected={rcError} label="Upload Vehicle RC" onFileSelect={(file) => handleFileSelect(file, 'vehicleRcFile')} />
 
-                            <CustomUpload errorMessage={"please select the vehicle insurance document"} hasError={!!errors.vehicleInsuranceFileError} fileNotSelected={fileNotSelected} label="Upload Vehicle Insurance" onFileSelect={(file) => handleFileSelect(file, 'vehicleInsuranceFile')} />
+                            <CustomUpload errorMessage={"vehicle insurance is required*"} hasError={!!errors.vehicleInsuranceFileError} fileNotSelected={insuranceError} label="Upload Vehicle Insurance" onFileSelect={(file) => handleFileSelect(file, 'vehicleInsuranceFile')} />
 
-                            <CustomUpload errorMessage={"please select the identity document document"} hasError={!!errors.identityDocumentFileError} fileNotSelected={fileNotSelected} label="Upload Identity Document" onFileSelect={(file) => handleFileSelect(file, 'identityDocumentFile')} />
+                            <CustomUpload errorMessage={"identity document is required*"} hasError={!!errors.identityDocumentFileError} fileNotSelected={identityError} label="Upload Identity Document" onFileSelect={(file) => handleFileSelect(file, 'identityDocumentFile')} />
 
                             <CustomInput
                                 hasError={!!errors.passwordError}
@@ -250,6 +263,9 @@ const DriverRegistration = ({ navigation }) => {
             <View style={styles.buttonContainer}>
                 <CustomButton mode='contained' label="Register" onPress={handleSubmit} />
             </View>
+            {
+                isLoading && <Loading />
+            }
         </View>
     );
 };

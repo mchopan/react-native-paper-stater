@@ -9,9 +9,8 @@ import { Colors } from '../theme/colors';
 import PlainLine from '../components/cards/PlainLine';
 import HomeScreen from '../screens/dealer/HomeScreen';
 import { USER_TYPES, UserTypeContext } from '../store/UserTypeContext';
-import { getUserData } from '../../App';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { MyContext, MyContextProvider } from '../store/MyContext';
+import { MyContext } from '../store/MyContext';
 import Toast from 'react-native-toast-message';
 import { useNavigation } from '@react-navigation/native';
 
@@ -126,7 +125,10 @@ const CustomDrawerContent = (props) => {
             <DrawerContentScrollView   {...props} >
                 <View style={{ padding: 30, flexDirection: 'row', justifyContent: 'center', gap: 10, alignItems: 'center', marginTop: 20 }}>
                     <View style={{ borderRadius: 40, overflow: 'hidden', backgroundColor: 'black' }}>
-                        <Image style={{ width: 60, height: 60 }} source={!user ? require('../assets/profile.png') : { uri: user.imageFile }} />
+                        <Image
+                            style={{ width: 60, height: 60 }}
+                            source={!user?.imageFile ? require('../assets/profile.png') : { uri: user.imageFile }}
+                        />
                     </View>
                     <View>
                         <Text style={{ color: 'white', fontFamily: 'GothicA1-Regular', fontSize: 15, fontWeight: '700' }}>{user?.name}</Text>

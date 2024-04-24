@@ -27,14 +27,156 @@ const DealerProfile = ({ }) => {
     const [companyName, setCompanyName] = useState(user.companyName || "");
     const [gstNumber, setGstNumber] = useState(user.gstNumber || "");
     const [imageUrl, setImageUrl] = useState(user?.imageFile || null)
+
     const handleSubmit = async () => {
         setIsLoading(true)
         try {
             const data = { name, phoneNumber, companyName, gstNumber };
             const res = await DealerRegistrationService.updateDealer(data, user._id)
-            console.log(res.data, "updated successfully")
             if (res.status == 200) {
                 await AsyncStorage.setItem('dealerData', JSON.stringify(res.data.dealer));
+                Toast.show({
+                    type: 'success',
+                    text1: 'updated Successfully',
+                });
+                setIsLoading(false)
+            }
+        } catch (error) {
+            console.log(error.message)
+            setIsLoading(false)
+        }
+        setIsLoading(false)
+    }
+
+    const handleAttach = async () => {
+        try {
+            const results = await DocumentPicker.pick({
+                type: [DocumentPicker.types.images],
+            });
+            const file = results[0];
+
+            if (file) {
+                setIsLoading(true)
+                const formData = new FormData()
+                formData.append('name', name)
+                formData.append('phoneNumber', phoneNumber)
+                formData.append('companyName', companyName)
+                formData.append('gstNumber', gstNumber)
+                formData.append('imageFile', file)
+
+                const config = {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                };
+                const res = await DealerRegistrationService.updateDealer(formData, user._id, config)
+                if (res.status == 200) {
+                    setImageUrl(res.data.dealer.imageFile)
+                    await AsyncStorage.setItem('dealerData', JSON.stringify(res.data.dealer));
+                    Toast.show({
+                        type: 'success',
+                        text1: 'profile updated',
+                    });
+                    setIsLoading(false)
+                }
+            }
+            setIsLoading(false)
+
+        } catch (err) {
+            if (DocumentPicker.isCancel(err)) {
+                console.log(err);
+            } else {
+                console.log(err);
+            }
+        }
+    };
+    console.log(imageUrl, "image")
+    return (
+        <View style={styles.mainContainer}>
+            <View style={styles.profile}>
+                <View style={{
+                    overflow: "hidden",
+                    width: 120,
+                    height: 120,
+                    borderRadius: 60,
+                }}>
+                    <Image style={{ position: "absolute", width: 130, height: 130 }} source={imageUrl ? { uri: imageUrl } : require('../../assets/profile.png')} />
+                </View>
+                <IconButton
+                    style={styles.iconStyles}
+                    icon={require("../../assets/editIcon.png")}
+                    size={20}
+                    onPress={handleAttach}
+                />
+            </View>
+            <View style={styles.overlay}>
+                <ScrollView contentContainerStyle={styles.mainFormContainer}>
+                    <CustomInput
+                        type='text'
+                        label="Name"
+                        placeholder=""
+                        onChangeText={(text) => setName(text)}
+                        value={name}
+                    />
+                    <CustomInput
+                        type='text'
+                        label="Phone Number"
+                        placeholder=""
+                        onChangeText={(text) => setPhoneNumber(text)}
+                        value={phoneNumber}
+                    />
+                    <CustomInput
+                        type='text'
+                        label="Company Name"
+                        placeholder=""
+                        onChangeText={(text) => setCompanyName(text)}
+                        value={companyName}
+                    />
+                    <CustomInput
+                        type='text'
+                        label="GST Number"
+                        placeholder=""
+                        onChangeText={(text) => setGstNumber(text)}
+                        value={gstNumber}
+                    />
+                </ScrollView>
+            </View>
+            <View style={styles.buttonContainer}>
+                <CustomButton mode='contained' label="Update" onPress={handleSubmit} />
+            </View>
+            {
+                isLoading && <Loading />
+            }
+        </View>
+    )
+}
+
+const DriverProfile = ({ }) => {
+
+    const navigation = useNavigation()
+
+
+
+    const { user } = React.useContext(MyContext);
+
+    const [isLoading, setIsLoading] = useState(false)
+
+
+    const [name, setName] = useState(user.name || "");
+    const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber || "");
+    const [address, setAddress] = useState(user.address || "");
+    const [vehicleType, setVehicleType] = useState(user.vehicleType || "");
+    const [driverLicenceNumber, setDriverLicenceNumber] = useState(user.drivingLicenseNumber || "")
+    const [vehicleRegistrationNumber, setVehicleRegistrationNumber] = useState(user.vehicleRegistrationNumber || "")
+    const [imageUrl, setImageUrl] = useState(user?.imageFile || null)
+
+    const handleSubmit = async () => {
+        setIsLoading(true)
+        try {
+            const data = { name, phoneNumber, address, vehicleType, driverLicenceNumber, vehicleRegistrationNumber };
+            const res = await DriverRegistrationService.updateDriver(data, user._id)
+            if (res.status == 200) {
+                await AsyncStorage.setItem('driverData', JSON.stringify(res.data.driver));
                 Toast.show({
                     type: 'success',
                     text1: 'updated Successfully',
@@ -63,8 +205,10 @@ const DealerProfile = ({ }) => {
                 const formData = new FormData()
                 formData.append('name', name)
                 formData.append('phoneNumber', phoneNumber)
-                formData.append('companyName', companyName)
-                formData.append('gstNumber', gstNumber)
+                formData.append('address', address)
+                formData.append('vehicleType', vehicleType)
+                formData.append('driverLicenceNumber', driverLicenceNumber)
+                formData.append('vehicleRegistrationNumber', vehicleRegistrationNumber)
                 formData.append('imageFile', file)
 
                 const config = {
@@ -72,10 +216,11 @@ const DealerProfile = ({ }) => {
                         'Content-Type': 'multipart/form-data'
                     }
                 };
-                const res = await DealerRegistrationService.updateDealer(formData, user._id, config)
+                const res = await DriverRegistrationService.updateDriver(formData, user._id, config)
+                console.log(res, "driver")
                 if (res.status == 200) {
-                    setImageUrl(res.data.dealer.imageFile)
-                    await AsyncStorage.setItem('dealerData', JSON.stringify(res.data.dealer));
+                    setImageUrl(res.data.driver.imageFile)
+                    await AsyncStorage.setItem('driverData', JSON.stringify(res.data.driver));
                     Toast.show({
                         type: 'success',
                         text1: 'profile updated',
@@ -131,84 +276,6 @@ const DealerProfile = ({ }) => {
                     />
                     <CustomInput
                         type='text'
-                        label="Company Name"
-                        placeholder=""
-                        onChangeText={(text) => setCompanyName(text)}
-                        value={companyName}
-                    />
-                    <CustomInput
-                        type='text'
-                        label="GST Number"
-                        placeholder=""
-                        onChangeText={(text) => setGstNumber(text)}
-                        value={gstNumber}
-                    />
-                </ScrollView>
-            </View>
-            <View style={styles.buttonContainer}>
-                <CustomButton mode='contained' label="Update" onPress={handleSubmit} />
-            </View>
-            {
-                isLoading && <Loading />
-            }
-        </View>
-    )
-}
-
-const DriverProfile = ({ }) => {
-
-    const navigation = useNavigation()
-
-    const { user } = React.useContext(MyContext);
-
-    const [name, setName] = useState(user.name || "");
-    const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber || "");
-    const [address, setAddress] = useState(user.address || "");
-    const [vehicleType, setVehicleType] = useState(user.vehicleType || "");
-    const [driverLicenceNumber, setDriverLicenceNumber] = useState(user.drivingLicenseNumber || "")
-    const [vehicleRegistrationNumber, setVehicleRegistrationNumber] = useState(user.vehicleRegistrationNumber || "")
-    const handleSubmit = () => {
-        // todo handle update dealer 
-        console.log("login successfull : p")
-        navigation.navigate("Home Screen")
-    }
-
-    return (
-        <View style={styles.mainContainer}>
-            <View style={styles.profile}>
-                <View style={{
-                    overflow: "hidden",
-                    width: 120,
-                    height: 120,
-                    borderRadius: 60,
-                }}>
-                    <Image style={{ position: "absolute", width: 130, height: 130 }} source={require("../../assets/profile.png")} />
-                </View>
-                <IconButton
-                    style={styles.iconStyles}
-                    icon={require("../../assets/editIcon.png")}
-                    size={20}
-                    onPress={() => console.log('chnage profile')}
-                />
-            </View>
-            <View style={styles.overlay}>
-                <ScrollView contentContainerStyle={styles.mainFormContainer}>
-                    <CustomInput
-                        type='text'
-                        label="Name"
-                        placeholder=""
-                        onChangeText={(text) => setName(text)}
-                        value={name}
-                    />
-                    <CustomInput
-                        type='text'
-                        label="Phone Number"
-                        placeholder=""
-                        onChangeText={(text) => setPhoneNumber(text)}
-                        value={phoneNumber}
-                    />
-                    <CustomInput
-                        type='text'
                         label="Address"
                         placeholder=""
                         onChangeText={(text) => setAddress(text)}
@@ -241,6 +308,9 @@ const DriverProfile = ({ }) => {
             <View style={styles.buttonContainer}>
                 <CustomButton mode='contained' label="Update" onPress={handleSubmit} />
             </View>
+            {
+                isLoading && <Loading />
+            }
         </View>
     )
 }

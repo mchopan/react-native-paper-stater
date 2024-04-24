@@ -46,8 +46,14 @@ export default function App() {
     }
   };
 
+  const fun = async () => {
+    const data = await AsyncStorage.getItem('dealerData');
+    console.log(data, 'stored data');
+  };
+
   React.useEffect(() => {
     getUserData();
+    fun();
   }, []);
 
   return (

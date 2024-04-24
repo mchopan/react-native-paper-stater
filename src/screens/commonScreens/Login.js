@@ -1,6 +1,6 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useContext, useState } from 'react'
-import { ActivityIndicator, useTheme } from 'react-native-paper'
+import { useTheme } from 'react-native-paper'
 import { Colors } from '../../theme/colors'
 import CustomInput from '../../components/CustomInput'
 import CustomButton from '../../components/CustomButton'
@@ -41,7 +41,7 @@ const Login = ({ navigation, route }) => {
         if (formData.phoneNumber == '' || formData.password == '') {
             Toast.show({
                 type: 'info',
-                text1: 'please enter you phone number & password',
+                text1: 'phone number & password are requird*',
             });
             return null
         }
@@ -49,7 +49,6 @@ const Login = ({ navigation, route }) => {
         if (userType == USER_TYPES.DEALER) {
             try {
                 const res = await DealerRegistrationService.login(formData)
-                console.log(res.data.user, "login data")
                 if (res.status == 200) {
                     await AsyncStorage.setItem('dealerData', JSON.stringify(res.data.user));
                     setIsAuthenticated(true)
@@ -73,7 +72,9 @@ const Login = ({ navigation, route }) => {
             try {
                 const res = await DriverRegistrationService.driverLogin(formData)
                 if (res.status == 200) {
-                    await AsyncStorage.setItem('driverData', JSON.stringify(res.data));
+                    if (res.data.user != null) {
+                        await AsyncStorage.setItem('driverData', JSON.stringify(res.data.user));
+                    }
                     setIsAuthenticated(true)
                     Toast.show({
                         type: 'success',
