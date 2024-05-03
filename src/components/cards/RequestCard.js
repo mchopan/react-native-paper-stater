@@ -22,11 +22,11 @@ const SmallCard = () => {
     )
 }
 
-const RequestCard = () => {
+const RequestCard = ({ title }) => {
     return (
         <Card padding={20} direction={"column"} >
             <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
-                <Text style={{ color: Colors.primary, fontWeight: "800", fontSize: 14, fontFamily: "GothicA1-Regular" }}>Requests</Text>
+                <Text style={{ color: Colors.primary, fontWeight: "800", fontSize: 14, fontFamily: "GothicA1-Regular" }}>{title}</Text>
                 <TouchableOpacity style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 5 }}>
                     <View style={{ backgroundColor: "white", borderRadius: 20, padding: 5, justifyContent: "center", alignItems: "center" }}>
                         <Image style={{ height: 15, width: 15 }} source={require('../../assets/tick.png')} />

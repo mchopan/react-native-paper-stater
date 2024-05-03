@@ -7,7 +7,7 @@ import Spacer from '../Spacer'
 import DottenLine from '../DottenLine'
 import CustomButton from '../CustomButton'
 
-const SelectTruckCard = () => {
+const SelectTruckCard = ({ onPress }) => {
     return (
         <Card >
             <View style={{ padding: 10 }}>
@@ -41,7 +41,7 @@ const SelectTruckCard = () => {
             </View>
             <DottenLine />
             <View style={{ padding: 10 }}>
-                <CustomButton label='Bid Now' mode='contained' onPress={() => { "bid success" }} />
+                <CustomButton label='Bid Now' mode='contained' onPress={onPress} />
             </View>
         </Card>
     )

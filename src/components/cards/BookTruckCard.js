@@ -1,13 +1,16 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Card from './Card'
 import { textVariants } from '../../theme/styleVariants'
 import indianCities from '../../assets/indianCities.json'
 import CustomSelect from '../CustomSelect'
 import { Colors } from '../../theme/colors'
 import CustomButton from '../CustomButton'
+import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext'
 
-const BookTruckCard = ({ navigation }) => {
+const BookTruckCard = ({ navigation, title }) => {
+
+    const { userType } = useContext(UserTypeContext)
 
     const cityOptions = Object.entries(indianCities).map(([cityName, cityData]) => ({
         label: cityName,
@@ -18,14 +21,18 @@ const BookTruckCard = ({ navigation }) => {
     const [dropLocation, setDropLocation] = useState('');
 
     const handleSubmit = () => {
-        console.log("jejej")
-        navigation.navigate("Find Load")
+        if (userType == USER_TYPES.DEALER) {
+            navigation.navigate("Booking Details")
+        } else {
+            navigation.navigate("Find Load")
+
+        }
     }
 
     return (
         <Card padding={20}>
             <View style={styles.mainFormContainer}>
-                <Text style={styles.heading}>Want to book a truck?</Text>
+                <Text style={styles.heading}>{title}</Text>
                 <CustomSelect
                     mode='outlined'
                     placeholder='Pick Up City Location'

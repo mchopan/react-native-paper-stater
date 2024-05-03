@@ -8,6 +8,7 @@ import indianCities from '../../assets/indianCities.json'
 import { textVariants } from '../../theme/styleVariants'
 import RouteRateMonitorCard from '../../components/cards/RouteRateMonitorCard'
 import Card from '../../components/cards/Card'
+import RequestCard from '../../components/cards/RequestCard'
 
 
 const MenuScreen = ({ navigation }) => {
@@ -23,12 +24,12 @@ const MenuScreen = ({ navigation }) => {
 
     const handleSubmit = () => {
         // Todo Handle form submission
-        navigation.navigate("Find Truck")
+        navigation.navigate("Booking Details")
     };
 
     return (
-        <View style={{ flex: 1 }}>
-            <ImageBackground style={{ flex: 1 }} source={require("../../assets/mapbg.png")}>
+        <ImageBackground style={{ flex: 1 }} source={require("../../assets/mapbg.png")}>
+            <ScrollView style={{ flex: 1 }}>
                 <View style={styles.overlay}>
                     <View style={styles.mainFormContainer}>
                         <Text style={[textVariants.textSubHeading, { color: Colors.primary }]}>Want to book a truck?</Text>
@@ -59,7 +60,7 @@ const MenuScreen = ({ navigation }) => {
                         <View >
                             <Text style={[textVariants.textSubHeading, { color: Colors.primary }]}>Route Rate Monitor</Text>
                             <FlatList
-                                data={[1, 2, 3, 4, 5, 1, 2, 3, 4, 5]}
+                                data={[1, 2, 3, 4, 5,]}
                                 renderItem={() => {
                                     return (
                                         <RouteRateMonitorCard />
@@ -68,10 +69,11 @@ const MenuScreen = ({ navigation }) => {
                             />
                         </View>
                     </Card>
+                    <RequestCard title={"Requests"} />
                 </View>
 
-            </ImageBackground>
-        </View>
+            </ScrollView>
+        </ImageBackground>
     )
 }
 

@@ -1,4 +1,4 @@
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Alert, Image, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import { Colors } from '../../theme/colors';
 import CustomInput from '../../components/CustomInput';
@@ -69,7 +69,8 @@ const BookingDetailsScreen = ({ navigation }) => {
 
     const handleSubmit = () => {
         // Todo Handle form submission
-        navigation.navigate("My Profile")
+        // navigation.navigate("My Profile")
+        Alert.alert("request send to all the drivers")
     };
 
     const dateTime = new Date();
@@ -189,7 +190,8 @@ const BookingDetailsScreen = ({ navigation }) => {
                 </View>
             </View>
             <View style={styles.buttonContainer}>
-                <CustomButton mode='contained' label="Send Request" onPress={handleSubmit} />
+                <CustomButton mode='contained' label="Send Request To Selected Driver" onPress={() => navigation.navigate("Find Truck")} />
+                <CustomButton mode='outlined' label="Send Request To All The Drivers" onPress={handleSubmit} />
             </View>
         </View>
     )
@@ -234,6 +236,7 @@ const styles = StyleSheet.create({
         paddingBottom: 20,
     },
     buttonContainer: {
+        gap: 10,
         width: '100%',
         position: "absolute",
         bottom: 10,

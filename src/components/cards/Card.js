@@ -14,6 +14,7 @@ export default Card
 
 const styles = StyleSheet.create({
     cardContainer: {
+        // minHeight: 300,
         borderColor: Colors.gray,
         borderWidth: 1,
         flexDirection: "row",

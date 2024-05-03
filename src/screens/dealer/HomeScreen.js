@@ -1,33 +1,32 @@
-import { ImageBackground, ScrollView, StyleSheet, View } from 'react-native'
+import { Alert, ImageBackground, ScrollView, StyleSheet, View } from 'react-native'
 import React from 'react'
 import { useTheme } from 'react-native-paper'
 import CustomButton from '../../components/CustomButton'
 import ShipmentCard from '../../components/cards/ShipmentCard'
 import RequestCard from '../../components/cards/RequestCard'
 import BookTruckCard from '../../components/cards/BookTruckCard'
+import ShipmemtRequestCard from '../../components/cards/ShipmemtRequestCard'
 
 const HomeScreen = ({ navigation }) => {
     const theme = useTheme()
 
     const handleSubmit = () => {
         console.log("helo")
-        navigation.navigate("Booking Summary")
+        // navigation.navigate("Find Load")
+        Alert.alert("fetching your current location")
     }
 
     return (
         <ImageBackground style={{ flex: 1, }} source={require("../../assets/mapbg.png")}>
             <ScrollView>
                 <View style={{ margin: 10 }}>
-                    <View style={[styles.buttonContainer, {
-                        backgroundColor: theme.colors.tertiary,
-                    }]}>
-                        <CustomButton direction='row' mode='contained' label="Ongoing" onPress={handleSubmit} />
-                        <CustomButton direction='row' mode='outlined' label="Upcoming" onPress={handleSubmit} />
-                    </View>
+                    <CustomButton mode='outlined' label="Update You Location" onPress={handleSubmit} />
                 </View>
-                <ShipmentCard />
-                <RequestCard />
-                <BookTruckCard navigation={navigation} />
+                {/* <ShipmentCard /> */}
+                <BookTruckCard navigation={navigation} title={"Want to find a load?"} />
+                <RequestCard title={"Shipmemt Requests"} />
+                {/* <ShipmemtRequestCard /> */}
+
             </ScrollView>
         </ImageBackground>
     )

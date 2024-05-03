@@ -28,16 +28,7 @@ const Registration = ({ navigation }) => {
 
 
     const handleInputChange = (name, value) => {
-        if (name === 'gstNumber') {
-            if (!/^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[A-Z\d]{1}$/.test(value)) {
-                setGstNumberError("Invalid GST number format");
-                setError(true)
-            } else {
-                setGstNumberError("");
-                setError(false)
-
-            }
-        } else if (name === 'password' || name === 'confirmPassword') {
+        if (name === 'password' || name === 'confirmPassword') {
             if (name === 'confirmPassword' && value !== formData.password) {
                 setPasswordError("Passwords do not match");
                 setError(true)
@@ -59,17 +50,24 @@ const Registration = ({ navigation }) => {
 
 
     const handleSubmit = async () => {
-        if (formData.name == '' || formData.companyName == '' || formData.gstNumber == '') {
+        if (formData.name == '') {
             Toast.show({
                 type: 'info',
-                text1: 'All fields are required',
+                text1: 'Name is required*',
             });
             return null
         }
-        if (error) {
+        if (formData.companyName == '') {
             Toast.show({
                 type: 'info',
-                text1: 'All fields are required',
+                text1: 'Company Name is required*',
+            });
+            return null
+        }
+        if (formData.password == '') {
+            Toast.show({
+                type: 'info',
+                text1: 'Password is required*',
             });
             return null
         }
@@ -122,14 +120,13 @@ const Registration = ({ navigation }) => {
                             />
                             <CustomInput
                                 type='text'
-                                label="GST Number"
+                                label="GST Number (optional)"
                                 placeholder="Enter your GST number"
                                 onChangeText={(text) => handleInputChange('gstNumber', text)}
                                 value={formData.gstNumber}
                                 maxLength={15}
                                 hasError={!!gstNumberError} // Use phoneNumberError state to determine if there's an error
                                 errorMessage={gstNumberError} // Pass error message to display
-
                             />
                             <CustomInput
                                 type='password'

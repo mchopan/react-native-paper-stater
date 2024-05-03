@@ -25,6 +25,7 @@ const DriverRegistration = ({ navigation }) => {
         vehicleRegistrationNumber: '',
         password: '',
         confirmPassword: '',
+        driverLicenseFile: null,
         vehicleRcFile: null,
         vehicleInsuranceFile: null,
         identityDocumentFile: null
@@ -38,12 +39,14 @@ const DriverRegistration = ({ navigation }) => {
         vehicleRegistrationNumberError: '',
         passwordError: '',
         confirmPasswordError: '',
+        driverLicenseError: '',
         vehicleRcFileError: '',
         vehicleInsuranceFileError: '',
         identityDocumentFileError: ''
     });
 
 
+    const [driverLicenseError, setDriverLicenseError] = useState(false)
     const [rcError, setRcError] = useState(false)
     const [insuranceError, setInsuranceError] = useState(false)
     const [identityError, setIdentityError] = useState(false)
@@ -103,6 +106,7 @@ const DriverRegistration = ({ navigation }) => {
         setRcError(false)
         setInsuranceError(false)
         setIdentityError(false)
+        setDriverLicenseError(false)
 
         const isEmpty = stringFields.some(field => formData[field].trim() == '');
 
@@ -131,6 +135,11 @@ const DriverRegistration = ({ navigation }) => {
             setIsLoading(false)
             return
         }
+        if (formData.driverLicenseFile == null) {
+            setDriverLicenseError(true)
+            setIsLoading(false)
+            return
+        }
 
         try {
 
@@ -143,6 +152,7 @@ const DriverRegistration = ({ navigation }) => {
             formDataToSend.append('vehicleRegistrationNumber', formData.vehicleRegistrationNumber);
             formDataToSend.append('password', formData.password);
             formDataToSend.append('confirmPassword', formData.confirmPassword);
+            formDataToSend.append('driverLicenseFile', formData.driverLicenseFile);
             formDataToSend.append('vehicleRcFile', formData.vehicleRcFile);
             formDataToSend.append('vehicleInsuranceFile', formData.vehicleInsuranceFile);
             formDataToSend.append('identityDocumentFile', formData.identityDocumentFile);
@@ -229,6 +239,8 @@ const DriverRegistration = ({ navigation }) => {
                                 onChangeText={(text) => handleInputChange('vehicleRegistrationNumber', text)}
                                 value={formData.vehicleRegistrationNumber}
                             />
+
+                            <CustomUpload errorMessage={"Driver License is required*"} hasError={!!errors.driverLicenseError} fileNotSelected={driverLicenseError} label="Upload Driving License" onFileSelect={(file) => handleFileSelect(file, 'driverLicenseFile')} />
 
                             <CustomUpload errorMessage={"RC is required*"} hasError={!!errors.vehicleRcFileError} fileNotSelected={rcError} label="Upload Vehicle RC" onFileSelect={(file) => handleFileSelect(file, 'vehicleRcFile')} />
 
