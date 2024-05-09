@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ImageBackground, StyleSheet, View, ScrollView } from 'react-native';
 import { Colors } from '../../theme/colors';
 import CustomInput from '../../components/CustomInput';
@@ -7,14 +7,23 @@ import CustomUpload from '../../components/CustomUpload';
 import { MyContext } from '../../store/MyContext';
 import DriverRegistrationService from '../../api/driverRegistrationService';
 import Toast from 'react-native-toast-message';
-import Spacer from '../../components/Spacer';
 import Loading from '../../components/Loading';
+import messaging from '@react-native-firebase/messaging';
 
 const DriverRegistration = ({ navigation }) => {
 
     const { phoneNumber, } = useContext(MyContext);
 
     const [isLoading, setIsLoading] = useState(false)
+
+    const [fcmToken, setFcmToken] = useState(null);
+
+    useEffect(() => {
+        // Get the FCM token
+        messaging().getToken().then(token => {
+            setFcmToken(token);
+        });
+    }, []);
 
 
     const [formData, setFormData] = useState({
@@ -159,7 +168,8 @@ const DriverRegistration = ({ navigation }) => {
 
             const config = {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'multipart/form-data',
+                    'device-token': fcmToken
                 }
             };
 

@@ -1,5 +1,5 @@
 import { FlatList, ImageBackground, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useTheme } from 'react-native-paper'
 import { Colors } from '../../theme/colors'
 import CustomButton from '../../components/CustomButton'
@@ -9,6 +9,8 @@ import { textVariants } from '../../theme/styleVariants'
 import RouteRateMonitorCard from '../../components/cards/RouteRateMonitorCard'
 import Card from '../../components/cards/Card'
 import RequestCard from '../../components/cards/RequestCard'
+import { MyContext } from '../../store/MyContext'
+import Toast from 'react-native-toast-message'
 
 
 const MenuScreen = ({ navigation }) => {
@@ -19,11 +21,18 @@ const MenuScreen = ({ navigation }) => {
         value: cityData
     }));
 
-    const [pickUpLocation, setPickUpLocation] = useState('');
-    const [dropLocation, setDropLocation] = useState('');
+    const { dropLocation, pickUpLocation, setPickUpLocation, setDropLocation } = useContext(MyContext);
+
 
     const handleSubmit = () => {
         // Todo Handle form submission
+        if (pickUpLocation == "" || dropLocation == "") {
+            Toast.show({
+                type: 'error',
+                text1: `${'Please select pickup and drop location'}`,
+            });
+            return
+        }
         navigation.navigate("Booking Details")
     };
 

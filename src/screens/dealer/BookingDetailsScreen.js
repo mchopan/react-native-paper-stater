@@ -1,9 +1,14 @@
 import { Alert, Image, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Colors } from '../../theme/colors';
 import CustomInput from '../../components/CustomInput';
 import CustomSelect from '../../components/CustomSelect';
 import CustomButton from '../../components/CustomButton';
+import { TextInput } from 'react-native-paper';
+import { textVariants } from '../../theme/styleVariants';
+import { MyContext } from '../../store/MyContext';
+import Toast from 'react-native-toast-message';
+import BookingServices from '../../api/bookingServices';
 
 
 
@@ -60,46 +65,82 @@ const payment_mode = [
 const BookingDetailsScreen = ({ navigation }) => {
 
 
-    const [vehicleType, setVehicleType] = useState("")
-    const [goods, setGoods] = useState("")
-    const [weight, setWeight] = useState("")
-    const [paymentOptions, setPaymetOptions] = useState('')
-    const [paymentMode, setPaymentMode] = useState("")
-    const [date, setDate] = useState(new Date())
+    const { date, vehicleType, setVehicleType,
+        pickUpLocation, dropLocation,
+        goods, setGoods,
+        weight, setWeight,
+        paymentMode, setPaymentMode } = useContext(MyContext);
 
-    const handleSubmit = () => {
-        // Todo Handle form submission
-        // navigation.navigate("My Profile")
-        Alert.alert("request send to all the drivers")
+
+    const handleSubmit = async () => {
+        if (vehicleType == "" || goods == "" || weight == "" || paymentMode == "" || data == "") {
+            Toast.show({
+                type: 'info',
+                text1: `${'All fields are required'}`,
+            });
+            return
+        }
+
+        try {
+            const res = await BookingServices.createBooking({
+                pickUpCityLocation: pickUpLocation.value.city,
+                dropCityLocation: dropLocation.value.city,
+                selectDate: date,
+                selectVehicleType: vehicleType.value,
+                selectGoodsType: goods.value,
+                enterWeightKg: weight,
+                advancePayment: paymentMode.value,
+            })
+            console.log(res.status)
+            if (res.status == 201) {
+                const notificationResponse = await BookingServices.sendPushNotificationsToDrivers(res.data._id)
+                console.log(notificationResponse, "noti")
+                Toast.show({
+                    type: "success",
+                    text1: "notification send successfully"
+                })
+            }
+            Alert.alert("request send to all the drivers")
+        } catch (error) {
+            console.log(error, 'error')
+        }
+
     };
 
-    const dateTime = new Date();
-
-    console.log(dateTime, "date ")
+    const handleSingleBit = () => {
+        if (vehicleType == "" || goods == "" || weight == "" || paymentMode == "") {
+            Toast.show({
+                type: 'info',
+                text1: `${'All fields are required'}`,
+            });
+            return
+        }
+        navigation.navigate("Find Truck")
+    }
 
     return (
         <View style={{ flex: 1 }}>
             <View style={styles.overlay}>
                 <View style={styles.container}>
                     <ScrollView contentContainerStyle={styles.formContainer}>
-                        <CustomInput type='date' />
-                        <CustomSelect
-                            renderIcon={() => {
-                                return (
-                                    <Image
-                                        style={{ width: 25, marginRight: 10 }}
-                                        source={require('../../assets/dateIcon.png')}
-                                        resizeMode="contain"
-                                    />
-                                );
-                            }}
-                            mode="flat"
-                            placeholder='Select Date'
-                            data={data}
-                            value={date}
-                            onChange={(text) => { setDate(text) }
+                        <CustomInput
+                            outlineColor={Colors.primary}
+                            fontSize={12}
+                            type="text"
+                            keyboardType="default"
+                            label="Enter Weight (TON)"
+                            value={weight}
+                            onChangeText={(text) => { setWeight(text) }}
+                            leftIcon={
+                                <TextInput.Icon
+                                    style={{ marginLeft: 20 }}
+                                    icon={'weight'}
+                                    color={Colors.primary}
+                                />
                             }
+                            mode="flat"
                         />
+                        <CustomInput type='date' />
                         <CustomSelect
                             renderIcon={() => {
                                 return (
@@ -134,40 +175,6 @@ const BookingDetailsScreen = ({ navigation }) => {
                             onChange={(text) => { setGoods(text) }
                             }
                         />
-                        <CustomSelect
-                            renderIcon={() => {
-                                return (
-                                    <Image
-                                        style={{ width: 25, marginRight: 10 }}
-                                        source={require('../../assets/weightIcon.png')}
-                                        resizeMode="contain"
-                                    />
-                                );
-                            }}
-                            mode="flat"
-                            placeholder='Enter Weight'
-                            data={weightData}
-                            value={weight}
-                            onChange={(text) => { setWeight(text) }
-                            }
-                        />
-                        <CustomSelect
-                            renderIcon={() => {
-                                return (
-                                    <Image
-                                        style={{ width: 25, marginRight: 10 }}
-                                        source={require('../../assets/paymentIcon.png')}
-                                        resizeMode="contain"
-                                    />
-                                );
-                            }}
-                            mode="flat"
-                            placeholder='Advance Payment Option'
-                            data={payment_options}
-                            value={paymentOptions}
-                            onChange={(text) => { setPaymetOptions(text) }
-                            }
-                        />
 
                         <CustomSelect
                             renderIcon={() => {
@@ -190,7 +197,7 @@ const BookingDetailsScreen = ({ navigation }) => {
                 </View>
             </View>
             <View style={styles.buttonContainer}>
-                <CustomButton mode='contained' label="Send Request To Selected Driver" onPress={() => navigation.navigate("Find Truck")} />
+                <CustomButton mode='contained' label="Send Request To Selected Driver" onPress={handleSingleBit} />
                 <CustomButton mode='outlined' label="Send Request To All The Drivers" onPress={handleSubmit} />
             </View>
         </View>
@@ -210,6 +217,7 @@ const styles = StyleSheet.create({
         resizeMode: "cover"
     },
     overlay: {
+
         marginTop: 20,
         flex: 1,
         width: '100%',

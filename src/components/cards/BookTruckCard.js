@@ -7,6 +7,8 @@ import CustomSelect from '../CustomSelect'
 import { Colors } from '../../theme/colors'
 import CustomButton from '../CustomButton'
 import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext'
+import { MyContext } from '../../store/MyContext'
+import Toast from 'react-native-toast-message'
 
 const BookTruckCard = ({ navigation, title }) => {
 
@@ -17,13 +19,29 @@ const BookTruckCard = ({ navigation, title }) => {
         value: cityData
     }));
 
-    const [pickUpLocation, setPickUpLocation] = useState('');
-    const [dropLocation, setDropLocation] = useState('');
+
+    const { pickUpLocation, setPickUpLocation, dropLocation, setDropLocation } = useContext(MyContext)
+
 
     const handleSubmit = () => {
+        console.log(pickUpLocation, dropLocation, "locations")
         if (userType == USER_TYPES.DEALER) {
+            if (pickUpLocation == "" || dropLocation == "") {
+                Toast.show({
+                    type: 'error',
+                    text1: `${'Please select pickup and drop location'}`,
+                });
+                return
+            }
             navigation.navigate("Booking Details")
         } else {
+            if (pickUpLocation == "" || dropLocation == "") {
+                Toast.show({
+                    type: 'error',
+                    text1: `${'Please select pickup and drop location'}`,
+                });
+                return
+            }
             navigation.navigate("Find Load")
 
         }
