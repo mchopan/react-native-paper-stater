@@ -3,14 +3,22 @@ import React from 'react'
 import { Colors } from '../../theme/colors'
 import CustomButton from '../../components/CustomButton'
 import SelectLoadCard from '../../components/cards/SelectLoadCard'
-import LoadDetailsCard from '../../components/cards/LoadDetailsCard'
+import { useNavigation, useRoute } from '@react-navigation/native'
 
-const FindLoadScreen = ({ navigation }) => {
+const FindLoadScreen = ({ }) => {
+
+    const navigation = useNavigation()
+    const route = useRoute()
+
+    const { pickUpLocation, dropLocation, bookingDetails } = route.params
+
+    console.log(pickUpLocation.value.city, dropLocation.value.city, "kakak")
 
     const handleSubmit = () => {
-        console.log("helo")
         navigation.navigate("Booking Summary")
     }
+
+
 
     return (
         <ImageBackground style={{ flex: 1 }} source={require("../../assets/mapbg.png")}>
@@ -22,11 +30,17 @@ const FindLoadScreen = ({ navigation }) => {
                     <CustomButton direction='row' mode='contained' label="Vehicle Type" onPress={handleSubmit} />
                 </View>
             </View>
-            <FlatList data={[1, 2, 3, 4, 5]} renderItem={() => (
-                <>
-                    <SelectLoadCard navigation={navigation} />
-                </>
-            )} />
+            <FlatList
+                data={bookingDetails.filter(item =>
+                    item.pickUpCityLocation === pickUpLocation.value.city &&
+                    item.dropCityLocation === dropLocation.value.city
+                )}
+                renderItem={({ item }) => (
+                    <>
+                        <SelectLoadCard item={item} navigation={navigation} />
+                    </>
+                )}
+            />
         </ImageBackground>
     )
 }

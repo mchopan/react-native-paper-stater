@@ -7,7 +7,8 @@ import DottenLine from '../DottenLine'
 import CustomButton from '../CustomButton'
 import Spacer from '../Spacer'
 
-const SelectLoadCard = ({ navigation }) => {
+const SelectLoadCard = ({ navigation, item }) => {
+
     return (
         <Card bgColor={Colors.whiteBackground}  >
             <View style={{ padding: 10 }}>
@@ -26,11 +27,11 @@ const SelectLoadCard = ({ navigation }) => {
                     <View style={{ margin: 10, gap: 10 }}>
                         <View style={{ flexDirection: "row", gap: 5 }}>
                             <Image tintColor={Colors.primary} resizeMode='contain' style={{ height: 20, width: 20 }} source={require("../../assets/MapPinLight.png")} />
-                            <Text style={{ fontSize: 14, fontWeight: "700", fontFamily: "GothicA1-Regular", color: Colors.primary }}>Srinagar,190011</Text>
+                            <Text style={{ fontSize: 14, fontWeight: "700", fontFamily: "GothicA1-Regular", color: Colors.primary }}>{item.pickUpCityLocation}</Text>
                         </View>
                         <View style={{ flexDirection: "row", gap: 5 }}>
                             <Image tintColor={"#E66613"} resizeMode='contain' style={{ height: 20, width: 20 }} source={require("../../assets/MapPinLight.png")} />
-                            <Text style={{ fontSize: 14, fontWeight: "700", fontFamily: "GothicA1-Regular", color: Colors.primary }}>Delhi</Text>
+                            <Text style={{ fontSize: 14, fontWeight: "700", fontFamily: "GothicA1-Regular", color: Colors.primary }}>{item.dropCityLocation}</Text>
                         </View>
                     </View>
                     <View style={{ margin: 10, }}>
@@ -43,11 +44,11 @@ const SelectLoadCard = ({ navigation }) => {
                 <View style={{ margin: 10, gap: 10 }}>
                     <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
                         <Image tintColor={Colors.gray} resizeMode='contain' style={{ height: 20, width: 20 }} source={require("../../assets/materialtpye.png")} />
-                        <Text style={{ fontSize: 12, fontWeight: "700", fontFamily: "GothicA1-Regular", color: Colors.gray }}>Construction Material (3 Tons)</Text>
+                        <Text style={{ fontSize: 12, fontWeight: "700", fontFamily: "GothicA1-Regular", color: Colors.gray }}>{item.selectGoodsType} ({item.enterWeightKg} ton)</Text>
                     </View>
                     <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
                         <Image tintColor={Colors.gray} resizeMode='contain' style={{ height: 20, width: 20 }} source={require("../../assets/trucktype.png")} />
-                        <Text style={{ fontSize: 12, fontWeight: "700", fontFamily: "GothicA1-Regular", color: Colors.gray }}>LCV</Text>
+                        <Text style={{ fontSize: 12, fontWeight: "700", fontFamily: "GothicA1-Regular", color: Colors.gray }}>{item.selectVehicleType}</Text>
                     </View>
                 </View>
                 <DottenLine />
@@ -64,7 +65,7 @@ const SelectLoadCard = ({ navigation }) => {
                         </View>
                     </View>
                     <View style={{ padding: 10 }}>
-                        <CustomButton label='Bid Now' mode='contained' onPress={() => navigation.navigate("Load Details")} />
+                        <CustomButton label='Bid Now' mode='contained' onPress={() => navigation.navigate("Load Details", { item })} />
                     </View>
                 </View>
             </View>

@@ -7,7 +7,7 @@ import BookingSummaryScreen from '../screens/bookingSummaryScreens/BookingSummar
 import MenuScreen from '../screens/dealer/MenuScreen';
 import { Colors } from '../theme/colors';
 import PlainLine from '../components/cards/PlainLine';
-import HomeScreen from '../screens/dealer/HomeScreen';
+import HomeScreen from '../screens/driver/HomeScreen';
 import { USER_TYPES, UserTypeContext } from '../store/UserTypeContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MyContext } from '../store/MyContext';

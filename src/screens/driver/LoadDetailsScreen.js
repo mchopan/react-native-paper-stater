@@ -6,6 +6,7 @@ import { Colors } from '../../theme/colors'
 import { Text } from 'react-native-paper'
 import PlainLine from '../../components/cards/PlainLine'
 import Spacer from '../../components/Spacer'
+import { useRoute } from '@react-navigation/native'
 
 
 const BiltiPayment = ({ setShowSuccessScreen }) => {
@@ -73,11 +74,13 @@ const PaymentSuccess = ({ setShowSuccessScreen }) => {
 
 const LoadDetailsScreen = () => {
 
+    const route = useRoute();
+    const { item } = route.params;
+
     const [modalVisible, setModalVisible] = useState(false);
     const [showSuccessScreen, setShowSuccessScreen] = useState(false)
 
     const handleSubmit = () => {
-        console.log("hello")
         setModalVisible(true)
     }
 
@@ -86,7 +89,7 @@ const LoadDetailsScreen = () => {
             <View style={{ alignItems: "center", marginBottom: 20, marginTop: 20, }}>
                 <Image style={{ width: 300, height: 120 }} resizeMode='contain' source={require("../../assets/loadingtruck.png")} />
             </View>
-            <LoadDetailsCard />
+            <LoadDetailsCard item={item} />
             <View style={styles.buttonContainer}>
                 <CustomButton mode='contained' label="Accept and Pay" onPress={handleSubmit} />
                 <CustomButton mode='outlined' label="Not Interested" onPress={handleSubmit} />

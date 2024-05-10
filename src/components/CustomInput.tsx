@@ -107,15 +107,15 @@ const CustomInput = ({
           onPress={() => setOpen(true)}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Image
-              style={{width: 30, height: 30}}
-              source={require('../assets/billIcon.png')}
+              style={{width: 20, height: 20}}
+              source={require('../assets/dateIcon.png')}
             />
             <Text
               style={[
                 textVariants.default,
                 {
                   color: Colors.gray,
-                  marginLeft: 5,
+                  marginLeft: 10,
                   fontFamily: 'GothicA1-Regular',
                 },
               ]}>

@@ -19,7 +19,6 @@ const DriverRegistration = ({ navigation }) => {
     const [fcmToken, setFcmToken] = useState(null);
 
     useEffect(() => {
-        // Get the FCM token
         messaging().getToken().then(token => {
             setFcmToken(token);
         });

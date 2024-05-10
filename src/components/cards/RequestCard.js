@@ -1,9 +1,17 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import Card from './Card'
 import { Colors } from '../../theme/colors'
+import { useNavigation } from '@react-navigation/native'
 
-const SmallCard = () => {
+export const SmallCard = ({ title, fromLocation, toLocation, item }) => {
+
+    const navigation = useNavigation()
+
+    const handleSeeDetails = () => {
+        navigation.navigate("Load Details", { item });
+    }
+
     return (
         <View style={styles.smallCardStyles}>
             <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
@@ -11,32 +19,46 @@ const SmallCard = () => {
                     <Image style={{ width: 25, height: 25 }} source={require("../../assets/truck.png")} />
                 </View>
                 <View>
-                    <Text style={{ color: Colors.primary, fontWeight: "800", fontSize: 14, fontFamily: "GothicA1-Regular" }}>Driver ABC</Text>
-                    <Text style={{ color: Colors.gray, fontWeight: "500", fontSize: 12, fontFamily: "GothicA1-Regular" }}>Srinagar -  Delhi</Text>
+                    <Text style={{ color: Colors.primary, fontWeight: "800", fontSize: 14, fontFamily: "GothicA1-Regular" }}>{title}</Text>
+                    <Text style={{ color: Colors.gray, fontWeight: "500", fontSize: 12, fontFamily: "GothicA1-Regular" }}>{fromLocation} - {toLocation}</Text>
                 </View>
             </View>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleSeeDetails}>
                 <Text style={{ color: Colors.primary, fontWeight: "600", fontSize: 12, fontFamily: "GothicA1-Regular" }}>See Details</Text>
             </TouchableOpacity>
         </View>
     )
 }
 
-const RequestCard = ({ title }) => {
+const RequestCard = ({ title, bookingDetails }) => {
+
+    const navigation = useNavigation()
+
+    const handleViewAll = () => {
+        navigation.navigate("Shipment Requests", { bookingDetails });
+    }
+
     return (
         <Card padding={20} direction={"column"} >
             <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
                 <Text style={{ color: Colors.primary, fontWeight: "800", fontSize: 14, fontFamily: "GothicA1-Regular" }}>{title}</Text>
-                <TouchableOpacity style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 5 }}>
+                {/* <TouchableOpacity style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 5 }}>
                     <View style={{ backgroundColor: "white", borderRadius: 20, padding: 5, justifyContent: "center", alignItems: "center" }}>
                         <Image style={{ height: 15, width: 15 }} source={require('../../assets/tick.png')} />
                     </View>
                     <Text style={{ fontSize: 13, fontWeight: "700", fontFamily: "GothicA1-Regular", color: "#E66613" }}>Paid</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
-            <SmallCard />
-            <SmallCard />
-            <TouchableOpacity style={{ marginTop: 10 }}>
+            <FlatList
+                data={bookingDetails?.slice(0, 3)}
+                renderItem={({ item }) => {
+                    console.log(item);
+                    return (
+                        <SmallCard item={item} title={item.selectGoodsType} fromLocation={item.pickUpCityLocation} toLocation={item.dropCityLocation} />
+                    );
+                }}
+            />
+            <TouchableOpacity onPress={handleViewAll} style={{ marginTop: 10 }}>
                 <Text style={{ color: Colors.primary, fontWeight: "600", fontSize: 13, fontFamily: "GothicA1-Regular" }}>View All</Text>
             </TouchableOpacity>
         </Card>
@@ -47,6 +69,7 @@ export default RequestCard
 
 const styles = StyleSheet.create({
     smallCardStyles: {
+        marginBottom: 10,
         flexDirection: "row",
         backgroundColor: Colors.whiteBackground,
         padding: 10,

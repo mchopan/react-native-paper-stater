@@ -11,6 +11,26 @@ class BookingServices {
         }
     }
 
+    static async getAllBookings() {
+        try {
+            const response = await axiosInstance.get(`bookings`);
+            return response;
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
+    }
+
+    static async getBookingById(id) {
+        try {
+            const response = await axiosInstance.get(`bookings/${id}`);
+            return response;
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
+    }
+
     static async bidDriver(data) {
         try {
             const response = await axiosInstance.post(`bidDriver`, data);

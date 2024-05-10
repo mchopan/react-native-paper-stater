@@ -9,8 +9,11 @@ import CustomButton from '../CustomButton'
 import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext'
 import { MyContext } from '../../store/MyContext'
 import Toast from 'react-native-toast-message'
+import { useNavigation } from '@react-navigation/native'
 
-const BookTruckCard = ({ navigation, title }) => {
+const BookTruckCard = ({ title, bookingDetails }) => {
+
+    const navigation = useNavigation()
 
     const { userType } = useContext(UserTypeContext)
 
@@ -24,7 +27,6 @@ const BookTruckCard = ({ navigation, title }) => {
 
 
     const handleSubmit = () => {
-        console.log(pickUpLocation, dropLocation, "locations")
         if (userType == USER_TYPES.DEALER) {
             if (pickUpLocation == "" || dropLocation == "") {
                 Toast.show({
@@ -42,8 +44,7 @@ const BookTruckCard = ({ navigation, title }) => {
                 });
                 return
             }
-            navigation.navigate("Find Load")
-
+            navigation.navigate("Find Load", { pickUpLocation, dropLocation, bookingDetails })
         }
     }
 

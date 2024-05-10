@@ -1,19 +1,32 @@
 import { Alert, ImageBackground, ScrollView, StyleSheet, View } from 'react-native'
-import React from 'react'
-import { useTheme } from 'react-native-paper'
+import React, { useEffect, useState } from 'react'
 import CustomButton from '../../components/CustomButton'
-import ShipmentCard from '../../components/cards/ShipmentCard'
 import RequestCard from '../../components/cards/RequestCard'
 import BookTruckCard from '../../components/cards/BookTruckCard'
-import ShipmemtRequestCard from '../../components/cards/ShipmemtRequestCard'
+import { useNavigation } from '@react-navigation/native'
+import BookingServices from '../../api/bookingServices'
 
-const HomeScreen = ({ navigation }) => {
-    const theme = useTheme()
+const HomeScreen = () => {
+
+    const navigation = useNavigation()
+
+    const [bookingDetails, setBookingDetails] = useState([])
 
     const handleSubmit = () => {
         console.log("helo")
         // navigation.navigate("Find Load")
         Alert.alert("fetching your current location")
+    }
+
+    useEffect(() => {
+        getBookings()
+    }, [])
+
+
+    const getBookings = async () => {
+        const response = await BookingServices.getAllBookings();
+        setBookingDetails(response.data)
+
     }
 
     return (
@@ -22,11 +35,8 @@ const HomeScreen = ({ navigation }) => {
                 <View style={{ margin: 10 }}>
                     <CustomButton mode='outlined' label="Update You Location" onPress={handleSubmit} />
                 </View>
-                {/* <ShipmentCard /> */}
-                <BookTruckCard navigation={navigation} title={"Want to find a load?"} />
-                <RequestCard title={"Shipmemt Requests"} />
-                {/* <ShipmemtRequestCard /> */}
-
+                <BookTruckCard bookingDetails={bookingDetails} title={"Want to find a load?"} />
+                <RequestCard bookingDetails={bookingDetails} title={"Shipmemt Requests"} />
             </ScrollView>
         </ImageBackground>
     )

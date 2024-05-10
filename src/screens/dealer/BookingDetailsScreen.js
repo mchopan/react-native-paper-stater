@@ -123,24 +123,29 @@ const BookingDetailsScreen = ({ navigation }) => {
             <View style={styles.overlay}>
                 <View style={styles.container}>
                     <ScrollView contentContainerStyle={styles.formContainer}>
-                        <CustomInput
-                            outlineColor={Colors.primary}
-                            fontSize={12}
-                            type="text"
-                            keyboardType="default"
-                            label="Enter Weight (TON)"
-                            value={weight}
+                        <CustomInput type='date' />
+                        <TextInput
+                            outlineColor={Colors.gray}
+                            textColor={Colors.primary}
+                            placeholderTextColor={Colors.secondary}
+                            style={[textVariants.textForm, { marginLeft: -25, fontSize: 12 }]}
                             onChangeText={(text) => { setWeight(text) }}
-                            leftIcon={
+                            value={weight}
+                            theme={{ colors: { onSurfaceVariant: Colors.gray }, roundness: 10 }}
+                            mode="flat"
+                            keyboardType={'default'}
+                            label="Enter Weight (TON)"
+                            // placeholder={placeholder}
+                            left={
                                 <TextInput.Icon
                                     style={{ marginLeft: 20 }}
                                     icon={'weight'}
+                                    size={25}
                                     color={Colors.primary}
+                                // onPress={handleShowPassword}
                                 />
                             }
-                            mode="flat"
                         />
-                        <CustomInput type='date' />
                         <CustomSelect
                             renderIcon={() => {
                                 return (
