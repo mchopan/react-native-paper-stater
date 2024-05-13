@@ -1,11 +1,12 @@
 import { Alert, FlatList, ImageBackground, StyleSheet, View } from 'react-native'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Colors } from '../../theme/colors'
 import CustomButton from '../../components/CustomButton'
 import SelectTruckCard from '../../components/cards/SelectTruckCard'
 import BookingServices from '../../api/bookingServices'
 import { MyContext } from '../../store/MyContext'
 import Toast from 'react-native-toast-message'
+import DriverRegistrationService from '../../api/driverRegistrationService'
 const FindTruckScreen = ({ navigation }) => {
 
     const {
@@ -20,7 +21,24 @@ const FindTruckScreen = ({ navigation }) => {
         navigation.navigate("Booking Summary")
     }
 
-    console.log(user, "kakaka")
+    const [driversData, setDriversData] = useState([])
+
+    const getAllDrivers = async () => {
+        try {
+            const response = await DriverRegistrationService.getAllDrivers();
+            if (response.status == 200) {
+                setDriversData(response.data.drivers)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        getAllDrivers()
+        console.log(driversData, "driver")
+    }, [])
+
 
 
     const handleBid = async () => {
@@ -59,9 +77,12 @@ const FindTruckScreen = ({ navigation }) => {
                     <CustomButton direction='row' mode='contained' label="Vehicle Type" onPress={handleSubmit} />
                 </View>
             </View>
-            <FlatList data={[1, 2, 3, 4, 5]} renderItem={() => (
-                <SelectTruckCard navigation={navigation} onPress={handleBid} />
-            )} />
+            <FlatList
+                data={driversData}
+                renderItem={({ item }) => (
+                    <SelectTruckCard driversData={item} navigation={navigation} onPress={handleBid} />
+                )}
+            />
         </ImageBackground>
     )
 }

@@ -133,7 +133,7 @@ const BookingDetailsScreen = ({ navigation }) => {
                             value={weight}
                             theme={{ colors: { onSurfaceVariant: Colors.gray }, roundness: 10 }}
                             mode="flat"
-                            keyboardType={'default'}
+                            keyboardType="number-pad"
                             label="Enter Weight (TON)"
                             // placeholder={placeholder}
                             left={

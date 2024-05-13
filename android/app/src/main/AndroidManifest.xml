@@ -1,7 +1,10 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.quickload">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
       android:name=".MainApplication"
@@ -10,7 +13,33 @@
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
-      <activity
+
+    <!-- Add the android:exported attribute to the FirebaseInstanceIdService element -->
+    <service android:name="com.google.firebase.iid.FirebaseInstanceIdService"
+            android:exported="false">
+        <intent-filter>
+            <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+        </intent-filter>
+    </service>
+
+    <!-- Add the android:exported attribute to the FirebaseMessagingService element -->
+    <service android:name="com.google.firebase.messaging.FirebaseMessagingService"
+            android:exported="false">
+        <intent-filter>
+            <action android:name="com.google.firebase.MESSAGING_EVENT" />
+        </intent-filter>
+    </service>
+
+    <!-- Add the android:exported attribute to the other service elements -->
+    <service android:name="com.google.android.gms.tagmanager.TagManagerService"
+            android:exported="false" />
+    <service android:name="com.google.android.gms.analytics.AnalyticsService"
+            android:exported="false" />
+    <service android:name="com.google.android.gms.analytics.CampaignTrackingService"
+            android:exported="false" />
+
+    <!-- Add the android:exported attribute to the activity elements -->
+    <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
         android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
@@ -21,6 +50,6 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
-      </activity>
+    </activity>
     </application>
 </manifest>

@@ -13,6 +13,7 @@ import FindTruckScreen from '../../screens/dealer/FindTruckScreen'
 import NetworkLogs from '../../screens/NetworkLogs'
 import BookingDetailsScreen from '../../screens/dealer/BookingDetailsScreen'
 import ShipmentRequestScreen from '../../screens/driver/ShipmentRequestScreen'
+import MakeBidScreen from '../../screens/commonScreens/MakeBidScreen'
 
 const Stack = createNativeStackNavigator()
 
@@ -42,6 +43,7 @@ const MainNavigation = () => {
             <Stack.Screen name='Find Load' component={FindLoadScreen} />
             <Stack.Screen name='Load Details' component={LoadDetailsScreen} />
             <Stack.Screen name='Shipment Requests' component={ShipmentRequestScreen} />
+            <Stack.Screen name='Make Bid' component={MakeBidScreen} />
         </Stack.Navigator>
     )
 }

@@ -29,7 +29,7 @@ const CustomDrawerItem = ({ label, icon, onPress }) => (
 // Custom Drawer Content Component
 const CustomDrawerContent = (props) => {
 
-    const { setUserAsDriver, setUserAsDealer } = useContext(UserTypeContext)
+    const { setUserAsDriver, setUserAsDealer, userType } = useContext(UserTypeContext)
 
     const getUserData = async () => {
         let userDataString = null;
@@ -82,7 +82,7 @@ const CustomDrawerContent = (props) => {
         fetchUserData();
     }, [])
 
-    const showDeleteAlert = () => {
+    const showLogoutAlert = () => {
         Alert.alert(
             'Logout Confirmation',
             'Are you sure you want to logout?',
@@ -139,10 +139,13 @@ const CustomDrawerContent = (props) => {
                 {/* Custom Drawer Items */}
                 <CustomDrawerItem label="My Profile" icon={require('../assets/profileicon.png')} onPress={() => props.navigation.navigate('My Profile')} />
                 <CustomDrawerItem label="Booking Summary" icon={require('../assets/bookingsummary.png')} onPress={() => props.navigation.navigate('Booking Summary')} />
+                {
+                    userType == USER_TYPES.DRIVER && <CustomDrawerItem label="Make Bid" icon={require('../assets/bookingsummary.png')} onPress={() => props.navigation.navigate('Make Bid')} />
+                }
                 <CustomDrawerItem label="Refer a Friend" icon={require('../assets/referafriend.png')} onPress={() => props.navigation.navigate('Home')} />
                 <CustomDrawerItem label="Call Support" icon={require('../assets/callsupport.png')} onPress={() => props.navigation.navigate('Home')} />
                 <CustomDrawerItem label="About Us" icon={require('../assets/aboutus.png')} onPress={() => props.navigation.navigate('Home')} />
-                <CustomDrawerItem label="Log Out" icon={require('../assets/logout.png')} onPress={showDeleteAlert} />
+                <CustomDrawerItem label="Log Out" icon={require('../assets/logout.png')} onPress={showLogoutAlert} />
             </DrawerContentScrollView>
         </View>
     );

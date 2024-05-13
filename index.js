@@ -9,7 +9,6 @@ import { UserTypeProvider } from './src/store/UserTypeContext';
 import { MyContextProvider } from './src/store/MyContext';
 import { startNetworkLogging } from 'react-native-network-logger';
 
-// import messaging from '@react-native-firebase/messaging';
 import './messaging.js';
 
 
@@ -54,11 +53,5 @@ export default function Main() {
         </UserTypeProvider>
     );
 }
-
-// messaging().setBackgroundMessageHandler(async remoteMessage => {
-//     // // Handle the background message here
-//     // console.log('Background message handled: ', remoteMessage);
-// });
-
 
 AppRegistry.registerComponent(appName, () => Main);

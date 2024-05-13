@@ -38,7 +38,7 @@ const MenuScreen = ({ navigation }) => {
 
     return (
         <ImageBackground style={{ flex: 1 }} source={require("../../assets/mapbg.png")}>
-            <ScrollView style={{ flex: 1 }}>
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 <View style={styles.overlay}>
                     <View style={styles.mainFormContainer}>
                         <Text style={[textVariants.textSubHeading, { color: Colors.primary }]}>Want to book a truck?</Text>
@@ -66,17 +66,14 @@ const MenuScreen = ({ navigation }) => {
                 </View>
                 <View style={{ flex: 1, margin: 10 }}>
                     <Card overflow={"hidden"} flex={1} padding={20}>
-                        <View >
-                            <Text style={[textVariants.textSubHeading, { color: Colors.primary }]}>Route Rate Monitor</Text>
-                            <FlatList
-                                data={[1, 2, 3, 4, 5,]}
-                                renderItem={() => {
-                                    return (
-                                        <RouteRateMonitorCard />
-                                    )
-                                }}
-                            />
-                        </View>
+                        <Text style={[textVariants.textSubHeading, { color: Colors.primary }]}>Route Rate Monitor</Text>
+                        <FlatList
+                            nestedScrollEnabled
+                            style={{ height: 200 }}
+                            data={[1, 2, 3, 4, 5, 6, 7]}
+                            renderItem={({ item }) => <RouteRateMonitorCard />}
+                            keyExtractor={(item, index) => index.toString()}
+                        />
                     </Card>
                     <RequestCard title={"Requests"} />
                 </View>
@@ -125,4 +122,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingHorizontal: 20
     },
+    cardHeader: {
+        position: "static"
+    }
 })

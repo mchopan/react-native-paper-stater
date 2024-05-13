@@ -12,7 +12,6 @@ const FindLoadScreen = ({ }) => {
 
     const { pickUpLocation, dropLocation, bookingDetails } = route.params
 
-    console.log(pickUpLocation.value.city, dropLocation.value.city, "kakak")
 
     const handleSubmit = () => {
         navigation.navigate("Booking Summary")
@@ -37,7 +36,7 @@ const FindLoadScreen = ({ }) => {
                 )}
                 renderItem={({ item }) => (
                     <>
-                        <SelectLoadCard item={item} navigation={navigation} />
+                        <SelectLoadCard item={item} />
                     </>
                 )}
             />

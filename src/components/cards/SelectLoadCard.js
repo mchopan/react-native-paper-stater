@@ -6,8 +6,11 @@ import { Colors } from '../../theme/colors'
 import DottenLine from '../DottenLine'
 import CustomButton from '../CustomButton'
 import Spacer from '../Spacer'
+import { useNavigation } from '@react-navigation/native'
 
-const SelectLoadCard = ({ navigation, item }) => {
+const SelectLoadCard = ({ item }) => {
+
+    const navigation = useNavigation()
 
     return (
         <Card bgColor={Colors.whiteBackground}  >

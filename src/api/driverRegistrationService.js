@@ -30,6 +30,26 @@ class DriverRegistrationService {
             throw error;
         }
     }
+
+    static async getAllDrivers() {
+        try {
+            const response = await axiosInstance.get(`drivers`);
+            return response;
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
+    }
+
+    static async getDriverById(id) {
+        try {
+            const response = await axiosInstance.get(`drivers/${id}`);
+            return response;
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
+    }
 }
 
 export default DriverRegistrationService;
