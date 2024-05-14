@@ -14,6 +14,7 @@ import NetworkLogs from '../../screens/NetworkLogs'
 import BookingDetailsScreen from '../../screens/dealer/BookingDetailsScreen'
 import ShipmentRequestScreen from '../../screens/driver/ShipmentRequestScreen'
 import MakeBidScreen from '../../screens/commonScreens/MakeBidScreen'
+import BidChat from '../../screens/commonScreens/BidChat'
 
 const Stack = createNativeStackNavigator()
 
@@ -44,6 +45,7 @@ const MainNavigation = () => {
             <Stack.Screen name='Load Details' component={LoadDetailsScreen} />
             <Stack.Screen name='Shipment Requests' component={ShipmentRequestScreen} />
             <Stack.Screen name='Make Bid' component={MakeBidScreen} />
+            <Stack.Screen name='Bid Chat' component={BidChat} />
         </Stack.Navigator>
     )
 }

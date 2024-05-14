@@ -6,11 +6,22 @@ import { Colors } from '../../theme/colors'
 import DottenLine from '../DottenLine'
 import CustomButton from '../CustomButton'
 import Spacer from '../Spacer'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 
 const SelectLoadCard = ({ item }) => {
 
     const navigation = useNavigation()
+
+    const route = useRoute();
+    const screenName = route.name;
+
+    const handleNavigation = () => {
+        if (screenName == "Make Bid") {
+            navigation.navigate("Bid Chat", { item })
+        } else {
+            navigation.navigate("Load Details", { item })
+        }
+    }
 
     return (
         <Card bgColor={Colors.whiteBackground}  >
@@ -68,7 +79,7 @@ const SelectLoadCard = ({ item }) => {
                         </View>
                     </View>
                     <View style={{ padding: 10 }}>
-                        <CustomButton label='Bid Now' mode='contained' onPress={() => navigation.navigate("Load Details", { item })} />
+                        <CustomButton label='Bid Now' mode='contained' onPress={handleNavigation} />
                     </View>
                 </View>
             </View>

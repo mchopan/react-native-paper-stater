@@ -17,6 +17,8 @@ type CustomInputTypeProps = {
   errorMessage?: string;
   passwordErrorMassage?: string;
   maxLength?: number;
+  inputIcon?: string;
+  handleCheckPress?: any;
 };
 
 const CustomInput = ({
@@ -30,6 +32,8 @@ const CustomInput = ({
   errorMessage,
   passwordErrorMassage,
   maxLength,
+  inputIcon,
+  handleCheckPress,
 }: CustomInputTypeProps) => {
   // you can change the mode here for every inputfield except the select type
   const mode = 'outlined';
@@ -64,6 +68,15 @@ const CustomInput = ({
             maxLength={maxLength || 80}
             label={label}
             placeholder={placeholder}
+            right={
+              inputIcon && (
+                <TextInput.Icon
+                  icon={inputIcon}
+                  color={theme.colors.primary}
+                  onPress={handleCheckPress}
+                />
+              )
+            }
           />
           <HelperText type="error" visible={hasError}>
             {errorMessage}

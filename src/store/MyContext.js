@@ -18,6 +18,9 @@ export const MyContextProvider = ({ children }) => {
     const [pickUpLocation, setPickUpLocation] = useState('');
     const [dropLocation, setDropLocation] = useState('');
 
+
+    const [totalBids, setTotalBids] = useState([])
+
     return (
         <MyContext.Provider value={{
             isAuthenticated,
@@ -34,7 +37,8 @@ export const MyContextProvider = ({ children }) => {
             vehicleType, setVehicleType,
             goods, setGoods,
             weight, setWeight,
-            paymentMode, setPaymentMode
+            paymentMode, setPaymentMode,
+            totalBids, setTotalBids
         }}>
             {children}
         </MyContext.Provider>

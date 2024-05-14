@@ -120,6 +120,16 @@ const CustomDrawerContent = (props) => {
         }
     };
 
+    const handleBidRequests = () => {
+        if (userType == USER_TYPES.DRIVER) {
+            props.navigation.navigate('Make Bid')
+        }
+        else {
+            props.navigation.navigate('Bid Chat')
+        }
+    }
+
+
     return (
         <View style={{ flex: 1, backgroundColor: Colors.primary }}>
             <DrawerContentScrollView   {...props} >
@@ -139,9 +149,7 @@ const CustomDrawerContent = (props) => {
                 {/* Custom Drawer Items */}
                 <CustomDrawerItem label="My Profile" icon={require('../assets/profileicon.png')} onPress={() => props.navigation.navigate('My Profile')} />
                 <CustomDrawerItem label="Booking Summary" icon={require('../assets/bookingsummary.png')} onPress={() => props.navigation.navigate('Booking Summary')} />
-                {
-                    userType == USER_TYPES.DRIVER && <CustomDrawerItem label="Make Bid" icon={require('../assets/bookingsummary.png')} onPress={() => props.navigation.navigate('Make Bid')} />
-                }
+                <CustomDrawerItem label="Make Bid" icon={require('../assets/bookingsummary.png')} onPress={handleBidRequests} />
                 <CustomDrawerItem label="Refer a Friend" icon={require('../assets/referafriend.png')} onPress={() => props.navigation.navigate('Home')} />
                 <CustomDrawerItem label="Call Support" icon={require('../assets/callsupport.png')} onPress={() => props.navigation.navigate('Home')} />
                 <CustomDrawerItem label="About Us" icon={require('../assets/aboutus.png')} onPress={() => props.navigation.navigate('Home')} />

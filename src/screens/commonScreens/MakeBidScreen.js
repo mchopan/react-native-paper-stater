@@ -39,10 +39,10 @@ const MakeBidScreen = () => {
     // Function to filter data based on search query
     const filterData = (query) => {
         const filtered = bitData.filter(item => {
-            // Perform case-insensitive search on item's properties
+            // Assuming you want to filter based on pickUpCityLocation and dropCityLocation
             return (
-                item?.name.includes(query)
-                // Add more conditions if needed for other properties
+                item.pickUpCityLocation.toLowerCase().includes(query.toLowerCase()) ||
+                item.dropCityLocation.toLowerCase().includes(query.toLowerCase())
             );
         });
         setFilteredData(filtered);
