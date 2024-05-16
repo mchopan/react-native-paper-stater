@@ -1,5 +1,5 @@
 import { Alert, Image, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Colors } from '../../theme/colors';
 import CustomInput from '../../components/CustomInput';
 import CustomSelect from '../../components/CustomSelect';
@@ -69,7 +69,10 @@ const BookingDetailsScreen = ({ navigation }) => {
         pickUpLocation, dropLocation,
         goods, setGoods,
         weight, setWeight,
-        paymentMode, setPaymentMode } = useContext(MyContext);
+        paymentMode, setPaymentMode, user } = useContext(MyContext);
+
+
+
 
 
     const handleSubmit = async () => {
@@ -83,6 +86,7 @@ const BookingDetailsScreen = ({ navigation }) => {
 
         try {
             const res = await BookingServices.createBooking({
+                dealer: user._id,
                 pickUpCityLocation: pickUpLocation.value.city,
                 dropCityLocation: dropLocation.value.city,
                 selectDate: date,

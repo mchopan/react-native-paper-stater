@@ -20,6 +20,7 @@ export const MyContextProvider = ({ children }) => {
 
 
     const [totalBids, setTotalBids] = useState([])
+    const [negotiationData, setNegotiationData] = useState([])
 
     return (
         <MyContext.Provider value={{
@@ -38,7 +39,8 @@ export const MyContextProvider = ({ children }) => {
             goods, setGoods,
             weight, setWeight,
             paymentMode, setPaymentMode,
-            totalBids, setTotalBids
+            totalBids, setTotalBids,
+            negotiationData, setNegotiationData
         }}>
             {children}
         </MyContext.Provider>

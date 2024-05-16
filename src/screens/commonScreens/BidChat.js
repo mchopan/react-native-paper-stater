@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { Button, IconButton, Text, } from 'react-native-paper';
 import Card from '../../components/cards/Card';
@@ -6,22 +6,45 @@ import { Colors } from '../../theme/colors';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import CustomInput from '../../components/CustomInput';
 import { MyContext } from '../../store/MyContext';
+import NegotiationServices from '../../api/negotiationServices';
 
 
 const BidCard = ({ price, item }) => {
 
+
+    const { user } = useContext(MyContext)
+
     const navigation = useNavigation()
 
-    const { totalBids, setTotalBids } = useContext(MyContext)
+    const { totalBids, setNegotiationData, negotiationData } = useContext(MyContext)
 
 
     const [disable, setDisable] = useState(false)
     const [rebid, setRebid] = useState(true)
     const [newAmount, setNewAmount] = useState()
 
-    const handleAccept = () => {
-        navigation.navigate("Load Details", { item })
+
+    const getNegotiationByBookingId = async () => {
+        try {
+            const response = await NegotiationServices.getAllNegotiationsByBookingId(item._id)
+            setNegotiationData(response.data)
+        } catch (error) {
+
+        }
     }
+
+    useEffect(() => {
+        getNegotiationByBookingId()
+    }, [])
+
+    const handleAccept = async () => {
+        try {
+            const response = await NegotiationServices.updateNegotiation()
+        } catch (error) {
+
+        }
+    }
+
 
     const handleReject = () => {
         navigation.goBack()
@@ -32,13 +55,31 @@ const BidCard = ({ price, item }) => {
         setRebid((pre) => !pre)
     }
 
-    const handleAmountChange = () => {
+    useEffect(() => {
+
+    }, [])
+
+
+    const handleAmountChange = async () => {
+        try {
+            const negotiationData = {
+                driver: user._id,
+                dealer: item.dealer,
+                price: newAmount,
+                booking: item._id,
+            }
+            const response = await NegotiationServices.createNegotiation(negotiationData)
+        } catch (error) {
+
+        }
         setRebid(false)
-        setTotalBids([...totalBids, newAmount])
+        getNegotiationByBookingId()
+        // setTotalBids([...totalBids, newAmount])
     }
 
+    const prices = negotiationData.map((item) => item.price);
 
-    const lastElement = totalBids[totalBids.length - 1];
+    const lastElement = prices[prices.length - 1];
 
     return (
         <Card padding={10} >
@@ -75,9 +116,11 @@ const BidCard = ({ price, item }) => {
 }
 
 const BidChat = () => {
-
-    const { totalBids, setTotalBids } = useContext(MyContext)
-    const reversedBids = totalBids.slice(0, -1).reverse();
+    const { negotiationData } = useContext(MyContext)
+    console.log(negotiationData, "kkakaakkak")
+    const prices = negotiationData.map((item) => item.price);
+    console.log(prices)
+    const lastone = prices.slice(0, -1).reverse()
     const route = useRoute()
 
     const { item } = route.params
@@ -87,7 +130,7 @@ const BidChat = () => {
         <>
             <BidCard item={item} price={2000} />
             <FlatList
-                data={reversedBids}
+                data={lastone}
                 renderItem={({ item }) => {
                     return (
                         <Card padding={10} >

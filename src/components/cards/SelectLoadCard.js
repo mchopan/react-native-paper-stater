@@ -15,7 +15,7 @@ const SelectLoadCard = ({ item }) => {
     const route = useRoute();
     const screenName = route.name;
 
-    const handleNavigation = () => {
+    const handleNavigation = async () => {
         if (screenName == "Make Bid") {
             navigation.navigate("Bid Chat", { item })
         } else {
