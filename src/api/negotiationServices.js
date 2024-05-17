@@ -14,7 +14,17 @@ class NegotiationServices {
 
     static async getAllNegotiationsByBookingId(bookingId) {
         try {
-            const response = await axiosInstance.get(`negotiationsByBookingId/${bookingId}`);
+            const response = await axiosInstance.get(`negotiations/booking/${bookingId}`);
+            return response;
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
+    }
+
+    static async getAllNegotiationsByDealerId(dealerId) {
+        try {
+            const response = await axiosInstance.get(`negotiations/dealer/${dealerId}`);
             return response;
         } catch (error) {
             console.error('Error:', error);
@@ -34,6 +44,7 @@ class NegotiationServices {
 
     static async updateNegotiationStatus(id, status) {
         try {
+            console.log(id, status, "sneeenne")
             const response = await axiosInstance.put(`negotiations/${id}`, { status });
             return response;
         } catch (error) {

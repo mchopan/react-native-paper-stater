@@ -125,7 +125,7 @@ const CustomDrawerContent = (props) => {
             props.navigation.navigate('Make Bid')
         }
         else {
-            props.navigation.navigate('Bid Chat')
+            props.navigation.navigate('Make Bid')
         }
     }
 

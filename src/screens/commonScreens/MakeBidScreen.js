@@ -1,15 +1,16 @@
-import { FlatList, StyleSheet, View } from 'react-native'
+import { FlatList, StyleSheet } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext'
 import BookingServices from '../../api/bookingServices'
-import DriverRegistrationService from '../../api/driverRegistrationService'
 import SelectLoadCard from '../../components/cards/SelectLoadCard'
 import { Searchbar } from 'react-native-paper'
 import { Colors } from '../../theme/colors'
+import { MyContext } from '../../store/MyContext'
 
 const MakeBidScreen = () => {
 
     const { userType } = useContext(UserTypeContext)
+    const { user } = useContext(MyContext)
 
     const [bitData, setBidData] = useState([])
     const [filteredData, setFilteredData] = useState([])
@@ -20,14 +21,14 @@ const MakeBidScreen = () => {
         setIsLoading(true)
         if (userType == USER_TYPES.DRIVER) {
             const response = await BookingServices.getAllBookings();
-            console.log(response.data, "booking data")
             if (response.status == 200) {
                 setIsLoading(false)
                 setBidData(response.data)
                 setFilteredData(response.data)
             }
         } else {
-            const response = await DriverRegistrationService.getAllDrivers();
+            const response = await BookingServices.getBookingByDealerId(user._id);
+            console.log(response.data, "response")
             if (response.status == 200) {
                 setIsLoading(false)
                 setBidData(response.data)
@@ -55,7 +56,7 @@ const MakeBidScreen = () => {
     }, [searchQuery, bitData]);
 
     return (
-        <View>
+        <>
             <Searchbar
                 theme={{ colors: { onSurfaceVariant: Colors.primary } }}
                 mode='bar'
@@ -64,17 +65,16 @@ const MakeBidScreen = () => {
                 onChangeText={setSearchQuery}
                 value={searchQuery}
             />
-            <View>
-                <FlatList
-                    data={filteredData}
-                    renderItem={({ item }) => {
-                        return (
-                            <SelectLoadCard item={item} />
-                        )
-                    }}
-                />
-            </View>
-        </View>
+            <FlatList
+                data={filteredData}
+                renderItem={({ item }) => {
+                    return (
+                        <SelectLoadCard item={item} />
+                    )
+                }}
+            />
+
+        </>
     );
 }
 

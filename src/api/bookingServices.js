@@ -31,6 +31,16 @@ class BookingServices {
         }
     }
 
+    static async getBookingByDealerId(id) {
+        try {
+            const response = await axiosInstance.get(`bookings/dealer/${id}`);
+            return response;
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
+    }
+
     static async bidDriver(data) {
         try {
             const response = await axiosInstance.post(`bidDriver`, data);
