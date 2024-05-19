@@ -30,7 +30,9 @@ const HomeScreen = () => {
 
     const getBookings = async () => {
         const response = await BookingServices.getAllBookings();
-        setBookingDetails(response.data)
+        const allBookings = response.data;
+        const pendingBookings = allBookings.filter(item => item.status === "pending");
+        setBookingDetails(pendingBookings);
     }
     const getCurrentLocation = () => {
         setIsLoading(true);

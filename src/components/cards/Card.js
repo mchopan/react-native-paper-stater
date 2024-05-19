@@ -2,9 +2,9 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Colors } from '../../theme/colors'
 
-const Card = ({ overflow, children, direction, padding, bgColor, flex }) => {
+const Card = ({ overflow, children, direction, padding, bgColor, flex, radius }) => {
     return (
-        <View style={[styles.cardContainer, { overflow: overflow, flex: flex || 0, backgroundColor: bgColor || Colors.tertiary, padding: padding || 0, flexDirection: direction == "row" ? "row" : "column" }]}>
+        <View style={[styles.cardContainer, { borderRadius: radius || 10, overflow: overflow, flex: flex || 0, backgroundColor: bgColor || Colors.tertiary, padding: padding || 0, flexDirection: direction == "row" ? "row" : "column" }]}>
             {children}
         </View >
     )
@@ -19,7 +19,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         flexDirection: "row",
         margin: 10,
-        borderRadius: 10,
         gap: 5,
         shadowColor: 'black',
         shadowOpacity: 0.20,

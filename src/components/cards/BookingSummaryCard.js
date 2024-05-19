@@ -3,12 +3,14 @@ import React from 'react'
 import { Text } from 'react-native-paper'
 import { Colors } from '../../theme/colors'
 import PlainLine from './PlainLine'
+import { capitalizeFirstLetter } from '../../../utils/captalize'
 
-const BookingSummaryCard = () => {
+const BookingSummaryCard = ({ item }) => {
+    console.log(item, "booking")
     return (
         <View style={styles.cardContainer}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", margin: 10 }}>
-                <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 14, fontWeight: "600", color: Colors.primary }}>Steel & Metal Products</Text>
+                <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 14, fontWeight: "600", color: Colors.primary }}>{capitalizeFirstLetter(item?.selectGoodsType)}</Text>
                 <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 14, fontWeight: "700", color: Colors.primary }}>₹ 10196</Text>
             </View>
             <PlainLine />
@@ -19,11 +21,11 @@ const BookingSummaryCard = () => {
                 <View style={{ gap: 5 }}>
                     <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
                         <Image style={{ width: 15, height: 15 }} source={require("../../assets/MapPin.png")} resizeMode='contain' />
-                        <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 14, fontWeight: "600", color: Colors.gray }}>Mumbai,Mahrashtara</Text>
+                        <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 14, fontWeight: "600", color: Colors.gray }}>{capitalizeFirstLetter(item?.pickUpCityLocation)}</Text>
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
                         <Image style={{ width: 13, height: 13 }} source={require("../../assets/MapPinLight.png")} resizeMode='contain' />
-                        <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 14, fontWeight: "600", color: Colors.gray }}>Delhi ,Gurgaou</Text>
+                        <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 14, fontWeight: "600", color: Colors.gray }}>{capitalizeFirstLetter(item?.dropCityLocation)}</Text>
                     </View>
                 </View>
             </View>
@@ -32,15 +34,15 @@ const BookingSummaryCard = () => {
             <View style={styles.innerCard}>
                 <View style={styles.truckName}>
                     <Image style={{ width: 20, height: 20 }} source={require("../../assets/TruckWhite.png")} resizeMode='contain' />
-                    <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 13, fontWeight: "600", color: "white" }}>Bolero Pick</Text>
+                    <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 12, fontWeight: "600", color: "white" }}>{capitalizeFirstLetter(item?.selectVehicleType)}</Text>
                 </View>
                 <View style={styles.truckName}>
                     <Image style={{ width: 20, height: 20 }} source={require("../../assets/speed.png")} resizeMode='contain' />
-                    <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 13, fontWeight: "600", color: "white" }}>847 Km</Text>
+                    <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 12, fontWeight: "600", color: "white" }}>847 Km</Text>
                 </View>
                 <View style={styles.truckName}>
                     <Image style={{ width: 20, height: 20 }} source={require("../../assets/calendar.png")} resizeMode='contain' />
-                    <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 13, fontWeight: "600", color: "white" }}>15-08-24</Text>
+                    <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 12, fontWeight: "600", color: "white" }}>15-08-24</Text>
                 </View>
             </View>
         </View>

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import { Button, IconButton, Text, } from 'react-native-paper';
+import { Button, Text, } from 'react-native-paper';
 import Card from '../../components/cards/Card';
 import { Colors } from '../../theme/colors';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -11,75 +11,60 @@ import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext';
 
 
 const BidCard = ({ price, item }) => {
+    const { user } = useContext(MyContext);
+    const { userType } = useContext(UserTypeContext);
+    const navigation = useNavigation();
+    const { setNegotiationData, negotiationData } = useContext(MyContext);
 
-
-    const { user } = useContext(MyContext)
-
-    const { userType } = useContext(UserTypeContext)
-
-    const navigation = useNavigation()
-
-    console.log(user, "jajajjja")
-
-    const { setNegotiationData, negotiationData } = useContext(MyContext)
-
-    const [rebid, setRebid] = useState(false)
-    const [newAmount, setNewAmount] = useState()
-
+    const [rebid, setRebid] = useState(false);
+    const [newAmount, setNewAmount] = useState();
 
     const getNegotiationByBookingId = async () => {
         try {
-            const response = await NegotiationServices.getAllNegotiationsByBookingId(item._id)
-            setNegotiationData(response.data)
+            const response = await NegotiationServices.getAllNegotiationsByBookingId(item._id);
+            setNegotiationData(response.data);
         } catch (error) {
-
+            console.error(error);
         }
-    }
+    };
 
     useEffect(() => {
-        getNegotiationByBookingId()
-    }, [])
+        getNegotiationByBookingId();
+    }, []);
 
     const handleAccept = async (id) => {
         try {
-            const response = await NegotiationServices.updateNegotiationStatus(id, 'accept')
-            if (response.status == 200) {
-                if (userType == USER_TYPES.DEALER) {
-                    navigation.navigate('Home')
+            const response = await NegotiationServices.updateNegotiationStatus(id, 'accept');
+            if (response.status === 200) {
+                if (userType === USER_TYPES.DEALER) {
+                    getNegotiationByBookingId();
                 } else {
-                    navigation.navigate('Load Details', { item, lastElement })
+                    // navigation.navigate('Load Details', { item, lastElement });
                 }
             }
         } catch (error) {
-
+            console.error(error);
         }
-    }
+    };
 
     const handleReject = async (id) => {
         try {
-            const response = await NegotiationServices.updateNegotiationStatus(id, 'reject')
-            console.log(response.data)
-            if (response.status == 200) {
-                if (userType == USER_TYPES.DEALER) {
-                    navigation.navigate('Home')
+            const response = await NegotiationServices.updateNegotiationStatus(id, 'reject');
+            if (response.status === 200) {
+                if (userType === USER_TYPES.DEALER) {
+                    navigation.navigate('Home');
                 } else {
-                    navigation.goBack()
+                    navigation.goBack();
                 }
             }
         } catch (error) {
-
+            console.error(error);
         }
-
-
-    }
+    };
 
     const handleRebid = () => {
-        setRebid((pre) => !pre)
-    }
-
-    useEffect(() => {
-    }, [])
-
+        setRebid((prev) => !prev);
+    };
 
     const handleAmountChange = async () => {
         try {
@@ -89,114 +74,139 @@ const BidCard = ({ price, item }) => {
                 price: newAmount,
                 booking: item._id,
                 flag: user?.companyName ? "dealer" : "driver"
-            }
-            const response = await NegotiationServices.createNegotiation(negotiationData)
-            setNewAmount('')
+            };
+            const response = await NegotiationServices.createNegotiation(negotiationData);
+            setNewAmount('');
+            setRebid(false);
+            getNegotiationByBookingId();
         } catch (error) {
-
+            console.error(error);
         }
-        setRebid(false)
-        getNegotiationByBookingId()
-        // setTotalBids([...totalBids, newAmount])
-    }
+    };
 
     const prices = negotiationData.map((item) => item.price);
-
-    const lastItem = negotiationData[negotiationData.length - 1]
-
+    const lastItem = negotiationData[negotiationData.length - 1];
     const lastElement = prices[prices.length - 1];
 
-
-
     return (
-        <Card padding={10} bgColor={lastItem?.status == "accept" && "#bceabc" || lastItem?.status == "reject" && "#e59898"} >
+        <Card padding={10} bgColor={lastItem?.status === "accept" ? "#bceabc" : lastItem?.status === "reject" ? "#e59898" : "#fff"}>
             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                 <Text style={styles.price}>₹{lastElement || price}</Text>
-                <Text style={[styles.price, { fontSize: 16 }]}>
-                    {lastItem?.status == "accept" ? "Accepted" : lastItem?.status == "reject" ? "Rejected" : "Pending"}
+                <Text style={[styles.price, { fontSize: 12, fontWeight: "700" }]}>
+                    {lastItem?.status === "accept" ? "Accepted" : lastItem?.status === "reject" ? "Rejected" : "Pending"}
                 </Text>
-
             </View>
             <Text style={styles.location}>{item.pickUpCityLocation.toUpperCase()} to {item.dropCityLocation.toUpperCase()}</Text>
-            <View style={[styles.buttonContainer, { justifyContent: userType == USER_TYPES.DRIVER ? "flex-end" : "space-evenly" }]}>
-                {userType == USER_TYPES.DEALER && <Button
-                    disabled={lastItem?.status == "accept" && false || lastItem?.status == "reject" && true}
-                    style={[styles.btnStyle,]} mode="outlined" onPress={() => handleAccept(lastItem._id)}>
-                    {lastItem?.status == "accept" ? "Accepted" : "Accept"}
 
-                </Button>}
-                {userType == USER_TYPES.DEALER && <Button
-                    disabled={lastItem?.status == "accept" && true || lastItem?.status == "reject" && false}
-                    style={styles.btnStyle} mode="outlined" onPress={() => handleReject(lastItem._id)}>
-                    {lastItem?.status == "reject" ? "Rejected" : "Reject"}
-                </Button>}
-                <Button
-                    disabled={lastItem?.status == "accept" && true || lastItem?.status == "reject" && true}
-                    style={styles.btnStyle} mode={"outlined"} onPress={handleRebid}>
-                    Re-bid
-                </Button>
-            </View>
-            {
-                rebid && <View style={{ marginTop: 10, }}>
+            {/* Buttons for Dealer */}
+            {userType === USER_TYPES.DEALER && negotiationData.length > 0 && (
+                <View style={styles.buttonContainer}>
+                    <Button
+                        disabled={lastItem?.status === "accept" || lastItem?.status === "reject"}
+                        style={styles.btnStyle}
+                        mode="outlined"
+                        onPress={() => handleAccept(lastItem._id)}
+                    >
+                        {lastItem?.status === "accept" ? "Accepted" : "Accept"}
+                    </Button>
+                    <Button
+                        disabled={lastItem?.status === "accept" || lastItem?.status === "reject"}
+                        style={styles.btnStyle}
+                        mode="outlined"
+                        onPress={() => handleReject(lastItem._id)}
+                    >
+                        {lastItem?.status === "reject" ? "Rejected" : "Reject"}
+                    </Button>
+                    <Button
+                        disabled={lastItem?.status === "accept" || lastItem?.status === "reject"}
+                        style={styles.btnStyle}
+                        mode="outlined"
+                        onPress={handleRebid}
+                    >
+                        Re-bid
+                    </Button>
+                </View>
+            )}
+
+            {/* Re-bid Button for Driver */}
+            {userType === USER_TYPES.DRIVER && (
+                <View style={[styles.buttonContainer, { justifyContent: "flex-end" }]}>
+                    <Button
+                        disabled={lastItem?.status === "accept" || lastItem?.status === "reject"}
+                        style={styles.btnStyle}
+                        mode="outlined"
+                        onPress={handleRebid}
+                    >
+                        Re-bid
+                    </Button>
+                </View>
+            )}
+
+            {rebid && (
+                <View style={{ marginTop: 10 }}>
                     <CustomInput
                         inputIcon='check-bold'
                         keyboardType='number-pad'
-                        type='text' placeholder='enter amount'
+                        type='text'
+                        placeholder='Enter amount'
                         onChangeText={setNewAmount}
                         value={newAmount}
                         handleCheckPress={handleAmountChange}
                     />
                 </View>
-            }
-        </Card >
+            )}
+        </Card>
     );
-}
+};
 
 const BidChat = () => {
-    const { negotiationData } = useContext(MyContext)
+    const { negotiationData } = useContext(MyContext);
     const prices = negotiationData.map((item) => item.price);
     const flag = negotiationData.map((item) => item.flag);
-    const lastone = prices.slice(0, -1).reverse()
-    const route = useRoute()
+    const lastFlag = flag.slice(0, -1).reverse();
+    const lastone = prices.slice(0, -1).reverse();
+    const route = useRoute();
+    const { item } = route.params;
 
-    const newData = { lastone, flag }
-
-    const { item } = route.params
-
-
-    console.log(newData, "new data")
+    const newData = lastFlag.map((flag, index) => ({
+        lastFlag: flag,
+        lastone: lastone[index]
+    }));
 
     return (
         <>
             <BidCard item={item} price={2000} />
-            <Text style={[styles.price, { margin: 10 }]}>Previous Prices</Text>
+            <Text style={[styles.header, { margin: 10 }]}>Previous Prices</Text>
             <FlatList
-                data={lastone}
+                data={newData}
                 renderItem={({ item }) => {
+                    const isDriver = item.lastFlag === "driver";
                     return (
-                        <Card padding={10} bgColor={flag == "driver" ? Colors.primary : Colors.secondary} >
-                            <Text style={styles.price}> ₹{item}</Text>
-                        </Card>
-                    )
+                        <View style={[styles.bubbleContainer, isDriver ? styles.rightBubble : styles.leftBubble]}>
+                            <Card radius={20} padding={10} bgColor={isDriver ? Colors.primary : Colors.secondary}>
+                                <View style={styles.bubbleHeader}>
+                                    <Text style={styles.bubbleText}>{isDriver ? "Driver" : "Dealer"}</Text>
+                                    <Text style={styles.bubbleText}>{"   "}</Text>
+                                </View>
+                                <Text style={styles.previousprice}>₹{item.lastone}</Text>
+                            </Card>
+                        </View>
+                    );
                 }}
                 keyExtractor={(item, index) => index.toString()}
             />
         </>
-    )
+    );
 };
-
-export default BidChat;
 
 const styles = StyleSheet.create({
     card: {
         margin: 10,
-        // padding: 10,
     },
     price: {
         fontSize: 18,
         fontFamily: "GothicA1-Regular",
         color: Colors.primary,
-
     },
     location: {
         fontSize: 14,
@@ -210,7 +220,44 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     btnStyle: {
-        // borderRadius: 10,
         minWidth: 100
+    },
+    header: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: Colors.primary
+    },
+    bubbleContainer: {
+        flexDirection: 'row',
+        marginVertical: 5,
+    },
+    leftBubble: {
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+    },
+    rightBubble: {
+        justifyContent: 'flex-end',
+        alignItems: 'flex-end',
+    },
+    bubbleHeader: {
+        borderRadius: 50,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 5,
+        gap: 20
+    },
+    bubbleText: {
+        fontSize: 12,
+    },
+    price: {
+        fontSize: 16,
+        fontWeight: "700",
+        color: Colors.primary,
+    },
+    previousprice: {
+        fontSize: 16,
+        color: '#fff',
     }
 });
+
+export default BidChat;

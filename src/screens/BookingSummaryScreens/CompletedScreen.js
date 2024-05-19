@@ -1,15 +1,45 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { Image, StyleSheet, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import BookingServices from '../../api/bookingServices'
+import { FlatList } from 'react-native-gesture-handler'
 import BookingSummaryCard from '../../components/cards/BookingSummaryCard'
 
 const CompletedScreen = () => {
+
+    const [complatedData, setComplatedData] = useState([])
+    const getBookings = async () => {
+
+        try {
+            const response = await BookingServices.getAllBookings();
+            const allBookings = response.data;
+            const complateBookings = allBookings.filter(item => item.status === "complete");
+            setComplatedData(complateBookings);
+        } catch (error) {
+            console.log("error in ongoing screen", error)
+        }
+    }
+
+    useEffect(() => {
+        getBookings()
+    }, [])
+
+
+
     return (
-        <View>
-            <FlatList data={[1, 2, 3, 4, 5]} renderItem={() => {
-                return (
-                    <BookingSummaryCard />
-                )
-            }} />
+        <View style={{ flex: 1, justifyContent: "center", }}>
+            {
+                complatedData.length < 1 ? (<Image style={{ width: 200, height: 200, alignSelf: "center" }} resizeMode='contain' source={require("../../assets/noPending.png")} />)
+                    : (
+                        <FlatList
+                            data={complatedData}
+                            renderItem={({ item }) => {
+                                return (
+                                    <BookingSummaryCard item={item} />
+                                )
+                            }}
+                        />
+                    )
+            }
         </View>
     )
 }
