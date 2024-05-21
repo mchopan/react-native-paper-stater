@@ -31,8 +31,8 @@ const FindLoadScreen = ({ }) => {
             </View>
             <FlatList
                 data={bookingDetails.filter(item =>
-                    item.pickUpCityLocation === pickUpLocation.value.city &&
-                    item.dropCityLocation === dropLocation.value.city
+                    item.pickUpCityLocation === pickUpLocation &&
+                    item.dropCityLocation === dropLocation
                 )}
                 renderItem={({ item }) => (
                     <>

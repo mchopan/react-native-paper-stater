@@ -15,6 +15,13 @@ const SelectLoadCard = ({ item }) => {
     const route = useRoute();
     const screenName = route.name;
 
+    console.log(item, "haah")
+
+    const formatDisplayLocationName = (displayName) => {
+        const parts = displayName.split(', ');
+        return parts.slice(0, 2).join(', ');
+    };
+
     const handleNavigation = async () => {
         if (screenName == "Make Bid") {
             navigation.navigate("Bid Chat", { item })
@@ -41,11 +48,11 @@ const SelectLoadCard = ({ item }) => {
                     <View style={{ margin: 10, gap: 10 }}>
                         <View style={{ flexDirection: "row", gap: 5 }}>
                             <Image tintColor={Colors.primary} resizeMode='contain' style={{ height: 20, width: 20 }} source={require("../../assets/MapPinLight.png")} />
-                            <Text style={{ fontSize: 14, fontWeight: "700", fontFamily: "GothicA1-Regular", color: Colors.primary }}>{item.pickUpCityLocation}</Text>
+                            <Text style={{ fontSize: 14, fontWeight: "700", fontFamily: "GothicA1-Regular", color: Colors.primary }}>{formatDisplayLocationName(item.pickUpCityLocation)}</Text>
                         </View>
                         <View style={{ flexDirection: "row", gap: 5 }}>
                             <Image tintColor={"#E66613"} resizeMode='contain' style={{ height: 20, width: 20 }} source={require("../../assets/MapPinLight.png")} />
-                            <Text style={{ fontSize: 14, fontWeight: "700", fontFamily: "GothicA1-Regular", color: Colors.primary }}>{item.dropCityLocation}</Text>
+                            <Text style={{ fontSize: 14, fontWeight: "700", fontFamily: "GothicA1-Regular", color: Colors.primary }}>{formatDisplayLocationName(item.dropCityLocation)}</Text>
                         </View>
                     </View>
                     <View style={{ margin: 10, }}>

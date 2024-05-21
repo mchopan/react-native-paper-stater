@@ -12,6 +12,11 @@ export const SmallCard = ({ title, fromLocation, toLocation, item }) => {
         navigation.navigate("Load Details", { item });
     }
 
+    const formatDisplayLocationName = (displayName) => {
+        const parts = displayName.split(', ');
+        return parts.slice(0, 1).join(', ');
+    };
+
     return (
         <View style={styles.smallCardStyles}>
             <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
@@ -20,7 +25,7 @@ export const SmallCard = ({ title, fromLocation, toLocation, item }) => {
                 </View>
                 <View>
                     <Text style={{ color: Colors.primary, fontWeight: "800", fontSize: 14, fontFamily: "GothicA1-Regular" }}>{title}</Text>
-                    <Text style={{ color: Colors.gray, fontWeight: "500", fontSize: 12, fontFamily: "GothicA1-Regular" }}>{fromLocation} - {toLocation}</Text>
+                    <Text style={{ color: Colors.gray, fontWeight: "500", fontSize: 12, fontFamily: "GothicA1-Regular" }}>{formatDisplayLocationName(fromLocation)} - {formatDisplayLocationName(toLocation)}</Text>
                 </View>
             </View>
             <TouchableOpacity onPress={handleSeeDetails}>
@@ -52,7 +57,6 @@ const RequestCard = ({ title, bookingDetails }) => {
             <FlatList
                 data={bookingDetails?.slice(0, 3)}
                 renderItem={({ item }) => {
-                    console.log(item);
                     return (
                         <SmallCard item={item} title={item.selectGoodsType} fromLocation={item.pickUpCityLocation} toLocation={item.dropCityLocation} />
                     );

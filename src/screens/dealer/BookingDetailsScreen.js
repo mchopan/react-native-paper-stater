@@ -65,14 +65,17 @@ const payment_mode = [
 const BookingDetailsScreen = ({ navigation }) => {
 
 
-    const { date, vehicleType, setVehicleType,
-        pickUpLocation, dropLocation,
+    const {
+        date, setDate,
+        vehicleType, setVehicleType,
+        pickUpLocation, setPickUpLocation,
+        dropLocation, setDropLocation,
         goods, setGoods,
         weight, setWeight,
         paymentMode, setPaymentMode, user } = useContext(MyContext);
 
 
-
+    console.log(pickUpLocation, dropLocation)
 
 
     const handleSubmit = async () => {
@@ -87,15 +90,14 @@ const BookingDetailsScreen = ({ navigation }) => {
         try {
             const res = await BookingServices.createBooking({
                 dealer: user._id,
-                pickUpCityLocation: pickUpLocation.value.city,
-                dropCityLocation: dropLocation.value.city,
+                pickUpCityLocation: pickUpLocation,
+                dropCityLocation: dropLocation,
                 selectDate: date,
                 selectVehicleType: vehicleType.value,
                 selectGoodsType: goods.value,
                 enterWeightKg: weight,
                 advancePayment: paymentMode.value,
             })
-            console.log(res.status)
             if (res.status == 201) {
                 const notificationResponse = await BookingServices.sendPushNotificationsToDrivers(res.data._id)
                 console.log(notificationResponse, "noti")
@@ -104,7 +106,15 @@ const BookingDetailsScreen = ({ navigation }) => {
                     text1: "notification send successfully"
                 })
             }
-            Alert.alert("request send to all the drivers")
+            setDropLocation("")
+            setPickUpLocation("")
+            setPaymentMode("")
+            setGoods("")
+            setVehicleType("")
+            setWeight("")
+            setDate(new Date())
+            navigation.navigate("Driver Menu Screen")
+
         } catch (error) {
             console.log(error, 'error')
         }

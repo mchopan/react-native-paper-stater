@@ -11,6 +11,7 @@ import Card from '../../components/cards/Card'
 import RequestCard from '../../components/cards/RequestCard'
 import { MyContext } from '../../store/MyContext'
 import Toast from 'react-native-toast-message'
+import LocationAutocomplete from '../../components/AutoCompleteLocation'
 
 
 const MenuScreen = ({ navigation }) => {
@@ -42,7 +43,7 @@ const MenuScreen = ({ navigation }) => {
                 <View style={styles.overlay}>
                     <View style={styles.mainFormContainer}>
                         <Text style={[textVariants.textSubHeading, { color: Colors.primary }]}>Want to book a truck?</Text>
-                        <CustomSelect
+                        {/* <CustomSelect
                             mode='outlined'
                             placeholder='Pick Up City Location'
                             data={cityOptions}
@@ -50,8 +51,19 @@ const MenuScreen = ({ navigation }) => {
                             value={pickUpLocation}
                             onChange={(text) => { console.log(text, "pick"); setPickUpLocation(text) }
                             }
+                        /> */}
+
+                        <LocationAutocomplete
+                            value={pickUpLocation}
+                            onChange={(text) => setPickUpLocation(text)}
+                            placeholder="Pick Up City Location"
                         />
-                        <CustomSelect
+                        <LocationAutocomplete
+                            value={dropLocation}
+                            onChange={(text) => setDropLocation(text)}
+                            placeholder="Drop City Location"
+                        />
+                        {/* <CustomSelect
                             mode='outlined'
                             placeholder='Drop City Location'
                             data={cityOptions}
@@ -59,7 +71,7 @@ const MenuScreen = ({ navigation }) => {
                             value={dropLocation}
                             onChange={(text) => { console.log(text, "drop"); setDropLocation(text) }
                             }
-                        />
+                        /> */}
                         <CustomButton mode='contained' label="Find Now" onPress={handleSubmit} />
 
                     </View>

@@ -10,6 +10,8 @@ import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext'
 import { MyContext } from '../../store/MyContext'
 import Toast from 'react-native-toast-message'
 import { useNavigation } from '@react-navigation/native'
+import LocationAutocomplete from '../AutoCompleteLocation'
+import Spacer from '../Spacer'
 
 const BookTruckCard = ({ title, bookingDetails }) => {
 
@@ -52,7 +54,7 @@ const BookTruckCard = ({ title, bookingDetails }) => {
         <Card padding={20}>
             <View style={styles.mainFormContainer}>
                 <Text style={styles.heading}>{title}</Text>
-                <CustomSelect
+                {/* <CustomSelect
                     mode='outlined'
                     placeholder='Pick Up City Location'
                     data={cityOptions}
@@ -60,8 +62,20 @@ const BookTruckCard = ({ title, bookingDetails }) => {
                     value={pickUpLocation}
                     onChange={(text) => { console.log(text, "pick"); setPickUpLocation(text) }
                     }
+                /> */}
+
+                <LocationAutocomplete
+                    value={pickUpLocation}
+                    onChange={(text) => setPickUpLocation(text)}
+                    placeholder="Pick Up City Location"
                 />
-                <CustomSelect
+                <Spacer />
+                <LocationAutocomplete
+                    value={dropLocation}
+                    onChange={(text) => setDropLocation(text)}
+                    placeholder="Drop City Location"
+                />
+                {/* <CustomSelect
                     mode='outlined'
                     placeholder='Drop City Location'
                     data={cityOptions}
@@ -69,7 +83,7 @@ const BookTruckCard = ({ title, bookingDetails }) => {
                     value={dropLocation}
                     onChange={(text) => { console.log(text, "drop"); setDropLocation(text) }
                     }
-                />
+                /> */}
             </View>
             <CustomButton mode='contained' label="Find Now" onPress={handleSubmit} />
 

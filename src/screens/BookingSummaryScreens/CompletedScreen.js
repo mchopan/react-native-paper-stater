@@ -7,8 +7,8 @@ import BookingSummaryCard from '../../components/cards/BookingSummaryCard'
 const CompletedScreen = () => {
 
     const [complatedData, setComplatedData] = useState([])
-    const getBookings = async () => {
 
+    const getBookings = async () => {
         try {
             const response = await BookingServices.getAllBookings();
             const allBookings = response.data;
@@ -24,11 +24,10 @@ const CompletedScreen = () => {
     }, [])
 
 
-
     return (
         <View style={{ flex: 1, justifyContent: "center", }}>
             {
-                complatedData.length < 1 ? (<Image style={{ width: 200, height: 200, alignSelf: "center" }} resizeMode='contain' source={require("../../assets/noPending.png")} />)
+                complatedData.length < 1 ? (<Image style={{ width: 200, height: 200, alignSelf: "center" }} resizeMode='contain' source={require("../../assets/noCompleted.png")} />)
                     : (
                         <FlatList
                             data={complatedData}

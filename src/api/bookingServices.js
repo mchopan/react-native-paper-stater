@@ -41,6 +41,17 @@ class BookingServices {
         }
     }
 
+    static async getBookingByDriverId(id) {
+        try {
+            const response = await axiosInstance.get(`bookings/driver/${id}`);
+            return response;
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
+    }
+
+
     static async bidDriver(data) {
         try {
             const response = await axiosInstance.post(`bidDriver`, data);

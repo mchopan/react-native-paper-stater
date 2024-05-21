@@ -1,5 +1,5 @@
-import {Image, StyleSheet} from 'react-native';
-import React, {useEffect} from 'react';
+import {StyleSheet} from 'react-native';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {Dropdown} from 'react-native-element-dropdown';
 import {useTheme} from 'react-native-paper';

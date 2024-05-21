@@ -27,7 +27,7 @@ const OngoingScreen = () => {
     return (
         <View style={{ flex: 1, justifyContent: "center", }}>
             {
-                ongoingData.length < 1 ? (<Image style={{ width: 200, height: 200, alignSelf: "center" }} resizeMode='contain' source={require("../../assets/noPending.png")} />)
+                ongoingData.length < 1 ? (<Image style={{ width: 200, height: 200, alignSelf: "center" }} resizeMode='contain' source={require("../../assets/noOngoing.png")} />)
                     : (
                         <FlatList
                             data={ongoingData}
