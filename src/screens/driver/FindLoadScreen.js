@@ -22,12 +22,12 @@ const FindLoadScreen = ({ }) => {
     return (
         <ImageBackground style={{ flex: 1 }} source={require("../../assets/mapbg.png")}>
             <View style={{ margin: 10 }}>
-                <View style={[styles.buttonContainer, {
+                {/* <View style={[styles.buttonContainer, {
                     backgroundColor: Colors.tertiary,
                 }]}>
                     <CustomButton direction='row' mode='contained' label="Date Posted" onPress={handleSubmit} />
                     <CustomButton direction='row' mode='contained' label="Vehicle Type" onPress={handleSubmit} />
-                </View>
+                </View> */}
             </View>
             <FlatList
                 data={bookingDetails.filter(item =>

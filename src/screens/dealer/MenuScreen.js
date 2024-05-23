@@ -43,16 +43,6 @@ const MenuScreen = ({ navigation }) => {
                 <View style={styles.overlay}>
                     <View style={styles.mainFormContainer}>
                         <Text style={[textVariants.textSubHeading, { color: Colors.primary }]}>Want to book a truck?</Text>
-                        {/* <CustomSelect
-                            mode='outlined'
-                            placeholder='Pick Up City Location'
-                            data={cityOptions}
-                            search={true}
-                            value={pickUpLocation}
-                            onChange={(text) => { console.log(text, "pick"); setPickUpLocation(text) }
-                            }
-                        /> */}
-
                         <LocationAutocomplete
                             value={pickUpLocation}
                             onChange={(text) => setPickUpLocation(text)}
@@ -63,17 +53,7 @@ const MenuScreen = ({ navigation }) => {
                             onChange={(text) => setDropLocation(text)}
                             placeholder="Drop City Location"
                         />
-                        {/* <CustomSelect
-                            mode='outlined'
-                            placeholder='Drop City Location'
-                            data={cityOptions}
-                            search={true}
-                            value={dropLocation}
-                            onChange={(text) => { console.log(text, "drop"); setDropLocation(text) }
-                            }
-                        /> */}
-                        <CustomButton mode='contained' label="Find Now" onPress={handleSubmit} />
-
+                        <CustomButton mode='contained' label="Next" onPress={handleSubmit} />
                     </View>
                 </View>
                 <View style={{ flex: 1, margin: 10 }}>
@@ -107,6 +87,8 @@ const styles = StyleSheet.create({
 
     },
     mainFormContainer: {
+        borderColor: Colors.gray,
+        borderWidth: 1,
         gap: 20,
         width: '90%',
         backgroundColor: Colors.tertiary,

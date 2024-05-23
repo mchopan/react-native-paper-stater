@@ -65,6 +65,7 @@ const payment_mode = [
 const BookingDetailsScreen = ({ navigation }) => {
 
 
+
     const {
         date, setDate,
         vehicleType, setVehicleType,
@@ -100,7 +101,6 @@ const BookingDetailsScreen = ({ navigation }) => {
             })
             if (res.status == 201) {
                 const notificationResponse = await BookingServices.sendPushNotificationsToDrivers(res.data._id)
-                console.log(notificationResponse, "noti")
                 Toast.show({
                     type: "success",
                     text1: "notification send successfully"

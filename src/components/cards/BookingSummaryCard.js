@@ -6,11 +6,15 @@ import PlainLine from './PlainLine'
 import { capitalizeFirstLetter } from '../../../utils/captalize'
 
 const BookingSummaryCard = ({ item }) => {
-    console.log(item, "booking")
+    const formatDisplayLocationName = (displayName) => {
+        const displayName1 = capitalizeFirstLetter(displayName)
+        const parts = displayName1.split(', ');
+        return parts.slice(0, 1).join(', ');
+    };
     return (
         <View style={styles.cardContainer}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", margin: 10 }}>
-                <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 14, fontWeight: "600", color: Colors.primary }}>{capitalizeFirstLetter(item?.selectGoodsType)}</Text>
+                <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 14, fontWeight: "600", color: Colors.primary }}>{formatDisplayLocationName(item?.selectGoodsType)}</Text>
                 <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 14, fontWeight: "700", color: Colors.primary }}>₹ 10196</Text>
             </View>
             <PlainLine />
@@ -21,11 +25,11 @@ const BookingSummaryCard = ({ item }) => {
                 <View style={{ gap: 5 }}>
                     <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
                         <Image style={{ width: 15, height: 15 }} source={require("../../assets/MapPin.png")} resizeMode='contain' />
-                        <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 14, fontWeight: "600", color: Colors.gray }}>{capitalizeFirstLetter(item?.pickUpCityLocation)}</Text>
+                        <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 14, fontWeight: "600", color: Colors.gray }}>{formatDisplayLocationName(item?.pickUpCityLocation)}</Text>
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
                         <Image style={{ width: 13, height: 13 }} source={require("../../assets/MapPinLight.png")} resizeMode='contain' />
-                        <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 14, fontWeight: "600", color: Colors.gray }}>{capitalizeFirstLetter(item?.dropCityLocation)}</Text>
+                        <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 14, fontWeight: "600", color: Colors.gray }}>{formatDisplayLocationName(item?.dropCityLocation)}</Text>
                     </View>
                 </View>
             </View>

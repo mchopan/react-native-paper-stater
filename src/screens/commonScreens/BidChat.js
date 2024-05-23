@@ -11,6 +11,14 @@ import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext';
 
 
 const BidCard = ({ price, item }) => {
+
+
+    const formatDisplayLocationName = (displayName) => {
+        // const displayName1 = capitalizeFirstLetter(displayName)
+        const parts = displayName.split(', ');
+        return parts.slice(0, 1).join(', ');
+    };
+
     const { user } = useContext(MyContext);
     const { userType } = useContext(UserTypeContext);
     const navigation = useNavigation();
@@ -96,7 +104,7 @@ const BidCard = ({ price, item }) => {
                     {lastItem?.status === "accept" ? "Accepted" : lastItem?.status === "reject" ? "Rejected" : "Pending"}
                 </Text>
             </View>
-            <Text style={styles.location}>{item.pickUpCityLocation.toUpperCase()} to {item.dropCityLocation.toUpperCase()}</Text>
+            <Text style={styles.location}>{formatDisplayLocationName(item.pickUpCityLocation.toUpperCase())} to {formatDisplayLocationName(item.dropCityLocation.toUpperCase())}</Text>
 
             {/* Buttons for Dealer */}
             {userType === USER_TYPES.DEALER && negotiationData.length > 0 && (

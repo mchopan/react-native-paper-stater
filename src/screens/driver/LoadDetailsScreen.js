@@ -6,14 +6,14 @@ import { Colors } from '../../theme/colors'
 import { Text } from 'react-native-paper'
 import PlainLine from '../../components/cards/PlainLine'
 import Spacer from '../../components/Spacer'
-import { useRoute } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import Payment from '../dealer/Razorpay'
 
 
 const BiltiPayment = ({ setShowSuccessScreen }) => {
 
     const handleSubmit = () => {
         setShowSuccessScreen(false)
-        console.log("first")
     }
 
     return (
@@ -33,7 +33,8 @@ const BiltiPayment = ({ setShowSuccessScreen }) => {
                 <Text style={{ fontSize: 15, fontWeight: "700", fontFamily: "GothicA1-Regular", color: Colors.primary }}>Choose Payment Method :</Text>
             </View>
             <View style={styles.buttonContainer}>
-                <CustomButton mode='contained' label="Pay Now" onPress={handleSubmit} />
+                <Payment onPress={handleSubmit} />
+                {/* <CustomButton mode='contained' label="Pay Now" onPress={handleSubmit} /> */}
             </View>
         </View>
 
@@ -74,6 +75,7 @@ const PaymentSuccess = ({ setShowSuccessScreen }) => {
 
 const LoadDetailsScreen = () => {
 
+    const navigation = useNavigation()
     const route = useRoute();
     const { item } = route.params;
 
@@ -81,7 +83,7 @@ const LoadDetailsScreen = () => {
     const [showSuccessScreen, setShowSuccessScreen] = useState(false)
 
     const handleSubmit = () => {
-        setModalVisible(true)
+        navigation.navigate("Home")
     }
 
     return (
@@ -91,7 +93,9 @@ const LoadDetailsScreen = () => {
             </View>
             <LoadDetailsCard item={item} />
             <View style={styles.buttonContainer}>
-                <CustomButton mode='contained' label="Accept and Pay" onPress={handleSubmit} />
+
+                {/* <CustomButton mode='contained' label="Accept and Pay" onPress={handleSubmit} /> */}
+                <Payment label="Accept and Pay" />
                 <CustomButton mode='outlined' label="Not Interested" onPress={handleSubmit} />
             </View>
             <Modal
