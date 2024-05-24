@@ -22,6 +22,9 @@ export const MyContextProvider = ({ children }) => {
     const [totalBids, setTotalBids] = useState([])
     const [negotiationData, setNegotiationData] = useState([])
 
+    const [currentPlace, setCurrentPlace] = useState(null);
+
+
     return (
         <MyContext.Provider value={{
             isAuthenticated,
@@ -40,7 +43,8 @@ export const MyContextProvider = ({ children }) => {
             weight, setWeight,
             paymentMode, setPaymentMode,
             totalBids, setTotalBids,
-            negotiationData, setNegotiationData
+            negotiationData, setNegotiationData,
+            currentPlace, setCurrentPlace,
         }}>
             {children}
         </MyContext.Provider>

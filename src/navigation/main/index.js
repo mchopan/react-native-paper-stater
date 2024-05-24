@@ -15,6 +15,9 @@ import BookingDetailsScreen from '../../screens/dealer/BookingDetailsScreen'
 import ShipmentRequestScreen from '../../screens/driver/ShipmentRequestScreen'
 import MakeBidScreen from '../../screens/commonScreens/MakeBidScreen'
 import BidChat from '../../screens/commonScreens/BidChat'
+import ReferAFriend from '../../screens/commonScreens/ReferAFriend'
+import CallSupport from '../../screens/commonScreens/CallSupport'
+import About from '../../screens/commonScreens/About'
 
 const Stack = createNativeStackNavigator()
 
@@ -38,6 +41,9 @@ const MainNavigation = () => {
             <Stack.Screen name='Find Truck' component={FindTruckScreen} />
             <Stack.Screen name='Booking Details' component={BookingDetailsScreen} />
 
+            <Stack.Screen name='Refer a Friend' component={ReferAFriend} />
+            <Stack.Screen name='Call Support' component={CallSupport} />
+            <Stack.Screen name='About Us' component={About} />
             <Stack.Screen name='Network Logs' component={NetworkLogs} />
             {/* Driver Stack */}
             <Stack.Screen options={{ headerShown: false }} name='Driver Menu Screen' component={DrawerNavigation} />

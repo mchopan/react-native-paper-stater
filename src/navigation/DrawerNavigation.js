@@ -150,9 +150,9 @@ const CustomDrawerContent = (props) => {
                 <CustomDrawerItem label="My Profile" icon={require('../assets/profileicon.png')} onPress={() => props.navigation.navigate('My Profile')} />
                 <CustomDrawerItem label="Booking Summary" icon={require('../assets/bookingsummary.png')} onPress={() => props.navigation.navigate('Booking Summary')} />
                 <CustomDrawerItem label="Make Bid" icon={require('../assets/bookingsummary.png')} onPress={handleBidRequests} />
-                <CustomDrawerItem label="Refer a Friend" icon={require('../assets/referafriend.png')} onPress={() => props.navigation.navigate('Home')} />
-                <CustomDrawerItem label="Call Support" icon={require('../assets/callsupport.png')} onPress={() => props.navigation.navigate('Home')} />
-                <CustomDrawerItem label="About Us" icon={require('../assets/aboutus.png')} onPress={() => props.navigation.navigate('Home')} />
+                <CustomDrawerItem label="Refer a Friend" icon={require('../assets/referafriend.png')} onPress={() => props.navigation.navigate('Refer a Friend')} />
+                <CustomDrawerItem label="Call Support" icon={require('../assets/callsupport.png')} onPress={() => props.navigation.navigate('Call Support')} />
+                <CustomDrawerItem label="About Us" icon={require('../assets/aboutus.png')} onPress={() => props.navigation.navigate('About Us')} />
                 <CustomDrawerItem label="Log Out" icon={require('../assets/logout.png')} onPress={showLogoutAlert} />
             </DrawerContentScrollView>
         </View>
