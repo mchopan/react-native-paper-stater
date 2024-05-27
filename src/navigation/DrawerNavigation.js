@@ -148,7 +148,7 @@ const CustomDrawerContent = (props) => {
                 <PlainLine />
                 {/* Custom Drawer Items */}
                 <CustomDrawerItem label="My Profile" icon={require('../assets/profileicon.png')} onPress={() => props.navigation.navigate('My Profile')} />
-                <CustomDrawerItem label="Booking Summary" icon={require('../assets/bookingsummary.png')} onPress={() => props.navigation.navigate('Booking Summary')} />
+                <CustomDrawerItem label="My Bookings" icon={require('../assets/bookingsummary.png')} onPress={() => props.navigation.navigate('Booking Summary')} />
                 <CustomDrawerItem label="Make Bid" icon={require('../assets/bookingsummary.png')} onPress={handleBidRequests} />
                 <CustomDrawerItem label="Refer a Friend" icon={require('../assets/referafriend.png')} onPress={() => props.navigation.navigate('Refer a Friend')} />
                 <CustomDrawerItem label="Call Support" icon={require('../assets/callsupport.png')} onPress={() => props.navigation.navigate('Call Support')} />

@@ -4,7 +4,27 @@ class NegotiationServices {
     static async createNegotiation(data) {
         console.log(data, "reaching here ")
         try {
-            const response = await axiosInstance.post(`negotiations`, data);
+            const response = await axiosInstance.post('negotiations', data);
+            return response;
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
+    }
+
+    static async addPrice(negotiationId, data) {
+        try {
+            const response = await axiosInstance.patch(`negotiations/${negotiationId}/prices`, data);
+            return response;
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
+    }
+
+    static async getNegotiationById(id) {
+        try {
+            const response = await axiosInstance.get(`negotiations/${id}`);
             return response;
         } catch (error) {
             console.error('Error:', error);
@@ -32,9 +52,19 @@ class NegotiationServices {
         }
     }
 
-    static async getNegotiationById(id) {
+    static async getAllNegotiationsByDriverId(driverId) {
         try {
-            const response = await axiosInstance.get(`negotiations/${id}`);
+            const response = await axiosInstance.get(`negotiations/driver/${driverId}`);
+            return response;
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
+    }
+
+    static async getAllNegotiations() {
+        try {
+            const response = await axiosInstance.get('negotiations');
             return response;
         } catch (error) {
             console.error('Error:', error);
@@ -44,8 +74,7 @@ class NegotiationServices {
 
     static async updateNegotiationStatus(id, status) {
         try {
-            console.log(id, status, "sneeenne")
-            const response = await axiosInstance.put(`negotiations/${id}`, { status });
+            const response = await axiosInstance.patch(`negotiations/${id}/status`, { status });
             return response;
         } catch (error) {
             console.error('Error:', error);

@@ -1,77 +1,136 @@
-import { FlatList, StyleSheet, View } from 'react-native'
+import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext'
 import BookingServices from '../../api/bookingServices'
 import SelectLoadCard from '../../components/cards/SelectLoadCard'
-import { Searchbar } from 'react-native-paper'
+import { IconButton, Searchbar, Text } from 'react-native-paper'
 import { Colors } from '../../theme/colors'
 import { MyContext } from '../../store/MyContext'
 import CustomInput from '../../components/CustomInput'
 import CustomButton from '../../components/CustomButton'
+import NegotiationServices from '../../api/negotiationServices'
+import Toast from 'react-native-toast-message'
+import { useNavigation } from '@react-navigation/native'
+import Card from '../../components/cards/Card'
+import { capitalizeFirstLetter } from '../../../utils/captalize'
+
+
+const filterDuplicates = (data) => {
+    const seen = new Set();
+    return data.filter(item => {
+        const key = `${item.fromLocation}-${item.toLocation}`;
+        if (seen.has(key)) {
+            return false;
+        } else {
+            seen.add(key);
+            return true;
+        }
+    });
+};
 
 const MakeBidScreen = () => {
+
+    const navigation = useNavigation()
 
     const { userType } = useContext(UserTypeContext)
     const { user } = useContext(MyContext)
 
-    const [bitData, setBidData] = useState([])
-    const [filteredData, setFilteredData] = useState([])
     const [isLoading, setIsLoading] = useState(false)
-    const [searchQuery, setSearchQuery] = React.useState('');
+    const [bidData, setBidData] = useState([])
 
     const [fromText, setFromText] = useState('')
     const [toText, setToText] = useState('')
     const [rate, setRate] = useState('')
 
+    const handleMakeBid = async () => {
+        try {
+            const userId = user._id;
+            const data = {
+                fromLocation: fromText.trim(),
+                toLocation: toText.trim(),
+                initialPrice: Number(rate),
+                driver: userId
+            };
+            const response = await NegotiationServices.createNegotiation(data);
+            if (response.status === 201) {
+                Toast.show({
+                    type: "success",
+                    text1: "Bid Created Successfully",
+                });
+                setFromText("");
+                setToText("");
+                setRate("");
+                getBidData();
+            }
+        } catch (error) {
+            console.error('Error creating bid:', error);
+        }
+    };
+
     const getBidData = async () => {
         setIsLoading(true)
         if (userType == USER_TYPES.DRIVER) {
-            const response = await BookingServices.getAllBookings();
+            const response = await NegotiationServices.getAllNegotiationsByDriverId(user._id);
             if (response.status == 200) {
                 setIsLoading(false)
                 setBidData(response.data)
-                setFilteredData(response.data)
             }
         } else {
-            const response = await BookingServices.getBookingByDealerId(user._id);
+            const response = await NegotiationServices.getAllNegotiations();
             console.log(response.data, "response")
             if (response.status == 200) {
                 setIsLoading(false)
                 setBidData(response.data)
-                setFilteredData(response.data)
             }
         }
     }
-
-    const filterData = (query) => {
-        const filtered = bitData.filter(item => {
-            return (
-                item.pickUpCityLocation.toLowerCase().includes(query.toLowerCase()) ||
-                item.dropCityLocation.toLowerCase().includes(query.toLowerCase())
-            );
-        });
-        setFilteredData(filtered);
-    };
 
     useEffect(() => {
         getBidData();
     }, []);
 
-    useEffect(() => {
-        filterData(searchQuery);
-    }, [searchQuery, bitData]);
+    const filterData = filterDuplicates(bidData)
+    const data = filterData.reverse()
 
     return (
         <View style={{ flex: 1 }}>
-            <View style={{ padding: 10 }}>
-                <CustomInput label='From Location' type='text' onChangeText={(text) => setFromText(text)} value={fromText} />
-                <CustomInput label='To Location' type='text' onChangeText={(text) => setToText(text)} value={toText} />
-                <CustomInput label='Rate' keyboardType='number-pad' type='text' onChangeText={(text) => setRate(text)} value={rate} />
+            {
+                userType == USER_TYPES.DRIVER && <>
+                    <View style={{ padding: 10 }}>
+                        <CustomInput label='From Location' type='text' onChangeText={(text) => setFromText(text)} value={fromText} />
+                        <CustomInput label='To Location' type='text' onChangeText={(text) => setToText(text)} value={toText} />
+                        <CustomInput label='Rate' keyboardType='number-pad' type='text' onChangeText={(text) => setRate(text)} value={rate} />
+                    </View>
+                    <View style={{ width: "90%", alignSelf: "center" }}>
+                        <CustomButton label='Make Bid' mode='contained' onPress={handleMakeBid} />
+                    </View>
+                    <Text style={{ color: Colors.primary, fontWeight: "800", padding: 10 }}>Ongoing Bids</Text>
+                </>
+            }
+            <FlatList
+                data={userType == USER_TYPES.DEALER ? filterData : [data[0]]}
+                renderItem={({ item }) => {
+                    return (
+                        <Card padding={5} bgColor={item?.status === "accept" ? "#bceabc" : item?.status === "reject" ? "#e59898" : "#fff"}>
+                            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                                <Text style={{ color: Colors.primary, fontFamily: 'GothicA1-Regular', fontWeight: "600", fontSize: 16 }}>{item?.fromLocation} to {item?.toLocation}</Text>
+                                <IconButton
+                                    icon="arrow-right-bold-box-outline"
+                                    iconColor={Colors.primary}
+                                    size={25}
+                                    onPress={() => navigation.navigate("Bid Chat", { item })}
+                                />
+                            </View>
+                        </Card>
+                    )
+                }}
+            />
+            <View>
+                <TouchableOpacity>
+                    <Text>Hello</Text>
+                </TouchableOpacity>
             </View>
-            <View style={{ flex: 1, position: "absolute", bottom: 10, width: "90%", alignSelf: "center" }}>
-                <CustomButton label='Make Bid' mode='contained' onPress={() => console.log("first")} />
-            </View>
-        </View>
+        </View >
     );
 }
 

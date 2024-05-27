@@ -10,11 +10,15 @@ import NegotiationServices from '../../api/negotiationServices';
 import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext';
 
 
-const BidCard = ({ price, item }) => {
+const BidCard = ({ price }) => {
 
+    const router = useRoute()
+
+    const { item } = router.params
+
+    console.log(item, "bid catd")
 
     const formatDisplayLocationName = (displayName) => {
-        // const displayName1 = capitalizeFirstLetter(displayName)
         const parts = displayName.split(', ');
         return parts.slice(0, 1).join(', ');
     };
@@ -22,22 +26,30 @@ const BidCard = ({ price, item }) => {
     const { user } = useContext(MyContext);
     const { userType } = useContext(UserTypeContext);
     const navigation = useNavigation();
-    const { setNegotiationData, negotiationData } = useContext(MyContext);
+    const { setNegotiationData, negotiationData, prices, setPrices } = useContext(MyContext);
 
     const [rebid, setRebid] = useState(false);
     const [newAmount, setNewAmount] = useState();
 
-    const getNegotiationByBookingId = async () => {
+
+    const getNegotiations = async () => {
         try {
-            const response = await NegotiationServices.getAllNegotiationsByBookingId(item._id);
-            setNegotiationData(response.data);
+            if (userType == USER_TYPES.DRIVER) {
+                const response = await NegotiationServices.getAllNegotiationsByDriverId(user._id);
+                console.log(response.data, "drier negi")
+                setNegotiationData(response.data);
+            } else {
+                const response = await NegotiationServices.getNegotiationById(item._id);
+                console.log(response, "dealer")
+                setNegotiationData(response.data);
+            }
         } catch (error) {
             console.error(error);
         }
     };
 
     useEffect(() => {
-        getNegotiationByBookingId();
+        getNegotiations();
     }, []);
 
     const handleAccept = async (id) => {
@@ -45,8 +57,9 @@ const BidCard = ({ price, item }) => {
             const response = await NegotiationServices.updateNegotiationStatus(id, 'accept');
             if (response.status === 200) {
                 if (userType === USER_TYPES.DEALER) {
-                    getNegotiationByBookingId();
+                    fetchData()
                 } else {
+                    fetchData()
                     // navigation.navigate('Load Details', { item, lastElement });
                 }
             }
@@ -76,79 +89,81 @@ const BidCard = ({ price, item }) => {
 
     const handleAmountChange = async () => {
         try {
-            const negotiationData = {
-                driver: user._id,
-                dealer: item.dealer,
+            const data = {
                 price: newAmount,
-                booking: item._id,
-                flag: user?.companyName ? "dealer" : "driver"
+                offeredBy: userType == USER_TYPES.DEALER ? "dealer" : "driver"
             };
-            const response = await NegotiationServices.createNegotiation(negotiationData);
+            const negotiationId = item._id
+            const response = await NegotiationServices.addPrice(negotiationId, data);
             setNewAmount('');
             setRebid(false);
-            getNegotiationByBookingId();
+            fetchData()
         } catch (error) {
             console.error(error);
         }
     };
-
-    const prices = negotiationData.map((item) => item.price);
-    const lastItem = negotiationData[negotiationData.length - 1];
+    console.log(prices, "ahhaha")
     const lastElement = prices[prices.length - 1];
 
+    useEffect(() => {
+        fetchData();
+    }, [item._id]);
+
+    const fetchData = async () => {
+        try {
+            const response = await NegotiationServices.getNegotiationById(item._id);
+            setPrices(response.data.prices);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const isDriver = userType === USER_TYPES.DRIVER;
+    const lastBidByDriver = item.prices[item.prices.length - 1].offeredBy === 'driver';
+
     return (
-        <Card padding={10} bgColor={lastItem?.status === "accept" ? "#bceabc" : lastItem?.status === "reject" ? "#e59898" : "#fff"}>
+        <Card padding={10} bgColor={item?.status === "accept" ? "#bceabc" : item?.status === "reject" ? "#e59898" : "#fff"}>
             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <Text style={styles.price}>₹{lastElement || price}</Text>
+                <Text style={styles.price}>₹{lastElement?.price}</Text>
                 <Text style={[styles.price, { fontSize: 12, fontWeight: "700" }]}>
-                    {lastItem?.status === "accept" ? "Accepted" : lastItem?.status === "reject" ? "Rejected" : "Pending"}
+                    {item?.status === "accept" ? "Accepted" : item?.status === "reject" ? "Rejected" : "Pending"}
                 </Text>
             </View>
-            <Text style={styles.location}>{formatDisplayLocationName(item.pickUpCityLocation.toUpperCase())} to {formatDisplayLocationName(item.dropCityLocation.toUpperCase())}</Text>
+            <Text style={styles.location}>{formatDisplayLocationName(item.fromLocation)} to {formatDisplayLocationName(item.toLocation)}</Text>
 
             {/* Buttons for Dealer */}
-            {userType === USER_TYPES.DEALER && negotiationData.length > 0 && (
-                <View style={styles.buttonContainer}>
-                    <Button
-                        disabled={lastItem?.status === "accept" || lastItem?.status === "reject"}
+            <View style={styles.buttonContainer}>
+                {
+                    (isDriver && !lastBidByDriver || !isDriver && lastBidByDriver) && <Button
+                        disabled={item?.status === "accept" || item?.status === "reject"}
                         style={styles.btnStyle}
                         mode="outlined"
-                        onPress={() => handleAccept(lastItem._id)}
+                        onPress={() => handleAccept(item._id)}
                     >
-                        {lastItem?.status === "accept" ? "Accepted" : "Accept"}
+                        {item?.status === "accept" ? "Accepted" : "Accept"}
                     </Button>
-                    <Button
-                        disabled={lastItem?.status === "accept" || lastItem?.status === "reject"}
+                }
+                {
+                    (isDriver && !lastBidByDriver || !isDriver && lastBidByDriver) && <Button
+                        disabled={item?.status === "accept" || item?.status === "reject"}
                         style={styles.btnStyle}
                         mode="outlined"
-                        onPress={() => handleReject(lastItem._id)}
+                        onPress={() => handleReject(item._id)}
                     >
-                        {lastItem?.status === "reject" ? "Rejected" : "Reject"}
+                        {item?.status === "reject" ? "Rejected" : "Reject"}
                     </Button>
-                    <Button
-                        disabled={lastItem?.status === "accept" || lastItem?.status === "reject"}
-                        style={styles.btnStyle}
+                }
+                {
+                    (isDriver && !lastBidByDriver || !isDriver && lastBidByDriver) && <Button
+                        disabled={item?.status === "accept" || item?.status === "reject"}
+                        style={[styles.btnStyle, { alignSelf: "flex-start" }]}
                         mode="outlined"
                         onPress={handleRebid}
                     >
                         Re-bid
                     </Button>
-                </View>
-            )}
+                }
+            </View>
 
-            {/* Re-bid Button for Driver */}
-            {userType === USER_TYPES.DRIVER && (
-                <View style={[styles.buttonContainer, { justifyContent: "flex-end" }]}>
-                    <Button
-                        disabled={lastItem?.status === "accept" || lastItem?.status === "reject"}
-                        style={styles.btnStyle}
-                        mode="outlined"
-                        onPress={handleRebid}
-                    >
-                        Re-bid
-                    </Button>
-                </View>
-            )}
 
             {rebid && (
                 <View style={{ marginTop: 10 }}>
@@ -168,27 +183,39 @@ const BidCard = ({ price, item }) => {
 };
 
 const BidChat = () => {
-    const { negotiationData } = useContext(MyContext);
-    const prices = negotiationData.map((item) => item.price);
-    const flag = negotiationData.map((item) => item.flag);
-    const lastFlag = flag.slice(0, -1).reverse();
-    const lastone = prices.slice(0, -1).reverse();
+
+    // const route = useRoute();
+    // const { item } = route.params;
+    // const prices = item?.prices.map((item) => item);
+
     const route = useRoute();
     const { item } = route.params;
+    const { prices, setPrices } = useContext(MyContext);
 
-    const newData = lastFlag.map((flag, index) => ({
-        lastFlag: flag,
-        lastone: lastone[index]
-    }));
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await NegotiationServices.getNegotiationById(item._id);
+                setPrices(response.data.prices);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchData();
+    }, [item._id]);
+
+    const reverseArray = prices.slice(0, -1).reverse()
+
 
     return (
         <>
             <BidCard item={item} price={2000} />
             <Text style={[styles.header, { margin: 10 }]}>Previous Prices</Text>
             <FlatList
-                data={newData}
+                data={reverseArray}
                 renderItem={({ item }) => {
-                    const isDriver = item.lastFlag === "driver";
+                    const isDriver = item.offeredBy === "driver";
                     return (
                         <View style={[styles.bubbleContainer, isDriver ? styles.rightBubble : styles.leftBubble]}>
                             <Card radius={20} padding={10} bgColor={isDriver ? Colors.primary : Colors.secondary}>
@@ -196,7 +223,7 @@ const BidChat = () => {
                                     <Text style={styles.bubbleText}>{isDriver ? "Driver" : "Dealer"}</Text>
                                     <Text style={styles.bubbleText}>{"   "}</Text>
                                 </View>
-                                <Text style={styles.previousprice}>₹{item.lastone}</Text>
+                                <Text style={styles.previousprice}>₹{item.price}</Text>
                             </Card>
                         </View>
                     );
