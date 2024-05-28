@@ -149,7 +149,7 @@ const CustomDrawerContent = (props) => {
                 {/* Custom Drawer Items */}
                 <CustomDrawerItem label="My Profile" icon={require('../assets/profileicon.png')} onPress={() => props.navigation.navigate('My Profile')} />
                 <CustomDrawerItem label="My Bookings" icon={require('../assets/bookingsummary.png')} onPress={() => props.navigation.navigate('Booking Summary')} />
-                <CustomDrawerItem label="Make Bid" icon={require('../assets/bookingsummary.png')} onPress={handleBidRequests} />
+                <CustomDrawerItem label={userType == USER_TYPES.DEALER ? "Bid Requests" : "Make Bid"} icon={require('../assets/bid.png')} onPress={handleBidRequests} />
                 <CustomDrawerItem label="Refer a Friend" icon={require('../assets/referafriend.png')} onPress={() => props.navigation.navigate('Refer a Friend')} />
                 <CustomDrawerItem label="Call Support" icon={require('../assets/callsupport.png')} onPress={() => props.navigation.navigate('Call Support')} />
                 <CustomDrawerItem label="About Us" icon={require('../assets/aboutus.png')} onPress={() => props.navigation.navigate('About Us')} />

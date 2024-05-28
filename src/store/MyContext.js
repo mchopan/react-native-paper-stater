@@ -25,6 +25,7 @@ export const MyContextProvider = ({ children }) => {
     const [currentPlace, setCurrentPlace] = useState(null);
 
     const [prices, setPrices] = useState([]);
+    const [item, setItem] = useState([]);
 
 
     return (
@@ -47,7 +48,8 @@ export const MyContextProvider = ({ children }) => {
             totalBids, setTotalBids,
             negotiationData, setNegotiationData,
             currentPlace, setCurrentPlace,
-            prices, setPrices
+            prices, setPrices,
+            item, setItem
         }}>
             {children}
         </MyContext.Provider>

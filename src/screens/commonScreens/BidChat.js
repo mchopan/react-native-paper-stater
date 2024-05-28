@@ -10,58 +10,44 @@ import NegotiationServices from '../../api/negotiationServices';
 import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext';
 
 
+const formatDisplayLocationName = (displayName) => {
+    const parts = displayName.split(', ');
+    return parts.slice(0, 1).join(', ');
+};
+
 const BidCard = ({ price }) => {
 
-    const router = useRoute()
 
-    const { item } = router.params
+    const { item, setItem } = useContext(MyContext)
 
-    console.log(item, "bid catd")
-
-    const formatDisplayLocationName = (displayName) => {
-        const parts = displayName.split(', ');
-        return parts.slice(0, 1).join(', ');
-    };
-
-    const { user } = useContext(MyContext);
     const { userType } = useContext(UserTypeContext);
-    const navigation = useNavigation();
+    const { user } = useContext(MyContext);
     const { setNegotiationData, negotiationData, prices, setPrices } = useContext(MyContext);
 
+    const navigation = useNavigation();
     const [rebid, setRebid] = useState(false);
     const [newAmount, setNewAmount] = useState();
 
-
-    const getNegotiations = async () => {
+    const getNegotiationById = async () => {
         try {
-            if (userType == USER_TYPES.DRIVER) {
-                const response = await NegotiationServices.getAllNegotiationsByDriverId(user._id);
-                console.log(response.data, "drier negi")
-                setNegotiationData(response.data);
-            } else {
-                const response = await NegotiationServices.getNegotiationById(item._id);
-                console.log(response, "dealer")
-                setNegotiationData(response.data);
-            }
+            const response = await NegotiationServices.getNegotiationById(item._id);
+            console.log(response, "dealer")
+            setItem(response.data);
+            console.log(response.data, "get by id")
         } catch (error) {
-            console.error(error);
+
         }
-    };
+    }
 
     useEffect(() => {
-        getNegotiations();
-    }, []);
+        getNegotiationById()
+    }, [item]);
 
     const handleAccept = async (id) => {
         try {
             const response = await NegotiationServices.updateNegotiationStatus(id, 'accept');
             if (response.status === 200) {
-                if (userType === USER_TYPES.DEALER) {
-                    fetchData()
-                } else {
-                    fetchData()
-                    // navigation.navigate('Load Details', { item, lastElement });
-                }
+                fetchData()
             }
         } catch (error) {
             console.error(error);
@@ -119,6 +105,7 @@ const BidCard = ({ price }) => {
     };
     const isDriver = userType === USER_TYPES.DRIVER;
     const lastBidByDriver = item.prices[item.prices.length - 1].offeredBy === 'driver';
+
 
     return (
         <Card padding={10} bgColor={item?.status === "accept" ? "#bceabc" : item?.status === "reject" ? "#e59898" : "#fff"}>
@@ -188,8 +175,10 @@ const BidChat = () => {
     // const { item } = route.params;
     // const prices = item?.prices.map((item) => item);
 
+    const { item, setItem } = useContext(MyContext)
+
     const route = useRoute();
-    const { item } = route.params;
+    // const { item } = route.params;
     const { prices, setPrices } = useContext(MyContext);
 
     useEffect(() => {

@@ -18,6 +18,7 @@ import BidChat from '../../screens/commonScreens/BidChat'
 import ReferAFriend from '../../screens/commonScreens/ReferAFriend'
 import CallSupport from '../../screens/commonScreens/CallSupport'
 import About from '../../screens/commonScreens/About'
+import BidHistory from '../../screens/commonScreens/BidHistory'
 
 const Stack = createNativeStackNavigator()
 
@@ -52,6 +53,7 @@ const MainNavigation = () => {
             <Stack.Screen name='Shipment Requests' component={ShipmentRequestScreen} />
             <Stack.Screen name='Make Bid' component={MakeBidScreen} />
             <Stack.Screen name='Bid Chat' component={BidChat} />
+            <Stack.Screen name='Bid History' component={BidHistory} />
         </Stack.Navigator>
     )
 }

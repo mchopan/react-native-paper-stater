@@ -33,7 +33,7 @@ const MakeBidScreen = () => {
     const navigation = useNavigation()
 
     const { userType } = useContext(UserTypeContext)
-    const { user } = useContext(MyContext)
+    const { user, item, setItem } = useContext(MyContext)
 
     const [isLoading, setIsLoading] = useState(false)
     const [bidData, setBidData] = useState([])
@@ -41,6 +41,8 @@ const MakeBidScreen = () => {
     const [fromText, setFromText] = useState('')
     const [toText, setToText] = useState('')
     const [rate, setRate] = useState('')
+
+
 
     const handleMakeBid = async () => {
         try {
@@ -60,7 +62,7 @@ const MakeBidScreen = () => {
                 setFromText("");
                 setToText("");
                 setRate("");
-                getBidData();
+                getBidData(); // Fetch the latest bid data
             }
         } catch (error) {
             console.error('Error creating bid:', error);
@@ -87,10 +89,15 @@ const MakeBidScreen = () => {
 
     useEffect(() => {
         getBidData();
-    }, []);
+    }, [item]);
 
     const filterData = filterDuplicates(bidData)
     const data = filterData.reverse()
+
+    const handleBidChat = (bidItem) => {
+        setItem(bidItem)
+        navigation.navigate("Bid Chat")
+    }
 
     return (
         <View style={{ flex: 1 }}>
@@ -102,9 +109,14 @@ const MakeBidScreen = () => {
                         <CustomInput label='Rate' keyboardType='number-pad' type='text' onChangeText={(text) => setRate(text)} value={rate} />
                     </View>
                     <View style={{ width: "90%", alignSelf: "center" }}>
-                        <CustomButton label='Make Bid' mode='contained' onPress={handleMakeBid} />
+                        <CustomButton label='Place Bid' mode='contained' onPress={handleMakeBid} />
                     </View>
-                    <Text style={{ color: Colors.primary, fontWeight: "800", padding: 10 }}>Ongoing Bids</Text>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 10 }}>
+                        <Text style={{ color: Colors.primary, fontWeight: "800", padding: 10 }}>Ongoing Bids</Text>
+                        <TouchableOpacity onPress={() => { navigation.navigate("Bid History", { data }) }}>
+                            <Text style={{ color: Colors.primary, fontWeight: "800", padding: 10 }}>View All</Text>
+                        </TouchableOpacity>
+                    </View>
                 </>
             }
             <FlatList
@@ -118,7 +130,7 @@ const MakeBidScreen = () => {
                                     icon="arrow-right-bold-box-outline"
                                     iconColor={Colors.primary}
                                     size={25}
-                                    onPress={() => navigation.navigate("Bid Chat", { item })}
+                                    onPress={() => handleBidChat(item)}
                                 />
                             </View>
                         </Card>
@@ -126,9 +138,6 @@ const MakeBidScreen = () => {
                 }}
             />
             <View>
-                <TouchableOpacity>
-                    <Text>Hello</Text>
-                </TouchableOpacity>
             </View>
         </View >
     );

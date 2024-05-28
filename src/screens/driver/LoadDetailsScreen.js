@@ -7,7 +7,7 @@ import { Text } from 'react-native-paper'
 import PlainLine from '../../components/cards/PlainLine'
 import Spacer from '../../components/Spacer'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import Payment from '../dealer/Razorpay'
+import Payment from './Razorpay'
 
 
 const BiltiPayment = ({ setShowSuccessScreen }) => {

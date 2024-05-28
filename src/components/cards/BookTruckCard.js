@@ -12,6 +12,7 @@ import Toast from 'react-native-toast-message'
 import { useNavigation } from '@react-navigation/native'
 import LocationAutocomplete from '../AutoCompleteLocation'
 import Spacer from '../Spacer'
+import CustomInput from '../CustomInput'
 
 const BookTruckCard = ({ title, bookingDetails }) => {
 
@@ -64,7 +65,7 @@ const BookTruckCard = ({ title, bookingDetails }) => {
                     }
                 /> */}
 
-                <LocationAutocomplete
+                {/* <LocationAutocomplete
                     value={pickUpLocation}
                     onChange={(text) => setPickUpLocation(text)}
                     placeholder="Pick Up City Location"
@@ -74,16 +75,21 @@ const BookTruckCard = ({ title, bookingDetails }) => {
                     value={dropLocation}
                     onChange={(text) => setDropLocation(text)}
                     placeholder="Drop City Location"
-                />
-                {/* <CustomSelect
-                    mode='outlined'
-                    placeholder='Drop City Location'
-                    data={cityOptions}
-                    search={true}
-                    value={dropLocation}
-                    onChange={(text) => { console.log(text, "drop"); setDropLocation(text) }
-                    }
                 /> */}
+                <CustomInput
+                    type='text'
+                    keyboardType='default'
+                    label='Pick Up City Loaction'
+                    value={pickUpLocation}
+                    onChangeText={(text) => setPickUpLocation(text)}
+                />
+                <CustomInput
+                    type='text'
+                    keyboardType='default'
+                    label='Drop City Location'
+                    value={dropLocation}
+                    onChangeText={(text) => setDropLocation(text)}
+                />
             </View>
             <CustomButton mode='contained' label="Find Now" onPress={handleSubmit} />
 

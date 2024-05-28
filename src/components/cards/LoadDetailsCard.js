@@ -38,7 +38,7 @@ const LoadDetailsCard = ({ item }) => {
 
             <View >
                 <View style={{ margin: 10, flexDirection: "row" }}>
-                    <Text style={{ fontSize: 14, fontWeight: "600", fontFamily: "GothicA1-Regular", color: Colors.primary }}>Delivery Date: </Text>
+                    <Text style={{ fontSize: 14, fontWeight: "600", fontFamily: "GothicA1-Regular", color: Colors.primary }}>Pickup Date: </Text>
                     <Text style={{ fontSize: 14, fontWeight: "600", fontFamily: "GothicA1-Regular", color: Colors.gray }}>{formattedDate}</Text>
                 </View>
                 <PlainLine />
@@ -47,16 +47,16 @@ const LoadDetailsCard = ({ item }) => {
 
             <View >
                 <View style={{ margin: 10, flexDirection: "row" }}>
-                    <Text style={{ fontSize: 14, fontWeight: "600", fontFamily: "GothicA1-Regular", color: Colors.primary }}>Payment: </Text>
-                    <Text style={{ fontSize: 14, fontWeight: "600", fontFamily: "GothicA1-Regular", color: Colors.gray }}> 80% Advance</Text>
+                    <Text style={{ fontSize: 14, fontWeight: "600", fontFamily: "GothicA1-Regular", color: Colors.primary }}>Freight: </Text>
+                    <Text style={{ fontSize: 14, fontWeight: "600", fontFamily: "GothicA1-Regular", color: Colors.gray }}> 100000</Text>
                 </View>
                 <PlainLine />
             </View>
 
             <View >
                 <View style={{ margin: 10, flexDirection: "row" }}>
-                    <Text style={{ fontSize: 14, fontWeight: "600", fontFamily: "GothicA1-Regular", color: Colors.primary }}>Estimated Amount: </Text>
-                    <Text style={{ fontSize: 14, fontWeight: "600", fontFamily: "GothicA1-Regular", color: Colors.gray }}>Rs 80,000</Text>
+                    <Text style={{ fontSize: 14, fontWeight: "600", fontFamily: "GothicA1-Regular", color: Colors.primary }}>Payment Mode: </Text>
+                    <Text style={{ fontSize: 14, fontWeight: "600", fontFamily: "GothicA1-Regular", color: Colors.gray }}>{item.advancePayment}</Text>
                 </View>
                 <PlainLine />
             </View>

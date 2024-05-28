@@ -5,6 +5,7 @@ import { Colors } from '../../theme/colors';
 import CustomButton from '../../components/CustomButton';
 import API_BASE_URL from '../../api/apiConfig';
 import { MyContext } from '../../store/MyContext';
+import Toast from 'react-native-toast-message';
 
 const fetchOrderId = async (amount) => {
     try {
@@ -31,7 +32,6 @@ const fetchOrderId = async (amount) => {
 const Payment = ({ label, amount }) => {
 
     const { user } = useContext(MyContext)
-    console.log(user, "jajajajaajaaajajja")
 
     const handlePayment = async () => {
         try {
@@ -55,9 +55,17 @@ const Payment = ({ label, amount }) => {
             };
 
             RazorpayCheckout.open(options).then((data) => {
-                Alert.alert('Payment Successful', `Payment ID: ${data.razorpay_payment_id}`);
+                Toast.show({
+                    type: 'success',
+                    text1: 'Payment Successful',
+                    text2: `Payment ID: ${data.razorpay_payment_id}`
+                })
             }).catch((error) => {
-                Alert.alert('Payment Failed', `Error: ${error.code} | ${error.description}`);
+                Toast.show({
+                    type: 'error',
+                    text1: 'Payment Failed',
+                    text2: `Error: ${error.code} | ${error.description}`
+                })
             });
         } catch (error) {
             Alert.alert('Error', error.message);
@@ -65,9 +73,7 @@ const Payment = ({ label, amount }) => {
     };
 
     return (
-        // <TouchableOpacity >
         <CustomButton onPress={handlePayment} mode='contained' label={label} />
-        // </TouchableOpacity>
     );
 };
 

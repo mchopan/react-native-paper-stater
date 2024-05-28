@@ -12,6 +12,7 @@ import RequestCard from '../../components/cards/RequestCard'
 import { MyContext } from '../../store/MyContext'
 import Toast from 'react-native-toast-message'
 import LocationAutocomplete from '../../components/AutoCompleteLocation'
+import CustomInput from '../../components/CustomInput'
 
 
 const MenuScreen = ({ navigation }) => {
@@ -43,16 +44,32 @@ const MenuScreen = ({ navigation }) => {
                 <View style={styles.overlay}>
                     <View style={styles.mainFormContainer}>
                         <Text style={[textVariants.textSubHeading, { color: Colors.primary }]}>Want to book a truck?</Text>
-                        <LocationAutocomplete
+                        {/* <LocationAutocomplete
                             value={pickUpLocation}
                             onChange={(text) => setPickUpLocation(text)}
                             placeholder="Pick Up City Location"
-                        />
-                        <LocationAutocomplete
+                        /> */}
+                        {/* <LocationAutocomplete
                             value={dropLocation}
                             onChange={(text) => setDropLocation(text)}
                             placeholder="Drop City Location"
+                        /> */}
+
+                        <CustomInput
+                            type='text'
+                            keyboardType='default'
+                            label='Pick Up City Loaction'
+                            value={pickUpLocation}
+                            onChangeText={(text) => setPickUpLocation(text)}
                         />
+                        <CustomInput
+                            type='text'
+                            keyboardType='default'
+                            label='Drop City Location'
+                            value={dropLocation}
+                            onChangeText={(text) => setDropLocation(text)}
+                        />
+
                         <CustomButton mode='contained' label="Next" onPress={handleSubmit} />
                     </View>
                 </View>

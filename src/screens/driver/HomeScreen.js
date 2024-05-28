@@ -84,12 +84,9 @@ const HomeScreen = () => {
     return (
         <ImageBackground style={{ flex: 1 }} source={require("../../assets/mapbg.png")}>
             <ScrollView>
-                <View style={{ margin: 10 }}>
+                {/* <View style={{ margin: 10 }}>
                     <CustomButton icon={require("../../assets/MapPinLight.png")} mode='outlined' label={isLoading ? " Updating..." : "Update Your Location"} onPress={handleUpdateLocation} />
-                    {/* {
-                        isLoading && <Loading />
-                    } */}
-                </View>
+                </View> */}
                 <BookTruckCard bookingDetails={bookingDetails} title={"Want to find a load?"} />
                 <RequestCard bookingDetails={bookingDetails} title={"Shipment Requests"} />
             </ScrollView>

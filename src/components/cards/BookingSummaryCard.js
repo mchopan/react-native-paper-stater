@@ -40,10 +40,10 @@ const BookingSummaryCard = ({ item }) => {
                     <Image style={{ width: 20, height: 20 }} source={require("../../assets/TruckWhite.png")} resizeMode='contain' />
                     <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 12, fontWeight: "600", color: "white" }}>{capitalizeFirstLetter(item?.selectVehicleType)}</Text>
                 </View>
-                <View style={styles.truckName}>
+                {/* <View style={styles.truckName}>
                     <Image style={{ width: 20, height: 20 }} source={require("../../assets/speed.png")} resizeMode='contain' />
                     <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 12, fontWeight: "600", color: "white" }}>847 Km</Text>
-                </View>
+                </View> */}
                 <View style={styles.truckName}>
                     <Image style={{ width: 20, height: 20 }} source={require("../../assets/calendar.png")} resizeMode='contain' />
                     <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 12, fontWeight: "600", color: "white" }}>15-08-24</Text>
