@@ -1,12 +1,16 @@
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
 import Card from './Card'
 import { Colors } from '../../theme/colors'
 import { useNavigation } from '@react-navigation/native'
+import { MyContext } from '../../store/MyContext'
+import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext'
 
 export const SmallCard = ({ title, fromLocation, toLocation, item }) => {
 
     const navigation = useNavigation()
+
+    const { userType } = useContext(UserTypeContext)
 
     const handleSeeDetails = () => {
         navigation.navigate("Load Details", { item });
@@ -17,6 +21,9 @@ export const SmallCard = ({ title, fromLocation, toLocation, item }) => {
         return parts.slice(0, 1).join(', ');
     };
 
+
+    console.log(userType, "haha")
+
     return (
         <View style={styles.smallCardStyles}>
             <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
@@ -25,12 +32,21 @@ export const SmallCard = ({ title, fromLocation, toLocation, item }) => {
                 </View>
                 <View>
                     <Text style={{ color: Colors.primary, fontWeight: "800", fontSize: 14, fontFamily: "GothicA1-Regular" }}>{title}</Text>
-                    <Text style={{ color: Colors.gray, fontWeight: "500", fontSize: 12, fontFamily: "GothicA1-Regular" }}>{formatDisplayLocationName(fromLocation)} - {formatDisplayLocationName(toLocation)}</Text>
+                    <Text style={{ color: Colors.gray, fontWeight: "500", fontSize: 12, fontFamily: "GothicA1-Regular" }}>{formatDisplayLocationName(fromLocation)} to {formatDisplayLocationName(toLocation)}</Text>
                 </View>
             </View>
-            <TouchableOpacity onPress={handleSeeDetails}>
-                <Text style={{ color: Colors.primary, fontWeight: "600", fontSize: 12, fontFamily: "GothicA1-Regular" }}>See Details</Text>
-            </TouchableOpacity>
+            {
+                userType == USER_TYPES.DEALER &&
+                <Text style={{ color: Colors.primary, fontWeight: "600", fontSize: 12, fontFamily: "GothicA1-Regular" }}>
+                    {item?.status}
+                </Text>
+            }
+            {
+                userType == USER_TYPES.DRIVER && <TouchableOpacity onPress={handleSeeDetails}>
+                    <Text style={{ color: Colors.primary, fontWeight: "600", fontSize: 12, fontFamily: "GothicA1-Regular" }}>See Details</Text>
+                </TouchableOpacity>
+            }
+
         </View>
     )
 }
@@ -62,10 +78,12 @@ const RequestCard = ({ title, bookingDetails }) => {
                     );
                 }}
             />
-            <TouchableOpacity onPress={handleViewAll} style={{ marginTop: 10 }}>
+
+            <TouchableOpacity TouchableOpacity onPress={handleViewAll} style={{ marginTop: 10 }}>
                 <Text style={{ color: Colors.primary, fontWeight: "600", fontSize: 13, fontFamily: "GothicA1-Regular" }}>View All</Text>
             </TouchableOpacity>
-        </Card>
+
+        </Card >
     )
 }
 

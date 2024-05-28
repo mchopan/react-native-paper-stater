@@ -1,5 +1,5 @@
 import { FlatList, ImageBackground, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useTheme } from 'react-native-paper'
 import { Colors } from '../../theme/colors'
 import CustomButton from '../../components/CustomButton'
@@ -13,17 +13,31 @@ import { MyContext } from '../../store/MyContext'
 import Toast from 'react-native-toast-message'
 import LocationAutocomplete from '../../components/AutoCompleteLocation'
 import CustomInput from '../../components/CustomInput'
+import BookingServices from '../../api/bookingServices'
+import { useNavigation } from '@react-navigation/native'
 
 
-const MenuScreen = ({ navigation }) => {
-    const theme = useTheme()
+const MenuScreen = () => {
 
-    const cityOptions = Object.entries(indianCities).map(([cityName, cityData]) => ({
-        label: cityName,
-        value: cityData
-    }));
+    const navigation = useNavigation()
 
-    const { dropLocation, pickUpLocation, setPickUpLocation, setDropLocation } = useContext(MyContext);
+    const { user, dropLocation, pickUpLocation, setPickUpLocation, setDropLocation } = useContext(MyContext);
+
+    const [ongoingData, setOngoingData] = useState([])
+
+    const getBookingsByDealerId = async () => {
+        try {
+            const res = await BookingServices.getBookingByDealerId(user._id)
+            setOngoingData(res.data);
+        } catch (error) {
+            console.log("error in bookings", error.message)
+        }
+    }
+
+    useEffect(() => {
+        getBookingsByDealerId();
+    }, [user])
+
 
 
     const handleSubmit = () => {
@@ -37,6 +51,9 @@ const MenuScreen = ({ navigation }) => {
         }
         navigation.navigate("Booking Details")
     };
+
+    const bookingDatawithoutReverse = ongoingData.filter((item) => item.status == "ongoing")
+    const bookingData = bookingDatawithoutReverse.reverse()
 
     return (
         <ImageBackground style={{ flex: 1 }} source={require("../../assets/mapbg.png")}>
@@ -84,7 +101,7 @@ const MenuScreen = ({ navigation }) => {
                             keyExtractor={(item, index) => index.toString()}
                         />
                     </Card>
-                    <RequestCard title={"Requests"} />
+                    <RequestCard bookingDetails={bookingData} title={"Requests"} />
                 </View>
 
             </ScrollView>

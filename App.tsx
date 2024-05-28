@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {Platform} from 'react-native';
 import {request, PERMISSIONS} from 'react-native-permissions';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 export default function App() {
   const theme = useTheme();
@@ -85,10 +86,12 @@ export default function App() {
   }, []);
 
   return (
-    <NavigationContainer>
-      <StatusBar backgroundColor={theme.colors.primary} />
-      {isAuthenticated ? <MainNavigation /> : <AuthNavigation />}
-      <Toast />
-    </NavigationContainer>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <NavigationContainer>
+        <StatusBar backgroundColor={theme.colors.primary} />
+        {isAuthenticated ? <MainNavigation /> : <AuthNavigation />}
+        <Toast />
+      </NavigationContainer>
+    </GestureHandlerRootView>
   );
 }

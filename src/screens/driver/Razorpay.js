@@ -6,6 +6,8 @@ import CustomButton from '../../components/CustomButton';
 import API_BASE_URL from '../../api/apiConfig';
 import { MyContext } from '../../store/MyContext';
 import Toast from 'react-native-toast-message';
+import BookingServices from '../../api/bookingServices';
+import { useNavigation } from '@react-navigation/native';
 
 const fetchOrderId = async (amount) => {
     try {
@@ -29,9 +31,21 @@ const fetchOrderId = async (amount) => {
     }
 };
 
-const Payment = ({ label, amount }) => {
+const Payment = ({ label, amount, item }) => {
 
-    const { user } = useContext(MyContext)
+    const { user, setPaymentData, paymentData } = useContext(MyContext)
+
+    const navigation = useNavigation()
+
+    const updateBookingDetails = async () => {
+        try {
+            const data = { bookingId: item._id, response: 'accept' }
+            const res = await BookingServices.driverResponse(data)
+            navigation.navigate("Booking Summary")
+        } catch (error) {
+
+        }
+    }
 
     const handlePayment = async () => {
         try {
@@ -60,12 +74,14 @@ const Payment = ({ label, amount }) => {
                     text1: 'Payment Successful',
                     text2: `Payment ID: ${data.razorpay_payment_id}`
                 })
+                updateBookingDetails()
             }).catch((error) => {
                 Toast.show({
                     type: 'error',
                     text1: 'Payment Failed',
                     text2: `Error: ${error.code} | ${error.description}`
                 })
+                // setPaymentData(error)
             });
         } catch (error) {
             Alert.alert('Error', error.message);

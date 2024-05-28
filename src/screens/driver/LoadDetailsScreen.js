@@ -1,5 +1,5 @@
 import { Alert, Image, Modal, Pressable, StyleSheet, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import LoadDetailsCard from '../../components/cards/LoadDetailsCard'
 import CustomButton from '../../components/CustomButton'
 import { Colors } from '../../theme/colors'
@@ -8,6 +8,7 @@ import PlainLine from '../../components/cards/PlainLine'
 import Spacer from '../../components/Spacer'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import Payment from './Razorpay'
+import { MyContext } from '../../store/MyContext'
 
 
 const BiltiPayment = ({ setShowSuccessScreen }) => {
@@ -75,6 +76,8 @@ const PaymentSuccess = ({ setShowSuccessScreen }) => {
 
 const LoadDetailsScreen = () => {
 
+    const { paymentData } = useContext(MyContext)
+
     const navigation = useNavigation()
     const route = useRoute();
     const { item } = route.params;
@@ -85,7 +88,6 @@ const LoadDetailsScreen = () => {
     const handleSubmit = () => {
         navigation.navigate("Home")
     }
-
     return (
         <View style={{ flex: 1, marginHorizontal: 10 }}>
             <View style={{ alignItems: "center", marginBottom: 20, marginTop: 20, }}>
@@ -95,7 +97,7 @@ const LoadDetailsScreen = () => {
             <View style={styles.buttonContainer}>
 
                 {/* <CustomButton mode='contained' label="Accept and Pay" onPress={handleSubmit} /> */}
-                <Payment label="Accept and Pay" />
+                <Payment label="Accept and Pay" item={item} />
                 <CustomButton mode='outlined' label="Not Interested" onPress={handleSubmit} />
             </View>
             <Modal
