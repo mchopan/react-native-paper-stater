@@ -39,8 +39,11 @@ const Payment = ({ label, amount, item }) => {
 
     const updateBookingDetails = async () => {
         try {
-            const data = { bookingId: item._id, response: 'accept' }
+            const bookingId = item._id
+            const driverId = user._id
+            const data = { driverId, bookingId, response: 'accept' }
             const res = await BookingServices.driverResponse(data)
+            console.log(res.data, "driver data is send back as response")
             navigation.navigate("Booking Summary")
         } catch (error) {
 
@@ -68,19 +71,20 @@ const Payment = ({ label, amount, item }) => {
                 theme: { color: Colors.primary }
             };
 
-            RazorpayCheckout.open(options).then((data) => {
+            RazorpayCheckout.open(options).then(async (data) => {
                 Toast.show({
                     type: 'success',
                     text1: 'Payment Successful',
                     text2: `Payment ID: ${data.razorpay_payment_id}`
                 })
-                updateBookingDetails()
+                await updateBookingDetails()
             }).catch((error) => {
                 Toast.show({
                     type: 'error',
                     text1: 'Payment Failed',
                     text2: `Error: ${error.code} | ${error.description}`
                 })
+                console.log(error, "razorpay error")
                 // setPaymentData(error)
             });
         } catch (error) {

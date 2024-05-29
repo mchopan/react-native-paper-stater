@@ -22,8 +22,6 @@ export const SmallCard = ({ title, fromLocation, toLocation, item }) => {
     };
 
 
-    console.log(userType, "haha")
-
     return (
         <View style={styles.smallCardStyles}>
             <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
@@ -31,7 +29,7 @@ export const SmallCard = ({ title, fromLocation, toLocation, item }) => {
                     <Image style={{ width: 25, height: 25 }} source={require("../../assets/truck.png")} />
                 </View>
                 <View>
-                    <Text style={{ color: Colors.primary, fontWeight: "800", fontSize: 14, fontFamily: "GothicA1-Regular" }}>{title}</Text>
+                    <Text style={{ color: Colors.primary, fontWeight: "800", fontSize: 14, fontFamily: "GothicA1-Regular" }}>{userType == USER_TYPES.DRIVER ? title : item?.driver.name}</Text>
                     <Text style={{ color: Colors.gray, fontWeight: "500", fontSize: 12, fontFamily: "GothicA1-Regular" }}>{formatDisplayLocationName(fromLocation)} to {formatDisplayLocationName(toLocation)}</Text>
                 </View>
             </View>

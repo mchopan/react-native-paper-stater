@@ -58,7 +58,7 @@ const FindTruckScreen = ({ navigation }) => {
                 console.log(notificationResponse, "noti")
                 Toast.show({
                     type: "success",
-                    text1: "notification send successfully"
+                    text1: "Notification Send Successfully"
                 })
             }
             Alert.alert("request send to selected driver")

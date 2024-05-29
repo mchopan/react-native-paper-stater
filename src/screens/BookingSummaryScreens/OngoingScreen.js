@@ -3,10 +3,18 @@ import React, { useEffect, useState } from 'react'
 import BookingServices from '../../api/bookingServices'
 import { FlatList } from 'react-native-gesture-handler'
 import BookingSummaryCard from '../../components/cards/BookingSummaryCard'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 
 const OngoingScreen = () => {
 
+    const navigation = useNavigation()
+
     const [ongoingData, setOngoingData] = useState([])
+
+    useFocusEffect(() => {
+        navigation.setOptions({ title: 'Ongoing' }); // Set the tab name as screen title
+    });
+
     const getBookings = async () => {
         try {
             const response = await BookingServices.getAllBookings();
@@ -17,6 +25,17 @@ const OngoingScreen = () => {
             console.log("error in ongoing screen", error)
         }
     }
+
+    // const getUserDetailsById = async () => {
+    //     try {
+    //         if (userType == USER_TYPES.DRIVER){
+    //             const response = await DriverRegistrationService.getDriverById()
+    //         }
+    //     } catch (error) {
+
+    //     }
+    // }
+
 
     useEffect(() => {
         getBookings()

@@ -1,16 +1,24 @@
-import { Image, StyleSheet, View } from 'react-native'
+import { Image, Linking, StyleSheet, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { Text } from 'react-native-paper'
 import { Colors } from '../../theme/colors'
 import PlainLine from './PlainLine'
 import { capitalizeFirstLetter } from '../../../utils/captalize'
+import { useNavigation } from '@react-navigation/native'
 
-const BookingSummaryCard = ({ item }) => {
+const BookingSummaryCard = ({ item, pending }) => {
+
     const formatDisplayLocationName = (displayName) => {
         const displayName1 = capitalizeFirstLetter(displayName)
         const parts = displayName1.split(', ');
         return parts.slice(0, 1).join(', ');
     };
+
+    const handCallPress = () => {
+        const phoneNumber = item?.driver?.phoneNumber;
+        Linking.openURL(`tel:${phoneNumber}`);
+    }
+
     return (
         <View style={styles.cardContainer}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", margin: 10 }}>
@@ -20,7 +28,7 @@ const BookingSummaryCard = ({ item }) => {
             <PlainLine />
             <View style={{ flexDirection: "row", alignItems: "center", gap: 5, margin: 10 }}>
                 <View>
-                    <Image style={{ width: 100, height: 50 }} source={require("../../assets/truck1.png")} />
+                    <Image resizeMode='cover' style={{ width: 100, height: pending ? 50 : 100, borderRadius: 20 }} source={pending ? require("../../assets/truck1.png") : { uri: item?.driver?.imageFile }} />
                 </View>
                 <View style={{ gap: 5 }}>
                     <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
@@ -31,6 +39,12 @@ const BookingSummaryCard = ({ item }) => {
                         <Image style={{ width: 13, height: 13 }} source={require("../../assets/MapPinLight.png")} resizeMode='contain' />
                         <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 14, fontWeight: "600", color: Colors.gray }}>{formatDisplayLocationName(item?.dropCityLocation)}</Text>
                     </View>
+                    {
+                        !pending && <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+                            <Image tintColor={Colors.primary} style={{ width: 15, height: 15 }} source={require("../../assets/TruckWhite.png")} resizeMode='contain' />
+                            <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 14, fontWeight: "600", color: Colors.gray }}>{formatDisplayLocationName(item?.driver?.vehicleRegistrationNumber)}</Text>
+                        </View>
+                    }
                 </View>
             </View>
             <PlainLine />
@@ -40,10 +54,12 @@ const BookingSummaryCard = ({ item }) => {
                     <Image style={{ width: 20, height: 20 }} source={require("../../assets/TruckWhite.png")} resizeMode='contain' />
                     <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 12, fontWeight: "600", color: "white" }}>{capitalizeFirstLetter(item?.selectVehicleType)}</Text>
                 </View>
-                {/* <View style={styles.truckName}>
-                    <Image style={{ width: 20, height: 20 }} source={require("../../assets/speed.png")} resizeMode='contain' />
-                    <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 12, fontWeight: "600", color: "white" }}>847 Km</Text>
-                </View> */}
+                {
+                    !pending && <TouchableOpacity onPress={handCallPress} style={styles.truckName}>
+                        <Image tintColor={"white"} style={{ width: 20, height: 20 }} source={require("../../assets/call.png")} resizeMode='contain' />
+                        <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 12, fontWeight: "600", color: "white" }}>Call</Text>
+                    </TouchableOpacity>
+                }
                 <View style={styles.truckName}>
                     <Image style={{ width: 20, height: 20 }} source={require("../../assets/calendar.png")} resizeMode='contain' />
                     <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 12, fontWeight: "600", color: "white" }}>15-08-24</Text>

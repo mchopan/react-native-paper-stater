@@ -78,6 +78,8 @@ const LoadDetailsScreen = () => {
 
     const { paymentData } = useContext(MyContext)
 
+    const { user } = useContext(MyContext)
+
     const navigation = useNavigation()
     const route = useRoute();
     const { item } = route.params;
@@ -97,8 +99,12 @@ const LoadDetailsScreen = () => {
             <View style={styles.buttonContainer}>
 
                 {/* <CustomButton mode='contained' label="Accept and Pay" onPress={handleSubmit} /> */}
-                <Payment label="Accept and Pay" item={item} />
-                <CustomButton mode='outlined' label="Not Interested" onPress={handleSubmit} />
+                {
+                    user?.active == true && <>
+                        <Payment label="Accept and Pay" item={item} />
+                        <CustomButton mode='outlined' label="Not Interested" onPress={handleSubmit} />
+                    </>
+                }
             </View>
             <Modal
                 animationType="slide"

@@ -5,13 +5,17 @@ import { FlatList } from 'react-native-gesture-handler'
 import BookingSummaryCard from '../../components/cards/BookingSummaryCard'
 import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext'
 import { MyContext } from '../../store/MyContext'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 
 const PendingScreen = () => {
+
 
     const { userType } = useContext(UserTypeContext)
     const { user } = useContext(MyContext)
 
     const [pendingData, setPendingData] = useState([])
+
+
     const getBookings = async () => {
         try {
             let pendingBookings;
@@ -49,7 +53,7 @@ const PendingScreen = () => {
                             data={pendingData}
                             renderItem={({ item }) => {
                                 return (
-                                    <BookingSummaryCard item={item} />
+                                    <BookingSummaryCard pending={true} item={item} />
                                 )
                             }}
                         />

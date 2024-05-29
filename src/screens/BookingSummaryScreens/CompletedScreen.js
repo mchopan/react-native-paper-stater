@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import BookingServices from '../../api/bookingServices'
 import { FlatList } from 'react-native-gesture-handler'
 import BookingSummaryCard from '../../components/cards/BookingSummaryCard'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 
 const CompletedScreen = () => {
 

@@ -6,12 +6,15 @@ import OngoingScreen from './OngoingScreen';
 import CompletedScreen from './CompletedScreen';
 import { Colors } from '../../theme/colors';
 import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext';
+import DriverRegistrationService from '../../api/driverRegistrationService';
 
 const Tab = createMaterialTopTabNavigator();
 
 const BookingSummaryScreen = () => {
 
     const { userType } = useContext(UserTypeContext)
+
+
 
     return (
         <Tab.Navigator screenOptions={{
@@ -20,8 +23,8 @@ const BookingSummaryScreen = () => {
             tabBarActiveTintColor: Colors.primary,
         }}>
             <Tab.Screen name="Ongoing" component={OngoingScreen} />
-            {
-                userType == USER_TYPES.DEALER && <Tab.Screen name="Pending" component={PendingScreen} />
+            {userType == USER_TYPES.DEALER &&
+                <Tab.Screen name="Pending" component={PendingScreen} />
             }
             <Tab.Screen name="Completed" component={CompletedScreen} />
         </Tab.Navigator>

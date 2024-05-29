@@ -64,7 +64,6 @@ class BookingServices {
 
     static async driverResponse(data) {
         try {
-            console.log(data, "here i am ")
             const response = await axiosInstance.post(`driverResponse`, data);
             return response;
         } catch (error) {
