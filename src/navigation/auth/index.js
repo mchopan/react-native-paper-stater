@@ -27,7 +27,7 @@ const AuthNavigation = () => {
             <Stack.Screen name='Login' component={Login} />
             <Stack.Screen name='Verification' component={OtpScreen} />
             <Stack.Screen name='Confirmation' component={ConfirmationScreen} />
-            <Stack.Screen name='Registrater Number' component={GenerateOtpScreen} />
+            <Stack.Screen name='Register Number' component={GenerateOtpScreen} />
             <Stack.Screen name='Network Logs' component={NetworkLogs} />
 
             {/* Dealer Stack */}

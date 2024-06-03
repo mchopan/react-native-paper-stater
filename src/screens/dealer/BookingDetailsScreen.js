@@ -9,6 +9,7 @@ import { textVariants } from '../../theme/styleVariants';
 import { MyContext } from '../../store/MyContext';
 import Toast from 'react-native-toast-message';
 import BookingServices from '../../api/bookingServices';
+import Loading from '../../components/Loading';
 
 
 
@@ -64,8 +65,6 @@ const payment_mode = [
 
 const BookingDetailsScreen = ({ navigation }) => {
 
-
-
     const {
         date, setDate,
         vehicleType, setVehicleType,
@@ -74,9 +73,7 @@ const BookingDetailsScreen = ({ navigation }) => {
         goods, setGoods,
         weight, setWeight,
         paymentMode, setPaymentMode, user } = useContext(MyContext);
-
-
-    console.log(pickUpLocation, dropLocation)
+    const [isLoading, setIsLoading] = useState(false)
 
 
     const handleSubmit = async () => {
@@ -89,6 +86,7 @@ const BookingDetailsScreen = ({ navigation }) => {
         }
 
         try {
+            setIsLoading(true)
             const res = await BookingServices.createBooking({
                 dealer: user._id,
                 pickUpCityLocation: pickUpLocation,
@@ -103,8 +101,9 @@ const BookingDetailsScreen = ({ navigation }) => {
                 const notificationResponse = await BookingServices.sendPushNotificationsToDrivers(res.data._id)
                 Toast.show({
                     type: "success",
-                    text1: "notification send successfully"
+                    text1: "Notification send successfully"
                 })
+                setIsLoading(false)
             }
             setDropLocation("")
             setPickUpLocation("")
@@ -113,12 +112,14 @@ const BookingDetailsScreen = ({ navigation }) => {
             setVehicleType("")
             setWeight("")
             setDate(new Date())
+            setIsLoading(false)
             navigation.navigate("Driver Menu Screen")
 
         } catch (error) {
+            setIsLoading(false)
             console.log(error, 'error')
         }
-
+        setIsLoading(false)
     };
 
     const handleSingleBit = () => {
@@ -219,6 +220,9 @@ const BookingDetailsScreen = ({ navigation }) => {
                 <CustomButton mode='contained' label="Send Request To Selected Driver" onPress={handleSingleBit} />
                 <CustomButton mode='outlined' label="Send Request To All The Drivers" onPress={handleSubmit} />
             </View>
+            {
+                isLoading && <Loading />
+            }
         </View>
     )
 }

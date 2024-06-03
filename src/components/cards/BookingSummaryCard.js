@@ -19,6 +19,8 @@ const BookingSummaryCard = ({ item, pending }) => {
         Linking.openURL(`tel:${phoneNumber}`);
     }
 
+    console.log(item?.driver?.imageFile == undefined, "hahhhhhhhhhhhh")
+
     return (
         <View style={styles.cardContainer}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", margin: 10 }}>
@@ -28,7 +30,10 @@ const BookingSummaryCard = ({ item, pending }) => {
             <PlainLine />
             <View style={{ flexDirection: "row", alignItems: "center", gap: 5, margin: 10 }}>
                 <View>
-                    <Image resizeMode='cover' style={{ width: 100, height: pending ? 50 : 100, borderRadius: 20 }} source={pending ? require("../../assets/truck1.png") : { uri: item?.driver?.imageFile }} />
+                    {
+                        item?.driver?.imageFile == undefined ? <Image tintColor={pending ? "default" : Colors.secondary} resizeMode='contain' style={{ width: 100, height: pending ? 50 : 100, borderRadius: 20 }} source={pending ? require("../../assets/truck1.png") : require("../../assets/noimage.png")} /> :
+                            <Image resizeMode='cover' style={{ width: 100, height: pending ? 50 : 100, borderRadius: 20 }} source={pending ? require("../../assets/truck1.png") : { uri: item?.driver?.imageFile }} />
+                    }
                 </View>
                 <View style={{ gap: 5 }}>
                     <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>

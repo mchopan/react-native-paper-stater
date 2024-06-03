@@ -1,10 +1,11 @@
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import Card from './Card'
 import { Colors } from '../../theme/colors'
 import { useNavigation } from '@react-navigation/native'
 import { MyContext } from '../../store/MyContext'
 import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext'
+import Loading from '../Loading'
 
 export const SmallCard = ({ title, fromLocation, toLocation, item }) => {
 
@@ -49,7 +50,7 @@ export const SmallCard = ({ title, fromLocation, toLocation, item }) => {
     )
 }
 
-const RequestCard = ({ title, bookingDetails }) => {
+const RequestCard = ({ title, bookingDetails, isLoading }) => {
 
     const navigation = useNavigation()
 
@@ -61,27 +62,25 @@ const RequestCard = ({ title, bookingDetails }) => {
         <Card padding={20} direction={"column"} >
             <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
                 <Text style={{ color: Colors.primary, fontWeight: "800", fontSize: 14, fontFamily: "GothicA1-Regular" }}>{title}</Text>
-                {/* <TouchableOpacity style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 5 }}>
-                    <View style={{ backgroundColor: "white", borderRadius: 20, padding: 5, justifyContent: "center", alignItems: "center" }}>
-                        <Image style={{ height: 15, width: 15 }} source={require('../../assets/tick.png')} />
-                    </View>
-                    <Text style={{ fontSize: 13, fontWeight: "700", fontFamily: "GothicA1-Regular", color: "#E66613" }}>Paid</Text>
-                </TouchableOpacity> */}
             </View>
-            <FlatList
-                data={bookingDetails?.slice(0, 3)}
-                renderItem={({ item }) => {
-                    return (
-                        <SmallCard item={item} title={item.selectGoodsType} fromLocation={item.pickUpCityLocation} toLocation={item.dropCityLocation} />
-                    );
-                }}
-            />
+            {
+                bookingDetails?.length < 1 ? <Image resizeMode='cover' style={{ height: 50, width: 50, alignSelf: "center" }} source={require("../../assets/emptyicon2.png")} /> : <>
+                    <FlatList
+                        data={bookingDetails?.slice(0, 3)}
+                        renderItem={({ item }) => {
+                            return (
+                                isLoading ? <Loading height={50} size={"small"} position={'relative'} /> : <SmallCard item={item} title={item.selectGoodsType} fromLocation={item.pickUpCityLocation} toLocation={item.dropCityLocation} />
+                            );
+                        }}
+                    />
 
-            <TouchableOpacity TouchableOpacity onPress={handleViewAll} style={{ marginTop: 10 }}>
-                <Text style={{ color: Colors.primary, fontWeight: "600", fontSize: 13, fontFamily: "GothicA1-Regular" }}>View All</Text>
-            </TouchableOpacity>
-
+                    <TouchableOpacity TouchableOpacity onPress={handleViewAll} style={{ marginTop: 10 }}>
+                        <Text style={{ color: Colors.primary, fontWeight: "600", fontSize: 13, fontFamily: "GothicA1-Regular" }}>View All</Text>
+                    </TouchableOpacity>
+                </>
+            }
         </Card >
+
     )
 }
 

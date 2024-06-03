@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext'
 import BookingServices from '../../api/bookingServices'
@@ -119,24 +119,29 @@ const MakeBidScreen = () => {
                     </View>
                 </>
             }
-            <FlatList
-                data={userType == USER_TYPES.DEALER ? filterData : [data[0]]}
-                renderItem={({ item }) => {
-                    return (
-                        <Card padding={5} bgColor={item?.status === "accept" ? "#bceabc" : item?.status === "reject" ? "#e59898" : "#fff"}>
-                            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                                <Text style={{ color: Colors.primary, fontFamily: 'GothicA1-Regular', fontWeight: "600", fontSize: 16 }}>{item?.fromLocation} to {item?.toLocation}</Text>
-                                <IconButton
-                                    icon="arrow-right-bold-box-outline"
-                                    iconColor={Colors.primary}
-                                    size={25}
-                                    onPress={() => handleBidChat(item)}
-                                />
-                            </View>
-                        </Card>
-                    )
-                }}
-            />
+            {
+                filterData?.length > 0 || data.length > 0 ? <FlatList
+                    data={userType == USER_TYPES.DEALER ? filterData : [data[0]]}
+                    renderItem={({ item }) => {
+                        return (
+                            <Card padding={5} bgColor={item?.status === "accept" ? "#bceabc" : item?.status === "reject" ? "#e59898" : "#fff"}>
+                                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                                    <Text style={{ color: Colors.primary, fontFamily: 'GothicA1-Regular', fontWeight: "600", fontSize: 16 }}>{item?.fromLocation} to {item?.toLocation}</Text>
+                                    <IconButton
+                                        icon="arrow-right-bold-box-outline"
+                                        iconColor={Colors.primary}
+                                        size={25}
+                                        onPress={() => handleBidChat(item)}
+                                    />
+                                </View>
+                            </Card>
+                        )
+                    }}
+                /> : <View style={{ flex: 1, justifyContent: "center" }}>
+                    <Image resizeMode='cover' style={{ height: 150, width: 150, alignSelf: "center" }} source={require("../../assets/emptyicon2.png")} />
+                    <Text style={{ color: Colors.secondary, textAlign: "center", fontSize: 20 }}>No History</Text>
+                </View>
+            }
             <View>
             </View>
         </View >

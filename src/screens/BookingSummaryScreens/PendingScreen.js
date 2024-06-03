@@ -50,7 +50,7 @@ const PendingScreen = () => {
                 pendingData.length < 1 ? (<Image style={{ width: 200, height: 200, alignSelf: "center" }} resizeMode='contain' source={require("../../assets/noPending.png")} />)
                     : (
                         <FlatList
-                            data={pendingData}
+                            data={pendingData?.reverse()}
                             renderItem={({ item }) => {
                                 return (
                                     <BookingSummaryCard pending={true} item={item} />

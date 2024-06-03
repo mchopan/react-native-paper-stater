@@ -2,10 +2,11 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { ActivityIndicator } from 'react-native-paper'
 
-const Loading = () => {
+const Loading = ({ position, height, size }) => {
     return (
         <View style={{
-            height: "100%", width: "100%", position: "absolute", justifyContent: "center", alignItems: "center",
+
+            height: height || "100%", width: "100%", position: position || "absolute", justifyContent: "center", alignItems: "center",
         }}>
             <View style={{
                 borderRadius: 10,
@@ -23,7 +24,7 @@ const Loading = () => {
                 // opacity: 0.8,
                 justifyContent: "center"
             }}>
-                <ActivityIndicator size={'large'} />
+                <ActivityIndicator size={size || 'large'} />
             </View>
         </View>
     )

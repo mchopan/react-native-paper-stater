@@ -122,7 +122,7 @@ const Login = ({ navigation, route }) => {
 
                     <View style={{ flexDirection: "row", gap: 5, }}>
                         <Text style={{ fontFamily: "GothicA1-Regular", color: Colors.gray, fontWeight: "400" }}>don't have an account yet?</Text>
-                        <TouchableOpacity onPress={() => navigation.navigate("Registrater Number")}>
+                        <TouchableOpacity onPress={() => navigation.navigate("Register Number")}>
                             <Text style={{ fontFamily: "GothicA1-Regular", color: Colors.primary, fontWeight: "500" }}>Create One</Text>
                         </TouchableOpacity>
                     </View>

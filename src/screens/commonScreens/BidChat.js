@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import { Button, Text, } from 'react-native-paper';
+import { Button, Text } from 'react-native-paper';
 import Card from '../../components/cards/Card';
 import { Colors } from '../../theme/colors';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -9,45 +9,40 @@ import { MyContext } from '../../store/MyContext';
 import NegotiationServices from '../../api/negotiationServices';
 import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext';
 
-
 const formatDisplayLocationName = (displayName) => {
     const parts = displayName.split(', ');
     return parts.slice(0, 1).join(', ');
 };
 
 const BidCard = ({ price }) => {
-
-
-    const { item, setItem } = useContext(MyContext)
-
+    const { item, setItem } = useContext(MyContext);
     const { userType } = useContext(UserTypeContext);
-    const { user } = useContext(MyContext);
-    const { setNegotiationData, negotiationData, prices, setPrices } = useContext(MyContext);
+
+    const { prices, setPrices } = useContext(MyContext);
 
     const navigation = useNavigation();
     const [rebid, setRebid] = useState(false);
-    const [newAmount, setNewAmount] = useState();
+    const [newAmount, setNewAmount] = useState('');
 
-    const getNegotiationById = async () => {
+    const getNegotiationById = useCallback(async () => {
         try {
             const response = await NegotiationServices.getNegotiationById(item._id);
-            console.log(response, "dealer")
             setItem(response.data);
-            console.log(response.data, "get by id")
         } catch (error) {
-
+            console.error(error);
         }
-    }
+    }, [item._id, setItem, prices]);
 
     useEffect(() => {
-        getNegotiationById()
-    }, [item]);
+        getNegotiationById();
+        console.log("Fetching negotiation by ID");
+    }, [getNegotiationById]);
 
     const handleAccept = async (id) => {
         try {
             const response = await NegotiationServices.updateNegotiationStatus(id, 'accept');
             if (response.status === 200) {
-                fetchData()
+                fetchData();
             }
         } catch (error) {
             console.error(error);
@@ -77,85 +72,80 @@ const BidCard = ({ price }) => {
         try {
             const data = {
                 price: newAmount,
-                offeredBy: userType == USER_TYPES.DEALER ? "dealer" : "driver"
+                offeredBy: userType === USER_TYPES.DEALER ? "dealer" : "driver"
             };
-            const negotiationId = item._id
+            const negotiationId = item._id;
             const response = await NegotiationServices.addPrice(negotiationId, data);
+            console.log(response.data, "Price updated");
             setNewAmount('');
             setRebid(false);
-            fetchData()
+            fetchData();
         } catch (error) {
             console.error(error);
         }
     };
-    console.log(prices, "ahhaha")
-    const lastElement = prices[prices.length - 1];
 
-    useEffect(() => {
-        fetchData();
-    }, [item._id]);
-
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
             const response = await NegotiationServices.getNegotiationById(item._id);
             setPrices(response.data.prices);
         } catch (error) {
             console.error(error);
         }
-    };
+    }, [item._id, setPrices]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
     const isDriver = userType === USER_TYPES.DRIVER;
     const lastBidByDriver = item.prices[item.prices.length - 1].offeredBy === 'driver';
-
 
     return (
         <Card padding={10} bgColor={item?.status === "accept" ? "#bceabc" : item?.status === "reject" ? "#e59898" : "#fff"}>
             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <Text style={styles.price}>₹{lastElement?.price}</Text>
+                <Text style={styles.price}>₹{prices[prices.length - 1]?.price}</Text>
                 <Text style={[styles.price, { fontSize: 12, fontWeight: "700" }]}>
                     {item?.status === "accept" ? "Accepted" : item?.status === "reject" ? "Rejected" : "Pending"}
                 </Text>
             </View>
             <Text style={styles.location}>{formatDisplayLocationName(item.fromLocation)} to {formatDisplayLocationName(item.toLocation)}</Text>
 
-            {/* Buttons for Dealer */}
             <View style={styles.buttonContainer}>
-                {
-                    (isDriver && !lastBidByDriver || !isDriver && lastBidByDriver) && <Button
-                        disabled={item?.status === "accept" || item?.status === "reject"}
-                        style={styles.btnStyle}
-                        mode="outlined"
-                        onPress={() => handleAccept(item._id)}
-                    >
-                        {item?.status === "accept" ? "Accepted" : "Accept"}
-                    </Button>
-                }
-                {
-                    (isDriver && !lastBidByDriver || !isDriver && lastBidByDriver) && <Button
-                        disabled={item?.status === "accept" || item?.status === "reject"}
-                        style={styles.btnStyle}
-                        mode="outlined"
-                        onPress={() => handleReject(item._id)}
-                    >
-                        {item?.status === "reject" ? "Rejected" : "Reject"}
-                    </Button>
-                }
-                {
-                    (isDriver && !lastBidByDriver || !isDriver && lastBidByDriver) && <Button
-                        disabled={item?.status === "accept" || item?.status === "reject"}
-                        style={[styles.btnStyle, { alignSelf: "flex-start" }]}
-                        mode="outlined"
-                        onPress={handleRebid}
-                    >
-                        Re-bid
-                    </Button>
-                }
+                {(isDriver && !lastBidByDriver || !isDriver && lastBidByDriver) && (
+                    <>
+                        <Button
+                            disabled={item?.status === "accept" || item?.status === "reject"}
+                            style={styles.btnStyle}
+                            mode="outlined"
+                            onPress={() => handleAccept(item._id)}
+                        >
+                            {item?.status === "accept" ? "Accepted" : "Accept"}
+                        </Button>
+                        <Button
+                            disabled={item?.status === "accept" || item?.status === "reject"}
+                            style={styles.btnStyle}
+                            mode="outlined"
+                            onPress={() => handleReject(item._id)}
+                        >
+                            {item?.status === "reject" ? "Rejected" : "Reject"}
+                        </Button>
+                        <Button
+                            disabled={item?.status === "accept" || item?.status === "reject"}
+                            style={[styles.btnStyle, { alignSelf: "flex-start" }]}
+                            mode="outlined"
+                            onPress={handleRebid}
+                        >
+                            Re-bid
+                        </Button>
+                    </>
+                )}
             </View>
-
 
             {rebid && (
                 <View style={{ marginTop: 10 }}>
                     <CustomInput
-                        inputIcon='check-bold'
+                        inputIcon='send'
                         keyboardType='number-pad'
                         type='text'
                         placeholder='Enter amount'
@@ -170,15 +160,7 @@ const BidCard = ({ price }) => {
 };
 
 const BidChat = () => {
-
-    // const route = useRoute();
-    // const { item } = route.params;
-    // const prices = item?.prices.map((item) => item);
-
-    const { item, setItem } = useContext(MyContext)
-
-    const route = useRoute();
-    // const { item } = route.params;
+    const { item, setItem } = useContext(MyContext);
     const { prices, setPrices } = useContext(MyContext);
 
     useEffect(() => {
@@ -192,10 +174,9 @@ const BidChat = () => {
         };
 
         fetchData();
-    }, [item._id]);
+    }, [item._id, setPrices]);
 
-    const reverseArray = prices.slice(0, -1).reverse()
-
+    const reverseArray = prices.slice(0, -1).reverse();
 
     return (
         <>
@@ -272,11 +253,6 @@ const styles = StyleSheet.create({
     },
     bubbleText: {
         fontSize: 12,
-    },
-    price: {
-        fontSize: 16,
-        fontWeight: "700",
-        color: Colors.primary,
     },
     previousprice: {
         fontSize: 16,

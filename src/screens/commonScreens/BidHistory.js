@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { FlatList, Image, StyleSheet, Text, View } from 'react-native'
 import React, { useContext } from 'react'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext'
@@ -12,7 +12,7 @@ const BidHistory = () => {
     const navigation = useNavigation();
     const router = useRoute()
     const { data } = router.params
-
+    console.log(data, "hahha")
     const { setItem } = useContext(MyContext)
 
     const handleBidChat = (bidItem) => {
@@ -21,7 +21,7 @@ const BidHistory = () => {
     }
 
     return (
-        <FlatList
+        data.length > 1 ? <FlatList
             data={data.slice(1)}
             renderItem={({ item }) => {
                 return (
@@ -38,7 +38,10 @@ const BidHistory = () => {
                     </Card>
                 )
             }}
-        />
+        /> : <View style={{ flex: 1, justifyContent: "center" }}>
+            <Image resizeMode='cover' style={{ height: 150, width: 150, alignSelf: "center" }} source={require("../../assets/emptyicon2.png")} />
+            <Text style={{ color: Colors.secondary, textAlign: "center", fontSize: 20 }}>No History</Text>
+        </View>
     )
 }
 

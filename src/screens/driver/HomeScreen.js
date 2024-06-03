@@ -14,72 +14,78 @@ const HomeScreen = () => {
 
     const navigation = useNavigation();
 
-    const { currentPlace, setCurrentPlace } = useContext(MyContext)
-
-    console.log(currentPlace, "ggag")
+    // const { currentPlace, setCurrentPlace } = useContext(MyContext)
 
     const [bookingDetails, setBookingDetails] = useState([]);
-    const [currentLocation, setCurrentLocation] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
+    // const [currentLocation, setCurrentLocation] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const handleUpdateLocation = () => {
-        getCurrentLocation();
-    };
+    // const handleUpdateLocation = () => {
+    //     getCurrentLocation();
+    // };
 
     useEffect(() => {
         getBookings();
     }, []);
 
     const getBookings = async () => {
-        const response = await BookingServices.getAllBookings();
-        const allBookings = response.data;
-        const pendingBookings = allBookings.filter(item => item.status === "pending");
-        setBookingDetails(pendingBookings);
-    };
-
-    const getCurrentLocation = () => {
-        setIsLoading(true);
-        Geolocation.getCurrentPosition(
-            position => {
-                setIsLoading(false);
-                const { latitude, longitude } = position.coords;
-                setCurrentLocation({ latitude, longitude });
-                console.log("Current Location", `Latitude: ${latitude}, Longitude: ${longitude}`);
-                getPlaceName(latitude, longitude);
-            },
-            error => {
-                setIsLoading(false);
-                if (error.code === 2) {
-                    promptForEnableLocationIfNeeded({ interval: 10000, fastInterval: 5000 })
-                        .then(data => {
-                            console.log("GPS enabled", data);
-                        })
-                        .catch(err => {
-                            console.error("Failed to enable GPS", err);
-                        });
-                } else {
-                    console.error("Error getting location", error);
-                }
-            },
-            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000, distanceFilter: 1 }
-        );
-    };
-
-    const getPlaceName = async (latitude, longitude) => {
+        setIsLoading(true)
         try {
-            const response = await axios.get(`https://nominatim.openstreetmap.org/reverse`, {
-                params: {
-                    lat: latitude,
-                    lon: longitude,
-                    format: 'json'
-                }
-            });
-            const placeName = response.data.display_name;
-            setCurrentPlace(placeName);
+            const response = await BookingServices.getAllBookings();
+            const allBookings = response.data;
+            const pendingBookings = allBookings.filter(item => item.status === "pending");
+            setBookingDetails(pendingBookings);
+            setIsLoading(false)
         } catch (error) {
-            console.error("Error fetching place name", error);
+            setIsLoading(false)
+            console.log("driver", error)
         }
+        setIsLoading(false)
     };
+
+    // const getCurrentLocation = () => {
+    //     setIsLoading(true);
+    //     Geolocation.getCurrentPosition(
+    //         position => {
+    //             setIsLoading(false);
+    //             const { latitude, longitude } = position.coords;
+    //             setCurrentLocation({ latitude, longitude });
+    //             console.log("Current Location", `Latitude: ${latitude}, Longitude: ${longitude}`);
+    //             getPlaceName(latitude, longitude);
+    //         },
+    //         error => {
+    //             setIsLoading(false);
+    //             if (error.code === 2) {
+    //                 promptForEnableLocationIfNeeded({ interval: 10000, fastInterval: 5000 })
+    //                     .then(data => {
+    //                         console.log("GPS enabled", data);
+    //                     })
+    //                     .catch(err => {
+    //                         console.error("Failed to enable GPS", err);
+    //                     });
+    //             } else {
+    //                 console.error("Error getting location", error);
+    //             }
+    //         },
+    //         { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000, distanceFilter: 1 }
+    //     );
+    // };
+
+    // const getPlaceName = async (latitude, longitude) => {
+    //     try {
+    //         const response = await axios.get(`https://nominatim.openstreetmap.org/reverse`, {
+    //             params: {
+    //                 lat: latitude,
+    //                 lon: longitude,
+    //                 format: 'json'
+    //             }
+    //         });
+    //         const placeName = response.data.display_name;
+    //         setCurrentPlace(placeName);
+    //     } catch (error) {
+    //         console.error("Error fetching place name", error);
+    //     }
+    // };
 
     return (
         <ImageBackground style={{ flex: 1 }} source={require("../../assets/mapbg.png")}>
@@ -88,7 +94,7 @@ const HomeScreen = () => {
                     <CustomButton icon={require("../../assets/MapPinLight.png")} mode='outlined' label={isLoading ? " Updating..." : "Update Your Location"} onPress={handleUpdateLocation} />
                 </View> */}
                 <BookTruckCard bookingDetails={bookingDetails} title={"Want to find a load?"} />
-                <RequestCard bookingDetails={bookingDetails} title={"Shipment Requests"} />
+                <RequestCard isLoading={isLoading} bookingDetails={bookingDetails} title={"Shipment Requests"} />
             </ScrollView>
         </ImageBackground>
     );
