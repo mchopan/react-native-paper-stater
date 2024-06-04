@@ -9,6 +9,7 @@ import Geolocation from '@react-native-community/geolocation';
 import { promptForEnableLocationIfNeeded } from 'react-native-android-location-enabler';
 import axios from 'axios';
 import { MyContext } from '../../store/MyContext';
+import GeneratePdf from './GeneratePdf';
 
 const HomeScreen = () => {
 
@@ -94,6 +95,7 @@ const HomeScreen = () => {
                     <CustomButton icon={require("../../assets/MapPinLight.png")} mode='outlined' label={isLoading ? " Updating..." : "Update Your Location"} onPress={handleUpdateLocation} />
                 </View> */}
                 <BookTruckCard bookingDetails={bookingDetails} title={"Want to find a load?"} />
+                <GeneratePdf />
                 <RequestCard isLoading={isLoading} bookingDetails={bookingDetails} title={"Shipment Requests"} />
             </ScrollView>
         </ImageBackground>
