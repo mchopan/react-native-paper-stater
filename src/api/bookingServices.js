@@ -72,9 +72,10 @@ class BookingServices {
         }
     }
 
-    static async bookingComplete(data) {
+    static async bookingComplete(bookingId, driverId) {
         try {
-            const response = await axiosInstance.post(`bookingComplete`, data);
+            console.log(bookingId, driverId)
+            const response = await axiosInstance.post(`bookingComplete/${bookingId}`, { driverId });
             return response;
         } catch (error) {
             console.error('Error:', error);

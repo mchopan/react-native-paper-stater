@@ -19,6 +19,7 @@ import ReferAFriend from '../../screens/commonScreens/ReferAFriend'
 import CallSupport from '../../screens/commonScreens/CallSupport'
 import About from '../../screens/commonScreens/About'
 import BidHistory from '../../screens/commonScreens/BidHistory'
+import PdfFiles from '../../screens/driver/PdfFiles'
 
 const Stack = createNativeStackNavigator()
 
@@ -54,6 +55,9 @@ const MainNavigation = () => {
             <Stack.Screen name='Make Bid' component={MakeBidScreen} />
             <Stack.Screen name='Bid Chat' component={BidChat} />
             <Stack.Screen name='Bid History' component={BidHistory} />
+
+            <Stack.Screen name='Pdf Files' component={PdfFiles} />
+
         </Stack.Navigator>
     )
 }

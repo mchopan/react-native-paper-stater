@@ -1,12 +1,22 @@
 import { Image, Linking, StyleSheet, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import { Text } from 'react-native-paper'
 import { Colors } from '../../theme/colors'
 import PlainLine from './PlainLine'
 import { capitalizeFirstLetter } from '../../../utils/captalize'
 import { useNavigation } from '@react-navigation/native'
+import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext'
+import BookingServices from '../../api/bookingServices'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import Loading from '../Loading'
+import { MyContext } from '../../store/MyContext'
 
 const BookingSummaryCard = ({ item, pending }) => {
+
+    const { userType } = useContext(UserTypeContext)
+    const { user, setUser } = useContext(MyContext)
+
+    const [isLoading, setIsLoading] = useState(false)
 
     const formatDisplayLocationName = (displayName) => {
         const displayName1 = capitalizeFirstLetter(displayName)
@@ -15,11 +25,39 @@ const BookingSummaryCard = ({ item, pending }) => {
     };
 
     const handCallPress = () => {
-        const phoneNumber = item?.driver?.phoneNumber;
-        Linking.openURL(`tel:${phoneNumber}`);
+        if (userType == USER_TYPES.DEALER) {
+            const phoneNumber = item?.driver?.phoneNumber;
+            Linking.openURL(`tel:${phoneNumber}`);
+        } else {
+            const phoneNumber = item?.dealerPhoneNumber;
+            Linking.openURL(`tel:${phoneNumber}`);
+        }
     }
 
-    console.log(item?.driver?.imageFile == undefined, "hahhhhhhhhhhhh")
+    const handleComplete = async () => {
+        try {
+            setIsLoading(true)
+            if (userType == USER_TYPES.DRIVER) {
+                const bookingId = item._id
+                const driverId = user._id
+                const res = await BookingServices.bookingComplete(bookingId, driverId)
+                console.log(res.data, "hahahhhah")
+                const updatedUser = {
+                    ...user,
+                    active: false,
+                };
+                await AsyncStorage.setItem('driverData', JSON.stringify(updatedUser));
+                setUser(updatedUser);
+            }
+            setIsLoading(false)
+        } catch (error) {
+            console.log("error in : completing ", error)
+        }
+    }
+
+    const handleCancel = () => {
+        console.log("cancel")
+    }
 
     return (
         <View style={styles.cardContainer}>
@@ -55,21 +93,24 @@ const BookingSummaryCard = ({ item, pending }) => {
             <PlainLine />
 
             <View style={styles.innerCard}>
-                <View style={styles.truckName}>
+                <TouchableOpacity onPress={handleCancel} style={styles.truckName}>
                     <Image style={{ width: 20, height: 20 }} source={require("../../assets/TruckWhite.png")} resizeMode='contain' />
-                    <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 12, fontWeight: "600", color: "white" }}>{capitalizeFirstLetter(item?.selectVehicleType)}</Text>
-                </View>
+                    <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 12, fontWeight: "600", color: "white" }}>Cancel</Text>
+                </TouchableOpacity>
                 {
                     !pending && <TouchableOpacity onPress={handCallPress} style={styles.truckName}>
                         <Image tintColor={"white"} style={{ width: 20, height: 20 }} source={require("../../assets/call.png")} resizeMode='contain' />
                         <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 12, fontWeight: "600", color: "white" }}>Call</Text>
                     </TouchableOpacity>
                 }
-                <View style={styles.truckName}>
+                <TouchableOpacity onPress={handleComplete} style={styles.truckName}>
                     <Image style={{ width: 20, height: 20 }} source={require("../../assets/calendar.png")} resizeMode='contain' />
-                    <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 12, fontWeight: "600", color: "white" }}>15-08-24</Text>
-                </View>
+                    <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 12, fontWeight: "600", color: "white" }}>Complete</Text>
+                </TouchableOpacity>
             </View>
+            {
+                isLoading && <Loading />
+            }
         </View>
     )
 }

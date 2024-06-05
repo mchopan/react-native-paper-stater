@@ -75,6 +75,7 @@ const BookingDetailsScreen = ({ navigation }) => {
         paymentMode, setPaymentMode, user } = useContext(MyContext);
     const [isLoading, setIsLoading] = useState(false)
 
+    console.log(user, "user")
 
     const handleSubmit = async () => {
         if (vehicleType == "" || goods == "" || weight == "" || paymentMode == "" || data == "") {
@@ -96,6 +97,7 @@ const BookingDetailsScreen = ({ navigation }) => {
                 selectGoodsType: goods.value,
                 enterWeightKg: weight,
                 advancePayment: paymentMode.value,
+                dealerPhoneNumber: user.phoneNumber,
             })
             if (res.status == 201) {
                 const notificationResponse = await BookingServices.sendPushNotificationsToDrivers(res.data._id)

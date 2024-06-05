@@ -8,6 +8,8 @@ import { MyContext } from '../../store/MyContext';
 import Toast from 'react-native-toast-message';
 import BookingServices from '../../api/bookingServices';
 import { useNavigation } from '@react-navigation/native';
+import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const fetchOrderId = async (amount) => {
     try {
@@ -33,7 +35,8 @@ const fetchOrderId = async (amount) => {
 
 const Payment = ({ label, amount, item }) => {
 
-    const { user, setPaymentData, paymentData } = useContext(MyContext)
+    const { user, setUser, setPaymentData, paymentData } = useContext(MyContext)
+    const { userType } = useContext(UserTypeContext)
 
     const navigation = useNavigation()
 
@@ -43,6 +46,14 @@ const Payment = ({ label, amount, item }) => {
             const driverId = user._id
             const data = { driverId, bookingId, response: 'accept' }
             const res = await BookingServices.driverResponse(data)
+            if (userType == USER_TYPES.DRIVER) {
+                const updatedUser = {
+                    ...user,
+                    active: true,
+                };
+                await AsyncStorage.setItem('driverData', JSON.stringify(updatedUser));
+                setUser(updatedUser);
+            }
             console.log(res.data, "driver data is send back as response")
             navigation.navigate("Booking Summary")
         } catch (error) {
