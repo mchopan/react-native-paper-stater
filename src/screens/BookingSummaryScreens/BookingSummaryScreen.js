@@ -1,19 +1,17 @@
 import { StyleSheet } from 'react-native'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import PendingScreen from './PendingScreen';
 import OngoingScreen from './OngoingScreen';
 import CompletedScreen from './CompletedScreen';
 import { Colors } from '../../theme/colors';
 import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext';
-import DriverRegistrationService from '../../api/driverRegistrationService';
 
 const Tab = createMaterialTopTabNavigator();
 
 const BookingSummaryScreen = () => {
 
     const { userType } = useContext(UserTypeContext)
-
 
 
     return (

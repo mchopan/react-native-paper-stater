@@ -9,7 +9,7 @@ import MainNavigation from './src/navigation/main';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {Platform} from 'react-native';
-import {request, PERMISSIONS} from 'react-native-permissions';
+import {request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 export default function App() {
@@ -19,24 +19,34 @@ export default function App() {
   // user permissions
   React.useEffect(() => {
     requestPermissions();
-  }, [PERMISSIONS]);
+    console.log('ask permission');
+  }, []);
 
   const requestPermissions = async () => {
-    console.log('first');
+    console.log('Requesting permissions');
     try {
       const permissions = [
-        Platform.OS === 'ios'
-          ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
-          : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-        PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
-        PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
-        // Assuming POST_NOTIFICATIONS is a custom permission, it may not be directly available
-        // You need to handle it separately or request it using a different method
+        PERMISSIONS.ANDROID.READ_MEDIA_IMAGES,
+        PERMISSIONS.ANDROID.READ_MEDIA_VIDEO,
+        PERMISSIONS.ANDROID.READ_MEDIA_AUDIO,
+        PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+        PERMISSIONS.ANDROID.POST_NOTIFICATIONS,
       ];
-      const results = await Promise.all(
-        permissions.map(permission => request(permission)),
-      );
-      console.log('Permission Results:', results);
+
+      // if (Platform.OS === 'ios') {
+      //   permissions.push(
+      //     PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+      //     PERMISSIONS.IOS.NOTIFICATIONS
+      //   );
+      // }
+
+      for (const permission of permissions) {
+        const result = await request(permission);
+        console.log(`Permission result for ${permission}:`, result);
+        if (result !== RESULTS.GRANTED) {
+          console.warn(`Permission not granted for ${permission}`);
+        }
+      }
     } catch (error) {
       console.warn('Error requesting permissions:', error);
     }

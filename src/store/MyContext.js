@@ -28,6 +28,7 @@ export const MyContextProvider = ({ children }) => {
     const [item, setItem] = useState([]);
     const [setPaymentData, paymentData] = useState();
 
+    const [filePath, setFilePath] = useState('');
 
     return (
         <MyContext.Provider value={{
@@ -51,7 +52,8 @@ export const MyContextProvider = ({ children }) => {
             currentPlace, setCurrentPlace,
             prices, setPrices,
             item, setItem,
-            setPaymentData, paymentData
+            setPaymentData, paymentData,
+            filePath, setFilePath
         }}>
             {children}
         </MyContext.Provider>

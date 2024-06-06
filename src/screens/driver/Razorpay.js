@@ -10,6 +10,8 @@ import BookingServices from '../../api/bookingServices';
 import { useNavigation } from '@react-navigation/native';
 import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import PdfFiles from './PdfFiles';
+import GeneratePdf, { createPDF } from './GeneratePdf';
 
 const fetchOrderId = async (amount) => {
     try {
@@ -54,8 +56,9 @@ const Payment = ({ label, amount, item }) => {
                 await AsyncStorage.setItem('driverData', JSON.stringify(updatedUser));
                 setUser(updatedUser);
             }
-            console.log(res.data, "driver data is send back as response")
-            navigation.navigate("Booking Summary")
+            const resData = res.data
+            await createPDF({ resData, user, setFilePath: (path) => console.log('PDF saved at:', path) });
+            navigation.navigate("Pdf Files")
         } catch (error) {
 
         }

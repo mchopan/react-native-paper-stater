@@ -1,19 +1,22 @@
 import { Alert, ImageBackground, ScrollView, StyleSheet, View } from 'react-native';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import CustomButton from '../../components/CustomButton';
 import RequestCard from '../../components/cards/RequestCard';
 import BookTruckCard from '../../components/cards/BookTruckCard';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import BookingServices from '../../api/bookingServices';
 import Geolocation from '@react-native-community/geolocation';
 import { promptForEnableLocationIfNeeded } from 'react-native-android-location-enabler';
 import axios from 'axios';
 import { MyContext } from '../../store/MyContext';
 import GeneratePdf from './GeneratePdf';
+import { UserTypeContext } from '../../store/UserTypeContext';
 
 const HomeScreen = () => {
 
     const navigation = useNavigation();
+
+    const { user } = useContext(UserTypeContext)
 
     // const { currentPlace, setCurrentPlace } = useContext(MyContext)
 
@@ -25,9 +28,7 @@ const HomeScreen = () => {
     //     getCurrentLocation();
     // };
 
-    useEffect(() => {
-        getBookings();
-    }, []);
+
 
     const getBookings = async () => {
         setIsLoading(true)
@@ -43,6 +44,13 @@ const HomeScreen = () => {
         }
         setIsLoading(false)
     };
+
+    useFocusEffect(
+        useCallback(() => {
+            getBookings();
+        }, [user])
+    );
+
 
     // const getCurrentLocation = () => {
     //     setIsLoading(true);
@@ -95,7 +103,7 @@ const HomeScreen = () => {
                     <CustomButton icon={require("../../assets/MapPinLight.png")} mode='outlined' label={isLoading ? " Updating..." : "Update Your Location"} onPress={handleUpdateLocation} />
                 </View> */}
                 <BookTruckCard bookingDetails={bookingDetails} title={"Want to find a load?"} />
-                <GeneratePdf />
+                {/* <GeneratePdf /> */}
                 <RequestCard isLoading={isLoading} bookingDetails={bookingDetails} title={"Shipment Requests"} />
             </ScrollView>
         </ImageBackground>

@@ -83,6 +83,16 @@ class BookingServices {
         }
     }
 
+    static async cancelBooking(bookingId, driverId) {
+        try {
+            const response = await axiosInstance.post(`bookingCancel`, { bookingId, driverId });
+            return response;
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
+    }
+
     static async sendPushNotificationsToDrivers(data) {
         try {
             const response = await axiosInstance.post(`sendPushNotificationsToDrivers`, data);

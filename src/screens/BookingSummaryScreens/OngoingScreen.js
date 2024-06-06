@@ -1,5 +1,5 @@
 import { Image, StyleSheet, View } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import BookingServices from '../../api/bookingServices'
 import { FlatList } from 'react-native-gesture-handler'
 import BookingSummaryCard from '../../components/cards/BookingSummaryCard'
@@ -17,9 +17,6 @@ const OngoingScreen = () => {
 
     const [ongoingData, setOngoingData] = useState([])
 
-    useFocusEffect(() => {
-        navigation.setOptions({ title: 'Ongoing' }); // Set the tab name as screen title
-    });
 
     const getBookings = async () => {
         try {
@@ -50,10 +47,11 @@ const OngoingScreen = () => {
     //     }
     // }
 
-
-    useEffect(() => {
-        getBookings()
-    }, [])
+    useFocusEffect(
+        useCallback(() => {
+            getBookings();
+        }, [user])
+    );
 
 
 
