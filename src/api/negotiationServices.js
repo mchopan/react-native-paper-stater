@@ -91,6 +91,17 @@ class NegotiationServices {
             throw error;
         }
     }
+
+    static async sendPushNotificationsToAllDealers(data) {
+        try {
+            const response = await axiosInstance.post(`notify-dealers`, data);
+            return response;
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
+    }
 }
+
 
 export default NegotiationServices;

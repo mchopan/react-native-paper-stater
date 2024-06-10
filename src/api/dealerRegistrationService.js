@@ -29,6 +29,16 @@ class DealerRegistrationService {
             throw error;
         }
     }
+
+    static async updateDealerDeviceToken(dealerId, deviceToken) {
+        try {
+            const response = await axiosInstance.put(`update-dealer-device-token`, { dealerId, deviceToken });
+            return response;
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
+    }
 }
 
 export default DealerRegistrationService;

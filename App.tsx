@@ -2,17 +2,32 @@ import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {useTheme} from 'react-native-paper';
 import AuthNavigation from './src/navigation/auth';
-import {PermissionsAndroid, StatusBar} from 'react-native';
+import {StatusBar} from 'react-native';
 import Toast from 'react-native-toast-message';
 import {MyContext} from './src/store/MyContext';
 import MainNavigation from './src/navigation/main';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import {Platform} from 'react-native';
 import {request, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
+import {
+  requestUserPermission,
+  getToken,
+  handleForegroundMessages,
+  handleBackgroundMessages,
+} from './messaging';
+
 export default function App() {
+  React.useEffect(() => {
+    requestUserPermission();
+    getToken();
+    const unsubscribeForeground = handleForegroundMessages();
+    handleBackgroundMessages();
+    return () => {
+      unsubscribeForeground();
+    };
+  }, []);
+
   const theme = useTheme();
   const {isAuthenticated, setIsAuthenticated} = React.useContext(MyContext);
 

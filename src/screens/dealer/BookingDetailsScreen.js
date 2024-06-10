@@ -12,50 +12,29 @@ import BookingServices from '../../api/bookingServices';
 import Loading from '../../components/Loading';
 
 
-
-const data = [
-    { label: 'Item 1', value: '1' },
-    { label: 'Item 2', value: '2' },
-    { label: 'Item 3', value: '3' },
-    { label: 'Item 4', value: '4' },
-    { label: 'Item 5', value: '5' },
-    { label: 'Item 6', value: '6' },
-    { label: 'Item 7', value: '7' },
-    { label: 'Item 8', value: '8' },
-]
-
 const vehicleTypeData = [
-    { "label": "Truck Type 1", "value": "truck_type_1" },
-    { "label": "Truck Type 2", "value": "truck_type_2" },
-    { "label": "Truck Type 3", "value": "truck_type_3" }
-]
+    { "label": "Mini Truck", "value": "Mini Truck" },
+    { "label": "Light Commercial Vehicle (LCV)", "value": "Light Commercial Vehicle (LCV)" },
+    { "label": "Medium Duty Truck (MDT)", "value": "Medium Duty Truck (MDT)" },
+    { "label": "Heavy Duty Truck (HDT)", "value": "Heavy Duty Truck (HDT)" },
+    { "label": "Multi-Axle Truck", "value": "Multi-Axle Truck" },
+    { "label": "Refrigerated Truck", "value": "Refrigerated Truck" },
+    { "label": "Container Truck", "value": "Container Truck" },
+    { "label": "Tanker Truck", "value": "Tanker Truck" },
+    { "label": "Tipper Truck", "value": "Tipper Truck" },
+    { "label": "Trailer", "value": "Trailer" }
+];
 
 const goodsData = [
-    { "label": "Electronics", "value": "electronics", "stock": 100 },
-    { "label": "Clothing", "value": "clothing", "stock": 150 },
-    { "label": "Books", "value": "books", "stock": 200 },
-    { "label": "Toys", "value": "toys", "stock": 120 },
-    { "label": "Furniture", "value": "furniture", "stock": 80 }
+    { "label": "Scraps", "value": "Scraps" },
+    { "label": "Plastic", "value": "Plastic" },
+    { "label": "Tyre", "value": "Tyre" },
+    { "label": "Paper Waste", "value": "Paper Waste" },
+    { "label": "Fruits", "value": "Fruits" },
+    { "label": "Wood", "value": "Wood" },
+    { "label": "Coal", "value": "Coal" }
 ]
 
-const weightData = [
-    { label: 'Item 1', value: '1' },
-    { label: 'Item 2', value: '2' },
-    { label: 'Item 3', value: '3' },
-    { label: 'Item 4', value: '4' },
-    { label: 'Item 5', value: '5' },
-    { label: 'Item 6', value: '6' },
-    { label: 'Item 7', value: '7' },
-    { label: 'Item 8', value: '8' },
-]
-
-const payment_options = [
-    { "label": "Subscription Billing", "value": "Subscription Billing" },
-    { "label": "One-Time Payments", "value": "One-Time Payments" },
-    { "label": "Custom Payment Plans", "value": "Custom Payment Plans" },
-    { "label": "Discounts and Coupons", "value": "Discounts and Coupons" },
-    { "label": "Multi-Currency Support", "value": "Multi-Currency Support" }
-]
 
 const payment_mode = [
     { "label": "Pay Online", "value": "Pay Online" },
@@ -78,7 +57,7 @@ const BookingDetailsScreen = ({ navigation }) => {
     console.log(user, "user")
 
     const handleSubmit = async () => {
-        if (vehicleType == "" || goods == "" || weight == "" || paymentMode == "" || data == "") {
+        if (vehicleType == "" || goods == "" || weight == "" || paymentMode == "") {
             Toast.show({
                 type: 'info',
                 text1: `${'All fields are required'}`,
@@ -100,7 +79,7 @@ const BookingDetailsScreen = ({ navigation }) => {
                 dealerPhoneNumber: user.phoneNumber,
             })
             if (res.status == 201) {
-                const notificationResponse = await BookingServices.sendPushNotificationsToDrivers(res.data._id)
+                await BookingServices.sendPushNotificationsToDrivers(res.data._id)
                 Toast.show({
                     type: "success",
                     text1: "Notification send successfully"

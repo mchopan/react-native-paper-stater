@@ -55,6 +55,7 @@ const MakeBidScreen = () => {
             };
             const response = await NegotiationServices.createNegotiation(data);
             if (response.status === 201) {
+                await NegotiationServices.sendPushNotificationsToAllDealers(response.data._id)
                 Toast.show({
                     type: "success",
                     text1: "Bid Created Successfully",

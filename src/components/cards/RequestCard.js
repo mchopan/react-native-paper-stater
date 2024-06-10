@@ -52,6 +52,8 @@ export const SmallCard = ({ title, fromLocation, toLocation, item }) => {
 
 const RequestCard = ({ title, bookingDetails, isLoading }) => {
 
+    const bookingDetailsReverse = bookingDetails.reverse();
+
     const navigation = useNavigation()
 
     const handleViewAll = () => {
@@ -64,9 +66,9 @@ const RequestCard = ({ title, bookingDetails, isLoading }) => {
                 <Text style={{ color: Colors.primary, fontWeight: "800", fontSize: 14, fontFamily: "GothicA1-Regular" }}>{title}</Text>
             </View>
             {
-                bookingDetails?.length < 1 ? <Image resizeMode='cover' style={{ height: 50, width: 50, alignSelf: "center" }} source={require("../../assets/emptyicon2.png")} /> : <>
+                bookingDetailsReverse?.length < 1 ? <Image resizeMode='cover' style={{ height: 50, width: 50, alignSelf: "center" }} source={require("../../assets/emptyicon2.png")} /> : <>
                     <FlatList
-                        data={bookingDetails?.slice(0, 3)}
+                        data={bookingDetailsReverse?.slice(0, 3)}
                         renderItem={({ item }) => {
                             return (
                                 isLoading ? <Loading height={50} size={"small"} position={'relative'} /> : <SmallCard item={item} title={item.selectGoodsType} fromLocation={item.pickUpCityLocation} toLocation={item.dropCityLocation} />

@@ -50,6 +50,16 @@ class DriverRegistrationService {
             throw error;
         }
     }
+
+    static async updateDeviceToken(driverId, deviceToken) {
+        try {
+            const response = await axiosInstance.put(`update-device-token`, { driverId, deviceToken });
+            return response;
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
+    }
 }
 
 export default DriverRegistrationService;

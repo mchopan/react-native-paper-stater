@@ -90,8 +90,6 @@ const LoadDetailsScreen = () => {
     const handleSubmit = () => {
         navigation.navigate("Home")
     }
-
-    console.log(user?.active, "hello there")
     return (
         <View style={{ flex: 1, marginHorizontal: 10 }}>
             <View style={{ alignItems: "center", marginBottom: 20, marginTop: 20, }}>
@@ -102,9 +100,12 @@ const LoadDetailsScreen = () => {
 
                 {/* <CustomButton mode='contained' label="Accept and Pay" onPress={handleSubmit} /> */}
                 {
-                    user?.active == false && <>
+                    user?.active == false ? <>
                         <Payment label="Accept and Pay" item={item} />
                         <CustomButton mode='outlined' label="Not Interested" onPress={handleSubmit} />
+                    </> : <>
+                        <Text style={{ fontSize: 13, color: Colors.error, textAlign: "center" }}>An existing booking is already in progress</Text>
+                        <CustomButton mode='outlined' label="Check Your Bookings" onPress={() => { navigation.navigate("Booking Summary") }} />
                     </>
                 }
             </View>

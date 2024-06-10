@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useTheme } from 'react-native-paper'
 import { Colors } from '../../theme/colors'
 import CustomInput from '../../components/CustomInput'
@@ -11,10 +11,19 @@ import { MyContext } from '../../store/MyContext'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DriverRegistrationService from '../../api/driverRegistrationService'
 import Loading from '../../components/Loading'
+import messaging from '@react-native-firebase/messaging';
 
 
 
 const Login = ({ navigation, route }) => {
+
+    const [fcmToken, setFcmToken] = useState(null);
+
+    useEffect(() => {
+        messaging().getToken().then(token => {
+            setFcmToken(token);
+        });
+    }, []);
 
 
     const { setIsAuthenticated } = React.useContext(MyContext);
@@ -50,6 +59,8 @@ const Login = ({ navigation, route }) => {
             try {
                 const res = await DealerRegistrationService.login(formData)
                 if (res.status == 200) {
+                    const dealerId = res.data.user._id
+                    await DealerRegistrationService.updateDealerDeviceToken(dealerId, fcmToken)
                     await AsyncStorage.setItem('dealerData', JSON.stringify(res.data.user));
                     setIsAuthenticated(true)
                     Toast.show({
@@ -72,7 +83,9 @@ const Login = ({ navigation, route }) => {
             try {
                 const res = await DriverRegistrationService.driverLogin(formData)
                 if (res.status == 200) {
+                    const driverId = res.data.user._id
                     if (res.data.user != null) {
+                        await DriverRegistrationService.updateDeviceToken(driverId, fcmToken)
                         await AsyncStorage.setItem('driverData', JSON.stringify(res.data.user));
                     }
                     setIsAuthenticated(true)
