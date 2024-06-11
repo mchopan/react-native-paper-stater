@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { Button, IconButton, Text } from 'react-native-paper';
 import Card from '../../components/cards/Card';
 import { Colors } from '../../theme/colors';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -8,14 +8,15 @@ import CustomInput from '../../components/CustomInput';
 import { MyContext } from '../../store/MyContext';
 import NegotiationServices from '../../api/negotiationServices';
 import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext';
+import Loading from '../../components/Loading';
 
 const formatDisplayLocationName = (displayName) => {
     const parts = displayName.split(', ');
     return parts.slice(0, 1).join(', ');
 };
 
-const BidCard = ({ price }) => {
-    const { item, setItem } = useContext(MyContext);
+const BidCard = ({ isLoading, setIsLoading }) => {
+    const { item, setItem, user } = useContext(MyContext);
     const { userType } = useContext(UserTypeContext);
 
     const { prices, setPrices } = useContext(MyContext);
@@ -25,10 +26,13 @@ const BidCard = ({ price }) => {
     const [newAmount, setNewAmount] = useState('');
 
     const getNegotiationById = useCallback(async () => {
+        setIsLoading(true)
         try {
             const response = await NegotiationServices.getNegotiationById(item._id);
             setItem(response.data);
+            setIsLoading(false)
         } catch (error) {
+            setIsLoading(false)
             console.error(error);
         }
     }, [item._id, setItem, prices]);
@@ -39,27 +43,42 @@ const BidCard = ({ price }) => {
     }, [getNegotiationById]);
 
     const handleAccept = async (id) => {
+        setIsLoading(true)
         try {
             const response = await NegotiationServices.updateNegotiationStatus(id, 'accept');
             if (response.status === 200) {
+                const negotiationId = item._id;
+                const flag = userType === USER_TYPES.DEALER ? "dealer" : "driver"
+                const id = user._id
+                await NegotiationServices.sendPushNotification({ id, flag, negotiationId })
+                setIsLoading(false)
                 fetchData();
             }
         } catch (error) {
+            setIsLoading(true)
             console.error(error);
         }
     };
 
     const handleReject = async (id) => {
+        setIsLoading(true)
         try {
             const response = await NegotiationServices.updateNegotiationStatus(id, 'reject');
             if (response.status === 200) {
-                if (userType === USER_TYPES.DEALER) {
-                    navigation.navigate('Home');
-                } else {
-                    navigation.goBack();
-                }
+                const negotiationId = item._id;
+                const flag = userType === USER_TYPES.DEALER ? "dealer" : "driver"
+                const id = user._id
+                await NegotiationServices.sendPushNotification({ id, flag, negotiationId })
+                setIsLoading(false)
+                fetchData()
+                // if (userType === USER_TYPES.DEALER) {
+                //     navigation.navigate('Home');
+                // } else {
+                //     navigation.goBack();
+                // }
             }
         } catch (error) {
+            setIsLoading(false)
             console.error(error);
         }
     };
@@ -69,18 +88,28 @@ const BidCard = ({ price }) => {
     };
 
     const handleAmountChange = async () => {
+        if (newAmount == "") {
+            return
+        }
+        setIsLoading(true)
         try {
             const data = {
                 price: newAmount,
-                offeredBy: userType === USER_TYPES.DEALER ? "dealer" : "driver"
+                offeredBy: userType === USER_TYPES.DEALER ? "dealer" : "driver",
+                dealerId: userType === USER_TYPES.DEALER ? user._id : null
             };
             const negotiationId = item._id;
             const response = await NegotiationServices.addPrice(negotiationId, data);
             console.log(response.data, "Price updated");
+            const flag = userType === USER_TYPES.DEALER ? "dealer" : "driver"
+            const id = user._id
+            await NegotiationServices.sendPushNotification({ id, flag, negotiationId })
             setNewAmount('');
+            setIsLoading(false)
             setRebid(false);
             fetchData();
         } catch (error) {
+            setIsLoading(false)
             console.error(error);
         }
     };
@@ -115,7 +144,7 @@ const BidCard = ({ price }) => {
                 {(isDriver && !lastBidByDriver || !isDriver && lastBidByDriver) && (
                     <>
                         <Button
-                            disabled={item?.status === "accept" || item?.status === "reject"}
+                            disabled={item?.status === "accept" || item?.status === "reject" || isLoading}
                             style={styles.btnStyle}
                             mode="outlined"
                             onPress={() => handleAccept(item._id)}
@@ -123,7 +152,7 @@ const BidCard = ({ price }) => {
                             {item?.status === "accept" ? "Accepted" : "Accept"}
                         </Button>
                         <Button
-                            disabled={item?.status === "accept" || item?.status === "reject"}
+                            disabled={item?.status === "accept" || item?.status === "reject" || isLoading}
                             style={styles.btnStyle}
                             mode="outlined"
                             onPress={() => handleReject(item._id)}
@@ -131,7 +160,7 @@ const BidCard = ({ price }) => {
                             {item?.status === "reject" ? "Rejected" : "Reject"}
                         </Button>
                         <Button
-                            disabled={item?.status === "accept" || item?.status === "reject"}
+                            disabled={item?.status === "accept" || item?.status === "reject" || isLoading}
                             style={[styles.btnStyle, { alignSelf: "flex-start" }]}
                             mode="outlined"
                             onPress={handleRebid}
@@ -145,6 +174,7 @@ const BidCard = ({ price }) => {
             {rebid && (
                 <View style={{ marginTop: 10 }}>
                     <CustomInput
+                        disabled={isLoading}
                         inputIcon='send'
                         keyboardType='number-pad'
                         type='text'
@@ -160,28 +190,41 @@ const BidCard = ({ price }) => {
 };
 
 const BidChat = () => {
+
+    const [isLoading, setIsLoading] = useState(false)
+
     const { item, setItem } = useContext(MyContext);
     const { prices, setPrices } = useContext(MyContext);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await NegotiationServices.getNegotiationById(item._id);
-                setPrices(response.data.prices);
-            } catch (error) {
-                console.error(error);
-            }
-        };
+    const fetchData = async () => {
+        setIsLoading(true)
+        try {
+            const response = await NegotiationServices.getNegotiationById(item._id);
+            setPrices(response.data.prices);
+            setIsLoading(false)
+        } catch (error) {
+            setIsLoading(false)
+            console.error(error);
+        }
+    };
 
+    useEffect(() => {
         fetchData();
     }, [item._id, setPrices]);
 
     const reverseArray = prices.slice(0, -1).reverse();
 
+    const handleRefresh = () => {
+        fetchData()
+    }
+
     return (
         <>
-            <BidCard item={item} price={2000} />
-            <Text style={[styles.header, { margin: 10 }]}>Previous Prices</Text>
+            <BidCard isLoading={isLoading} setIsLoading={setIsLoading} item={item} />
+            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                <Text style={[styles.header, { margin: 10 }]}>Previous Prices</Text>
+                <IconButton icon={"refresh"} size={30} onPress={handleRefresh} />
+            </View>
             <FlatList
                 data={reverseArray}
                 renderItem={({ item }) => {
@@ -200,6 +243,9 @@ const BidChat = () => {
                 }}
                 keyExtractor={(item, index) => index.toString()}
             />
+            {
+                isLoading && <Loading />
+            }
         </>
     );
 };

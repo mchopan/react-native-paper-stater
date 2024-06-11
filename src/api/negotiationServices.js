@@ -101,6 +101,16 @@ class NegotiationServices {
             throw error;
         }
     }
+
+    static async sendPushNotification(data) {
+        try {
+            const response = await axiosInstance.post(`notify-user`, data);
+            return response;
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
+    }
 }
 
 

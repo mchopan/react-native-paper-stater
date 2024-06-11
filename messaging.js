@@ -1,7 +1,6 @@
 // /src/services/notificationService.js
 
 import messaging from '@react-native-firebase/messaging';
-import { Alert } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 // Request permission to receive notifications
@@ -32,7 +31,8 @@ export function handleForegroundMessages() {
         // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
         Toast.show({
             type: "info",
-            text1: remoteMessage.notification.body,
+            text1: remoteMessage.notification.title,
+            text2: remoteMessage.notification.body,
             visibilityTime: 10000
         })
     });
