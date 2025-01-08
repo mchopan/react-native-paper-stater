@@ -9,6 +9,7 @@ import ConfirmationScreen from '../../screens/commonScreens/ConfirmationScreen'
 import DriverRegistration from '../../screens/driver/DriverRegistration'
 import GenerateOtpScreen from '../../screens/commonScreens/GenerateOtpScreen'
 import NetworkLogs from '../../screens/NetworkLogs'
+import ForgotPassword from '../../screens/commonScreens/ForgotPassword'
 const Stack = createNativeStackNavigator()
 
 const AuthNavigation = () => {
@@ -29,7 +30,7 @@ const AuthNavigation = () => {
             <Stack.Screen name='Confirmation' component={ConfirmationScreen} />
             <Stack.Screen name='Register Number' component={GenerateOtpScreen} />
             <Stack.Screen name='Network Logs' component={NetworkLogs} />
-
+            <Stack.Screen name='Forgot Password' component={ForgotPassword} />
             {/* Dealer Stack */}
             <Stack.Screen name='Registration' component={Registration} />
 

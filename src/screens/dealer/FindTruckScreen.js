@@ -22,6 +22,9 @@ const FindTruckScreen = ({ navigation }) => {
     }
 
     const [driversData, setDriversData] = useState([])
+    const [filteredDrivers, setFilteredDrivers] = useState([])
+    const [sortByDate, setSortByDate] = useState(false)
+    const [filterByVehicle, setFilterByVehicle] = useState(false)
 
     const getAllDrivers = async () => {
         try {
@@ -36,25 +39,59 @@ const FindTruckScreen = ({ navigation }) => {
 
     useEffect(() => {
         getAllDrivers()
-        console.log(driversData, "driver")
     }, [])
 
+    useEffect(() => {
+        // Apply filters whenever driversData changes or filters are toggled
+        let result = [...driversData]
+
+        if (sortByDate) {
+            result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        }
+
+        if (filterByVehicle && vehicleType?.value) {
+            result = result.filter(driver =>
+                driver.vehicleType?.toLowerCase() === vehicleType.value.toLowerCase()
+            )
+        }
+
+        setFilteredDrivers(result)
+    }, [driversData, sortByDate, filterByVehicle, vehicleType])
+
+    const handleDateSort = () => {
+        setSortByDate(!sortByDate)
+    }
+
+    useEffect(() => {
+        console.log(filteredDrivers, "filtered")
+    }, [filteredDrivers])
 
 
-    const handleBid = async () => {
+    const handleVehicleFilter = () => {
+        setFilterByVehicle(!filterByVehicle)
+    }
+
+    const handleBid = async (driverId) => {
+        console.log(driverId, "driverId")
         try {
             const res = await BookingServices.createBooking({
-                pickUpCityLocation: pickUpLocation.value.city,
-                dropCityLocation: dropLocation.value.city,
+                dealer: user._id,
+                pickUpCityLocation: pickUpLocation,
+                dropCityLocation: dropLocation,
                 selectDate: date,
                 selectVehicleType: vehicleType.value,
                 selectGoodsType: goods.value,
                 enterWeightKg: weight,
                 advancePayment: paymentMode.value,
+                dealerPhoneNumber: user.phoneNumber,
             })
-            console.log(res.status)
             if (res.status == 201) {
-                const notificationResponse = await BookingServices.bidDriver(user._id, res.data._id, "663c562fb2ada5b2a0016945")
+                const data = {
+                    dealerId: user._id,
+                    driverId: driverId,
+                    bookingId: res.data._id
+                }
+                const notificationResponse = await BookingServices.bidDriver(data)
                 console.log(notificationResponse, "noti")
                 Toast.show({
                     type: "success",
@@ -73,14 +110,24 @@ const FindTruckScreen = ({ navigation }) => {
                 <View style={[styles.buttonContainer, {
                     backgroundColor: Colors.tertiary,
                 }]}>
-                    <CustomButton direction='row' mode='contained' label="Date Posted" onPress={handleSubmit} />
-                    <CustomButton direction='row' mode='contained' label="Vehicle Type" onPress={handleSubmit} />
+                    <CustomButton
+                        direction='row'
+                        mode={sortByDate ? 'contained' : 'outlined'}
+                        label="Date Posted"
+                        onPress={handleDateSort}
+                    />
+                    <CustomButton
+                        direction='row'
+                        mode={filterByVehicle ? 'contained' : 'outlined'}
+                        label="Vehicle Type"
+                        onPress={handleVehicleFilter}
+                    />
                 </View>
             </View>
             <FlatList
-                data={driversData}
+                data={filteredDrivers}
                 renderItem={({ item }) => (
-                    <SelectTruckCard driversData={item} navigation={navigation} onPress={handleBid} />
+                    <SelectTruckCard driversData={item} navigation={navigation} onPress={() => handleBid(item._id)} />
                 )}
             />
         </ImageBackground>

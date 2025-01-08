@@ -53,6 +53,7 @@ class BookingServices {
 
 
     static async bidDriver(data) {
+        console.log(data, "data in bid service")
         try {
             const response = await axiosInstance.post(`bidDriver`, data);
             return response;

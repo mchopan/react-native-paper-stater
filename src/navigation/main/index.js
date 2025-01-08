@@ -20,6 +20,7 @@ import CallSupport from '../../screens/commonScreens/CallSupport'
 import About from '../../screens/commonScreens/About'
 import BidHistory from '../../screens/commonScreens/BidHistory'
 import PdfFiles from '../../screens/driver/PdfFiles'
+import PrivacyPolicy from '../../screens/commonScreens/PrivacyPolicy'
 
 const Stack = createNativeStackNavigator()
 
@@ -46,6 +47,7 @@ const MainNavigation = () => {
             <Stack.Screen name='Refer a Friend' component={ReferAFriend} />
             <Stack.Screen name='Call Support' component={CallSupport} />
             <Stack.Screen name='About Us' component={About} />
+            <Stack.Screen name='Privacy Policy' component={PrivacyPolicy} />
             <Stack.Screen name='Network Logs' component={NetworkLogs} />
             {/* Driver Stack */}
             <Stack.Screen options={{ headerShown: false }} name='Driver Menu Screen' component={DrawerNavigation} />

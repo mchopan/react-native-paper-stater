@@ -140,7 +140,7 @@ const Login = ({ navigation, route }) => {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.resendOtpContainer}>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.navigate("Forgot Password")}>
                             <Text style={{ fontFamily: "GothicA1-Regular", color: theme.colors.primary, fontWeight: "600" }}>Forgot Password?</Text>
                         </TouchableOpacity>
                     </View>

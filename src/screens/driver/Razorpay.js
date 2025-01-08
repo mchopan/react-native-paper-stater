@@ -66,7 +66,7 @@ const Payment = ({ label, amount, item }) => {
 
     const handlePayment = async () => {
         try {
-            amount = 1000;
+            amount = 1000 * 100;
             const orderId = await fetchOrderId(amount);
 
             const options = {

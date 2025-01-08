@@ -21,7 +21,7 @@ const CustomDrawerItem = ({ label, icon, onPress }) => (
     <DrawerItem
         label={label}
         labelStyle={{ color: 'white', fontFamily: 'GothicA1-Regular', fontSize: 15, fontWeight: '700' }}
-        icon={() => <Image resizeMode="contain" style={{ height: 25, width: 25 }} source={icon} />}
+        icon={() => <Image resizeMode="contain" style={{ height: 25, width: 25, tintColor: 'white' }} source={icon} />}
         onPress={onPress}
     />
 );
@@ -156,6 +156,7 @@ const CustomDrawerContent = (props) => {
                     userType == USER_TYPES.DRIVER && <CustomDrawerItem label="My Bilties" icon={require('../assets/bill1.png')} onPress={() => props.navigation.navigate('Pdf Files')} />
                 }
                 <CustomDrawerItem label="About Us" icon={require('../assets/aboutus.png')} onPress={() => props.navigation.navigate('About Us')} />
+                <CustomDrawerItem label="Privacy Policy" icon={require('../assets/privacy-policy.png')} onPress={() => props.navigation.navigate('Privacy Policy')} />
                 <CustomDrawerItem label="Log Out" icon={require('../assets/logout.png')} onPress={showLogoutAlert} />
             </DrawerContentScrollView>
         </View>
