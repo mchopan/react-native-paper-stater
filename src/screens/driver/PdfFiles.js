@@ -40,7 +40,7 @@ const PdfFiles = () => {
             RNFS.readDir(directoryPath)
                 .then((result) => {
                     const pdfFiles = result.filter(file => file.isFile() && file.name.endsWith('.pdf'));
-                    setPdfFiles(pdfFiles);
+                    setPdfFiles(pdfFiles.reverse());
                 })
                 .catch((err) => {
                     console.log(err.message, err.code);
@@ -73,27 +73,50 @@ const PdfFiles = () => {
         }
     };
 
-    const renderItem = ({ item }) => (
-        <View style={styles.itemContainer}>
-            <TouchableOpacity
-                style={styles.touchable}
-                onPress={() => openFile(item.path)}
-            >
-                <View style={styles.item}>
-                    <Text style={styles.text}>{item.name}</Text>
-                </View>
-                <View>
-                    <Image style={styles.image} source={require('../../assets/pdficon.png')} />
-                </View>
-            </TouchableOpacity>
-            <IconButton
-                icon="share"
-                iconColor={Colors.primary}
-                size={30}
-                onPress={() => onShare(item.path)}
-            />
-        </View>
-    );
+    const formatFileName = (fileName) => {
+        // Remove 'transport_receipt_' prefix
+        const timestamp = fileName.replace('transport_receipt_', '').replace('.pdf', '');
+        // Convert timestamp to Date object
+        const date = new Date(parseInt(timestamp));
+        return {
+            title: 'Transport Receipt',
+            datetime: date.toLocaleString() // Format: "1/10/2024, 12:34:56 PM"
+        };
+    };
+
+    const renderItem = ({ item }) => {
+        const fileInfo = formatFileName(item.name);
+        return (
+            <View style={styles.itemContainer}>
+                <TouchableOpacity
+                    style={styles.touchable}
+                    onPress={() => openFile(item.path)}
+                >
+                    <View style={styles.fileInfo}>
+                        <Image
+                            style={styles.image}
+                            source={require('../../assets/pdficon.png')}
+                        />
+                        <View style={styles.textContainer}>
+                            <Text style={styles.fileName} numberOfLines={1}>
+                                {fileInfo.title}
+                            </Text>
+                            <Text style={styles.fileDate}>
+                                {fileInfo.datetime}
+                            </Text>
+                        </View>
+                    </View>
+                </TouchableOpacity>
+                <IconButton
+                    icon="share"
+                    iconColor={Colors.primary}
+                    size={24}
+                    style={styles.shareButton}
+                    onPress={() => onShare(item.path)}
+                />
+            </View>
+        );
+    };
 
     return (
         <View style={styles.container}>
@@ -109,40 +132,58 @@ const PdfFiles = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 10,
+        padding: 16,
+        backgroundColor: '#f5f5f5',
     },
     itemContainer: {
         flexDirection: "row",
-        marginBottom: 10,
+        alignItems: "center",
+        marginBottom: 12,
+        backgroundColor: '#ffffff',
+        borderRadius: 12,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
     touchable: {
+        flex: 1,
         flexDirection: "row",
-        justifyContent: "space-between",
         alignItems: "center",
-        borderRadius: 10,
-        height: 60,
-        width: "80%",
-        backgroundColor: "#931b1b",
-        padding: 10,
+        padding: 12,
     },
-    text: {
-        fontSize: 16,
-        color: "white"
-    },
-    image: {
-        height: 20,
-        width: 20,
-    },
-    shareButton: {
-        marginTop: 5,
-        backgroundColor: '#007bff',
-        padding: 10,
-        borderRadius: 5,
+    fileInfo: {
+        flex: 1,
+        flexDirection: 'row',
         alignItems: 'center',
     },
-    shareButtonText: {
-        color: 'white',
-        fontSize: 14,
+    image: {
+        height: 40,
+        width: 40,
+        marginRight: 12,
+    },
+    textContainer: {
+        flex: 1,
+    },
+    fileName: {
+        fontSize: 16,
+        color: '#333333',
+        fontWeight: '600',
+        marginBottom: 4,
+    },
+    fileDate: {
+        fontSize: 13,
+        color: '#666666',
+        fontWeight: '400',
+    },
+    shareButton: {
+        marginRight: 8,
+        backgroundColor: '#f0f0f0',
+        borderRadius: 20,
     },
 });
 

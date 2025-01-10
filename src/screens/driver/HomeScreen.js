@@ -36,7 +36,7 @@ const HomeScreen = () => {
             const response = await BookingServices.getAllBookings();
             const allBookings = response.data;
             const pendingBookings = allBookings.filter(item => item.status === "pending");
-            setBookingDetails(pendingBookings);
+            setBookingDetails([...pendingBookings].reverse());
             setIsLoading(false)
         } catch (error) {
             setIsLoading(false)

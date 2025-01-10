@@ -6,6 +6,9 @@ import CustomInput from '../../components/CustomInput'
 import CustomButton from '../../components/CustomButton'
 import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext'
 import { MyContext } from '../../store/MyContext'
+import OTPServices from '../../api/otpServices'
+import Toast from 'react-native-toast-message'
+import Loading from '../../components/Loading'
 
 const GenerateOtpScreen = ({ navigation, route }) => {
 
@@ -16,17 +19,72 @@ const GenerateOtpScreen = ({ navigation, route }) => {
     const theme = useTheme()
 
     const [phoneNumberError, setPhoneNumberError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
+    const validatePhoneNumber = (number) => {
+        const phoneRegex = /^[6-9]\d{9}$/;  // Indian phone number validation
+        return phoneRegex.test(number);
+    };
 
-    const handleSubmit = () => {
-        if (phoneNumber?.length !== 10) {
-            setPhoneNumberError("please enter your phone number")
-            return null
+    const handlePhoneChange = (text) => {
+        setPhoneNumber(text);
+        if (!text) {
+            setPhoneNumberError('Phone number is required');
+        } else if (!validatePhoneNumber(text)) {
+            setPhoneNumberError('Please enter a valid 10-digit phone number');
+        } else {
+            setPhoneNumberError('');
         }
-        if (!!phoneNumber) {
-            navigation.navigate("Verification")
+    };
+
+    const handleSubmit = async () => {
+        if (!phoneNumber) {
+            setPhoneNumberError("Phone number is required");
+            return null;
         }
 
+        if (!validatePhoneNumber(phoneNumber)) {
+            setPhoneNumberError("Please enter a valid 10-digit phone number");
+            return null;
+        }
+
+        setIsLoading(true);
+        try {
+            // First check if phone number exists
+            const data = {
+                phoneNumber,
+                userType
+            }
+            const checkResponse = await OTPServices.checkPhoneExists(data);
+            console.log(checkResponse, "checkResponse")
+            if (checkResponse.exists) {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Phone number already registered',
+                    text2: 'Please use a different number or login'
+                });
+                setIsLoading(false);
+                return;
+            }
+
+            // If phone doesn't exist, proceed with OTP
+            const response = await OTPServices.sendOTP({ phoneNumber });
+            navigation.navigate("Verification", {
+                sessionId: response.sessionId
+            });
+            Toast.show({
+                type: 'success',
+                text1: 'OTP sent successfully',
+            });
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Failed to send OTP',
+                text2: error.message
+            });
+        } finally {
+            setIsLoading(false);
+        }
     };
 
 
@@ -47,22 +105,22 @@ const GenerateOtpScreen = ({ navigation, route }) => {
                         keyboardType='phone-pad'
                         label="Mobile Number"
                         placeholder="Enter your mobile number"
-                        onChangeText={(text) => {
-                            setPhoneNumber(text)
-                            if (text.length !== 10) {
-                                setPhoneNumberError('Phone number must be 10 digits');
-                            } else {
-                                setPhoneNumberError('');
-                            }
-                        }}
+                        onChangeText={handlePhoneChange}
                         value={phoneNumber}
                     />
                 </View>
             </View>
 
             <View style={styles.buttonContainer}>
-                <CustomButton mode='contained' label="Register" onPress={handleSubmit} />
+                <CustomButton
+                    mode='contained'
+                    label="Register"
+                    onPress={handleSubmit}
+                    disabled={!!phoneNumberError || !phoneNumber}
+                />
             </View>
+
+            {isLoading && <Loading />}
         </View>
     )
 }

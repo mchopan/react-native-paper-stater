@@ -1,29 +1,87 @@
 import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { OtpInput } from "react-native-otp-entry";
 import { Colors } from '../../theme/colors';
 import { useTheme } from 'react-native-paper';
 import CustomButton from '../../components/CustomButton';
 import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext';
 import { MyContext } from '../../store/MyContext';
+import OTPServices from '../../api/otpServices';
+import Toast from 'react-native-toast-message';
+import Loading from '../../components/Loading';
 
-const OtpScreen = ({ navigation }) => {
-
-
+const OtpScreen = ({ navigation, route }) => {
     const { userType } = useContext(UserTypeContext);
     const { phoneNumber } = useContext(MyContext);
+    const [isLoading, setIsLoading] = useState(false);
+    const [otp, setOtp] = useState('');
+    const [timer, setTimer] = useState(60);
+    const { sessionId } = route.params || {};
 
+    useEffect(() => {
+        let interval;
+        if (timer > 0) {
+            interval = setInterval(() => {
+                setTimer((prev) => prev - 1);
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [timer]);
+
+    const handleResendOTP = async () => {
+        if (timer > 0) return;
+        setIsLoading(true);
+        try {
+            const response = await OTPServices.sendOTP({ phoneNumber });
+            setTimer(60);
+            Toast.show({
+                type: 'success',
+                text1: 'OTP sent successfully',
+            });
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Failed to send OTP',
+                text2: error.message
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleSubmit = async () => {
+        if (otp.length !== 6) {
+            Toast.show({
+                type: 'info',
+                text1: 'Please enter complete OTP',
+            });
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            await OTPServices.verifyOTP({
+                sessionId,
+                otp
+            });
+
+            if (userType == USER_TYPES.DRIVER) {
+                navigation.navigate("Driver Registration");
+            } else {
+                navigation.navigate("Registration");
+            }
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Invalid OTP',
+                text2: error.message
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const theme = useTheme()
-
-    const handleSubmit = () => {
-        if (userType == USER_TYPES.DRIVER) {
-            navigation.navigate("Driver Registration")
-        }
-        else {
-            navigation.navigate("Registration")
-        }
-    }
 
     return (
         <View style={styles.mainContainer}>
@@ -39,15 +97,19 @@ const OtpScreen = ({ navigation }) => {
                 </Text>
             </View>
             <OtpInput
-                numberOfDigits={4}
+                numberOfDigits={6}
                 focusColor={theme.colors.primary}
                 focusStickBlinkingDuration={500}
-                onTextChange={(text) => console.log(text)}
-                onFilled={(text) => console.log(`OTP is ${text}`)}
+                onTextChange={(text) => setOtp(text)}
+                onFilled={(text) => setOtp(text)}
                 theme={{
                     containerStyle: styles.container,
                     inputsContainerStyle: styles.inputsContainer,
-                    pinCodeContainerStyle: styles.pinCodeContainer,
+                    pinCodeContainerStyle: {
+                        ...styles.pinCodeContainer,
+                        width: 45,
+                        height: 55
+                    },
                     pinCodeTextStyle: styles.pinCodeText,
                     focusStickStyle: styles.focusStick,
                     focusedPinCodeContainerStyle: styles.activePinCodeContainer,
@@ -55,15 +117,24 @@ const OtpScreen = ({ navigation }) => {
             />
             <View style={styles.resendOtpContainer}>
                 <TouchableOpacity>
-                    <Text style={{ color: theme.colors.primary }}>Didn’t get the OTP?</Text>
+                    <Text style={{ color: theme.colors.primary }}>Didn't get the OTP?</Text>
                 </TouchableOpacity>
-                <TouchableOpacity>
-                    <Text style={{ color: theme.colors.primary }}>Resent it(56s)</Text>
+                <TouchableOpacity onPress={handleResendOTP} disabled={timer > 0}>
+                    <Text style={{
+                        color: timer > 0 ? Colors.gray : theme.colors.primary
+                    }}>
+                        Resend {timer > 0 ? `(${timer}s)` : ''}
+                    </Text>
                 </TouchableOpacity>
             </View>
             <View style={styles.buttonContainer}>
-                <CustomButton mode='contained' label="Verify" onPress={handleSubmit} />
+                <CustomButton
+                    mode='contained'
+                    label="Verify"
+                    onPress={handleSubmit}
+                />
             </View>
+            {isLoading && <Loading />}
         </View>
     )
 }
@@ -85,13 +156,13 @@ const styles = StyleSheet.create({
         resizeMode: 'center',
     },
     container: {
-        paddingHorizontal: 40
+        paddingHorizontal: 20
     },
     pinCodeContainer: {
         backgroundColor: "#9cb4cf78",
         borderColor: Colors.gray,
-        width: 55,
-        height: 65
+        width: 45,
+        height: 55
     },
     pinCodeText: {
         color: Colors.primary

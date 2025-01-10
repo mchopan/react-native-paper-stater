@@ -4,68 +4,86 @@ import CustomButton from '../../components/CustomButton'
 import Card from '../../components/cards/Card'
 import { Colors } from '../../theme/colors'
 import DottenLine from '../../components/DottenLine'
-import Timeline from 'react-native-timeline-flatlist'
 
+const ConfirmationScreen = ({ navigation, route }) => {
+    // Get registration details from route params if needed
+    const { type = 'dealer' } = route.params || {};
 
-const data = [
-    { title: 'Confirmed Booking', },
-    { title: 'Picked Up', },
-    { title: 'On the way', },
-]
+    const getConfirmationMessage = () => {
+        if (type === 'dealer') {
+            return {
+                title: 'Registration Successful',
+                message: 'Your dealer account has been successfully created. You can now login to access your dashboard.',
+                buttonLabel: 'Go to Login',
+                navigateTo: 'Login'
+            }
+        }
+        // Add other types of confirmations if needed
+        return {
+            title: 'Confirmed',
+            message: 'Operation completed successfully',
+            buttonLabel: 'Continue',
+            navigateTo: 'Login'
+        }
+    }
 
-const ConfirmationScreen = () => {
+    const confirmationDetails = getConfirmationMessage();
 
     return (
-        <View style={{ flex: 1, }}>
+        <View style={{ flex: 1 }}>
             <View style={{ alignItems: "center", marginTop: 50 }}>
-                <Image style={{ height: 200, width: 200, resizeMode: "contain" }} source={require("../../assets/confirm.png")} />
+                <Image
+                    style={{ height: 200, width: 200, resizeMode: "contain" }}
+                    source={require("../../assets/confirm.png")}
+                />
             </View>
             <View style={{ marginTop: 20 }}>
                 <Card>
-                    <Text style={{ textAlign: "center", fontSize: 20, fontWeight: "800", fontFamily: "GothicA1-Regular", color: Colors.primary }}>
-                        Confirmed
+                    <Text style={styles.titleText}>
+                        {confirmationDetails.title}
                     </Text>
                     <DottenLine />
-                    <Text style={{ lineHeight: 15, textAlign: "left", fontSize: 12, fontWeight: "500", fontFamily: "GothicA1-Regular", color: Colors.gray }}>
-                        Your shipment has been successfully assigned to Mr Azaan.
+                    <Text style={styles.messageText}>
+                        {confirmationDetails.message}
                     </Text>
-                    <Text style={{ fontSize: 12, fontWeight: "700", fontFamily: "GothicA1-Regular", color: Colors.gray }}>
-                        Shipment ID: LSKJ329834DK
-                    </Text>
-                    <Text style={{ fontSize: 12, fontWeight: "700", fontFamily: "GothicA1-Regular", color: Colors.gray }}>
-                        Tracking ID: 382983920WB
-                    </Text>
-                    <Text style={{ fontSize: 12, fontWeight: "800", fontFamily: "GothicA1-Regular", color: Colors.primary }}>
-                        Shipment Status
-                    </Text>
-                    <ScrollView>
-                        <View>
-                            <Timeline
-                                style={{ justifyContent: "flex-start", }}
-                                circleSize={12}
-                                circleColor={Colors.primary}
-                                lineWidth={2}
-                                titleStyle={{ color: Colors.primary, fontFamily: "GothicA1-Regular", fontSize: 12, fontWeight: "700" }}
-                                data={data}
-                                showTime={false}
-                                isUsingFlatlist={false}
-                                eventContainerStyle={{ marginTop: -15, }}
-
-                            />
-                        </View>
-                    </ScrollView>
                 </Card>
             </View>
 
-            <View style={{ padding: 10, gap: 10, position: "absolute", bottom: 10, width: "100%", alignItems: "center" }}>
-                <CustomButton label='Track Shipment' mode='contained' onPress={() => navigation.navigate("Shipment Details")} />
+            <View style={styles.buttonContainer}>
+                <CustomButton
+                    label={confirmationDetails.buttonLabel}
+                    mode='contained'
+                    onPress={() => navigation.navigate(confirmationDetails.navigateTo)}
+                />
             </View>
-        </View >
+        </View>
     )
 }
 
 export default ConfirmationScreen
 
 const styles = StyleSheet.create({
-
+    titleText: {
+        textAlign: "center",
+        fontSize: 20,
+        fontWeight: "800",
+        fontFamily: "GothicA1-Regular",
+        color: Colors.primary
+    },
+    messageText: {
+        lineHeight: 20,
+        textAlign: "center",
+        fontSize: 14,
+        fontWeight: "500",
+        fontFamily: "GothicA1-Regular",
+        color: Colors.gray
+    },
+    buttonContainer: {
+        padding: 10,
+        gap: 10,
+        position: "absolute",
+        bottom: 10,
+        width: "100%",
+        alignItems: "center"
+    }
 });

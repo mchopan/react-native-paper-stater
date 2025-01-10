@@ -37,10 +37,13 @@ const fetchOrderId = async (amount) => {
 
 const Payment = ({ label, amount, item }) => {
 
+
     const { user, setUser, setPaymentData, paymentData } = useContext(MyContext)
     const { userType } = useContext(UserTypeContext)
 
     const navigation = useNavigation()
+
+    console.log(item, "item-----------")
 
     const updateBookingDetails = async () => {
         try {
@@ -57,10 +60,10 @@ const Payment = ({ label, amount, item }) => {
                 setUser(updatedUser);
             }
             const resData = res.data
-            await createPDF({ resData, user, setFilePath: (path) => console.log('PDF saved at:', path) });
+            await createPDF({ resData, user, loadDetails: item, setFilePath: (path) => console.log('PDF saved at:', path) });
             navigation.navigate("Pdf Files")
         } catch (error) {
-
+            console.log(error, "error")
         }
     }
 

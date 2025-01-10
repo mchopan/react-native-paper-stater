@@ -1,16 +1,16 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import React, { useContext, useState } from 'react';
 import { Colors } from '../../theme/colors';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
 import { USER_TYPES, UserTypeContext } from '../../store/UserTypeContext';
-import DealerRegistrationService from '../../api/dealerRegistrationService';
-import DriverRegistrationService from '../../api/driverRegistrationService';
 import Toast from 'react-native-toast-message';
 import Loading from '../../components/Loading';
+import OTPServices from '../../api/otpServices';
 
 const ForgotPassword = ({ navigation }) => {
-    const { userType } = useContext(UserTypeContext);
+    const { userType, setUserAsDriver, setUserAsDealer } = useContext(UserTypeContext);
+
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         phoneNumber: '',
@@ -19,6 +19,7 @@ const ForgotPassword = ({ navigation }) => {
         otp: ''
     });
     const [otpSent, setOtpSent] = useState(false);
+    const [sessionId, setSessionId] = useState(null);
 
     const handleInputChange = (name, value) => {
         setFormData({
@@ -38,18 +39,16 @@ const ForgotPassword = ({ navigation }) => {
 
         setIsLoading(true);
         try {
-            const service = userType === USER_TYPES.DEALER
-                ? DealerRegistrationService
-                : DriverRegistrationService;
+            const response = await OTPServices.sendOTP({
+                phoneNumber: formData.phoneNumber
+            });
 
-            const res = await service.sendOTP(formData.phoneNumber); // You'll need to create this endpoint
-            if (res.status === 200) {
-                setOtpSent(true);
-                Toast.show({
-                    type: 'success',
-                    text1: 'OTP sent successfully',
-                });
-            }
+            setSessionId(response.sessionId);
+            setOtpSent(true);
+            Toast.show({
+                type: 'success',
+                text1: 'OTP sent successfully',
+            });
         } catch (error) {
             Toast.show({
                 type: 'error',
@@ -80,18 +79,22 @@ const ForgotPassword = ({ navigation }) => {
 
         setIsLoading(true);
         try {
-            const service = userType === USER_TYPES.DEALER
-                ? DealerRegistrationService
-                : DriverRegistrationService;
+            const response = await OTPServices.forgotPassword({
+                phoneNumber: formData.phoneNumber,
+                newPassword: formData.newPassword,
+                sessionId: sessionId,
+                otp: formData.otp,
+                userType: userType
+            });
 
-            const res = await service.resetPassword(formData); // You'll need to create this endpoint
-            if (res.status === 200) {
-                Toast.show({
-                    type: 'success',
-                    text1: 'Password reset successfully',
-                });
-                navigation.navigate('Login');
-            }
+            Toast.show({
+                type: 'success',
+                text1: 'Password reset successfully',
+            });
+            userType === USER_TYPES.DEALER
+                ? setUserAsDealer()
+                : setUserAsDriver();
+            navigation.navigate('Login');
         } catch (error) {
             Toast.show({
                 type: 'error',
@@ -104,7 +107,7 @@ const ForgotPassword = ({ navigation }) => {
     };
 
     return (
-        <View style={styles.mainContainer}>
+        <ScrollView style={styles.mainContainer}>
             <View style={styles.formContainer}>
                 <Text style={styles.title}>Reset Password</Text>
 
@@ -160,7 +163,7 @@ const ForgotPassword = ({ navigation }) => {
                 )}
             </View>
             {isLoading && <Loading />}
-        </View>
+        </ScrollView>
     );
 };
 

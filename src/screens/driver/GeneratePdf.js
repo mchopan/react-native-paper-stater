@@ -1,8 +1,14 @@
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import { Alert } from 'react-native';
+import Toast from 'react-native-toast-message';
 
-export const createPDF = async ({ resData, user, setFilePath }) => {
-    console.log(resData, user, "inside pdf generator");
+export const createPDF = async ({ resData, user, setFilePath, loadDetails }) => {
+    // Extract driver data from resData
+    const driverData = resData.driverData || {};
+
+    // Format the date
+    const bookingDate = new Date(loadDetails.selectDate).toLocaleDateString();
+    const currentDate = new Date().toLocaleDateString();
 
     let options = {
         html: `<!DOCTYPE html>
@@ -37,49 +43,58 @@ export const createPDF = async ({ resData, user, setFilePath }) => {
             <p>Mobiles : 9149898208, 9796188416, 9596019343</p>
             <h2>FULL TRUCK AVAILABLE FOR ALL OVER INDIA</h2>
             <p>At Owner's Risk</p>
-            <p>Truck No.</p>
+            <p>Truck No. ${driverData.vehicleRegistrationNumber || ''}</p>
             <table>
                 <tr>
-                    <th>FROM</th>
-                    <td></td>
+                    <th>Driver Name</th>
+                    <td>${driverData.name || ''}</td>
                 </tr>
                 <tr>
-                    <th>TO</th>
-                    <td></td>
+                    <th>Driver Phone</th>
+                    <td>${driverData.phoneNumber || ''}</td>
                 </tr>
                 <tr>
-                    <th>Consignor's Name :</th>
-                    <td>${user.name}</td>
+                    <th>Dealer Phone</th>
+                    <td>${loadDetails.dealerPhoneNumber || ''}</td>
                 </tr>
                 <tr>
-                    <th>Address :</th>
-                    <td></td>
+                    <th>Vehicle Number</th>
+                    <td>${driverData.vehicleRegistrationNumber || ''}</td>
                 </tr>
                 <tr>
-                    <th>GSTIN:</th>
-                    <td></td>
+                    <th>Vehicle Type</th>
+                    <td>${loadDetails.selectVehicleType || ''}</td>
                 </tr>
                 <tr>
-                    <th>Consignee's Name :</th>
-                    <td></td>
+                    <th>Goods Type</th>
+                    <td>${loadDetails.selectGoodsType || ''}</td>
                 </tr>
                 <tr>
-                    <th>Address</th>
-                    <td></td>
+                    <th>Weight (KG)</th>
+                    <td>${loadDetails.enterWeightKg || ''}</td>
                 </tr>
                 <tr>
-                    <th>GSTIN:</th>
-                    <td></td>
+                    <th>Booking Date</th>
+                    <td>${bookingDate}</td>
                 </tr>
                 <tr>
-                    <th>Bill No.</th>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th>Date :</th>
-                    <td></td>
+                    <th>Payment Mode</th>
+                    <td>${loadDetails.advancePayment || ''}</td>
                 </tr>
             </table>
+
+            <h3>Journey Details</h3>
+            <table>
+                <tr>
+                    <th>From Location</th>
+                    <td>${loadDetails.pickUpCityLocation || ''}</td>
+                </tr>
+                <tr>
+                    <th>To Location</th>
+                    <td>${loadDetails.dropCityLocation || ''}</td>
+                </tr>
+            </table>
+            
             <table>
                 <tr>
                     <th>Package</th>
@@ -205,23 +220,35 @@ export const createPDF = async ({ resData, user, setFilePath }) => {
                     <td></td>
                 </tr>
             </table>
+            <p>Delivery From: ${loadDetails.pickUpCityLocation || ''} to ${loadDetails.dropCityLocation || ''}</p>
             <p>Delivery From</p>
             <p>1st White Copy: CONSIGNEE COPY, 2nd Pink Copy: Consignor Copy, 3rd Yellow Copy: DRIVER'S COPY, 4th Blue/Green Copy: Office Copy</p>
             <p>Booked as Terms & Conditions Overleaf</p>
             <p>Signature : ................................................</p>
+            <p>Driver Details: ${driverData.name || ''} (${driverData.phoneNumber || ''})</p>
+            <p>Vehicle: ${driverData.vehicleRegistrationNumber || ''}</p>
+            <p>Generated on: ${currentDate}</p>
             </center>
         </body>
         </html>`,
-        fileName: 'simplePdfFIle',
+        fileName: `transport_receipt_${Date.now()}`,
         directory: 'Documents',
     };
 
     try {
         let file = await RNHTMLtoPDF.convert(options);
         setFilePath(file.filePath);
-        Alert.alert('PDF created', `PDF has been saved to: ${file.filePath} `);
+        Toast.show({
+            type: 'success',
+            text1: 'PDF created',
+            text2: `PDF has been saved to: ${file.filePath} `
+        });
     } catch (error) {
         console.error(error);
-        Alert.alert('Error', 'Failed to create PDF');
+        Toast.show({
+            type: 'error',
+            text1: 'Error',
+            text2: 'Failed to create PDF'
+        });
     }
 };
