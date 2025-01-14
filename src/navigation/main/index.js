@@ -21,6 +21,7 @@ import About from '../../screens/commonScreens/About'
 import BidHistory from '../../screens/commonScreens/BidHistory'
 import PdfFiles from '../../screens/driver/PdfFiles'
 import PrivacyPolicy from '../../screens/commonScreens/PrivacyPolicy'
+import RouteRateMonitor from '../../screens/dealer/RouteRateMonitor'
 
 const Stack = createNativeStackNavigator()
 
@@ -49,6 +50,7 @@ const MainNavigation = () => {
             <Stack.Screen name='About Us' component={About} />
             <Stack.Screen name='Privacy Policy' component={PrivacyPolicy} />
             <Stack.Screen name='Network Logs' component={NetworkLogs} />
+            <Stack.Screen name='Route Rate Monitor' component={RouteRateMonitor} />
             {/* Driver Stack */}
             <Stack.Screen options={{ headerShown: false }} name='Driver Menu Screen' component={DrawerNavigation} />
             <Stack.Screen name='Find Load' component={FindLoadScreen} />

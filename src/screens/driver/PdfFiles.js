@@ -74,12 +74,12 @@ const PdfFiles = () => {
     };
 
     const formatFileName = (fileName) => {
-        // Remove 'transport_receipt_' prefix
-        const timestamp = fileName.replace('transport_receipt_', '').replace('.pdf', '');
+        // Split the filename into components (bilty_B123456_1234567890.pdf)
+        const [prefix, biltyNo, timestamp] = fileName.replace('.pdf', '').split('_');
         // Convert timestamp to Date object
         const date = new Date(parseInt(timestamp));
         return {
-            title: 'Transport Receipt',
+            title: `${prefix}-${biltyNo}`,  // Just show the bilty number (e.g., "B123456")
             datetime: date.toLocaleString() // Format: "1/10/2024, 12:34:56 PM"
         };
     };

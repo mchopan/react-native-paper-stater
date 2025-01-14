@@ -1,4 +1,4 @@
-import { FlatList, ImageBackground, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { FlatList, ImageBackground, ScrollView, StyleSheet, Text, View, RefreshControl, TouchableOpacity } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { useTheme } from 'react-native-paper'
 import { Colors } from '../../theme/colors'
@@ -15,6 +15,7 @@ import LocationAutocomplete from '../../components/AutoCompleteLocation'
 import CustomInput from '../../components/CustomInput'
 import BookingServices from '../../api/bookingServices'
 import { useNavigation } from '@react-navigation/native'
+import LocationRateService from '../../api/locationRateService'
 
 
 const MenuScreen = () => {
@@ -24,6 +25,8 @@ const MenuScreen = () => {
     const { user, dropLocation, pickUpLocation, setPickUpLocation, setDropLocation } = useContext(MyContext);
 
     const [ongoingData, setOngoingData] = useState([])
+    const [rateLocations, setRateLocations] = useState([])
+    const [refreshing, setRefreshing] = useState(false);
 
     const getBookingsByDealerId = async () => {
         try {
@@ -34,11 +37,27 @@ const MenuScreen = () => {
         }
     }
 
+    const getAllRateLocations = async () => {
+        try {
+            const res = await LocationRateService.getAllLocationRates();
+            setRateLocations(res)
+        } catch (error) {
+            console.log("error in getRatesByLocation", error.message)
+        }
+    }
+
     useEffect(() => {
         getBookingsByDealerId();
+        getAllRateLocations();
     }, [user])
 
-
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        Promise.all([
+            getBookingsByDealerId(),
+            getAllRateLocations()
+        ]).finally(() => setRefreshing(false));
+    }, []);
 
     const handleSubmit = () => {
         // Todo Handle form submission
@@ -57,7 +76,12 @@ const MenuScreen = () => {
 
     return (
         <ImageBackground style={{ flex: 1 }} source={require("../../assets/mapbg.png")}>
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <ScrollView
+                contentContainerStyle={{ flexGrow: 1 }}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
+            >
                 <View style={styles.overlay}>
                     <View style={styles.mainFormContainer}>
                         <Text style={[textVariants.textSubHeading, { color: Colors.primary }]}>Want to book a truck?</Text>
@@ -69,7 +93,7 @@ const MenuScreen = () => {
                         {/* <LocationAutocomplete
                             value={dropLocation}
                             onChange={(text) => setDropLocation(text)}
-                            placeholder="Drop City Location"
+                            placeholder="Drop City Lo   cation"
                         /> */}
 
                         <CustomInput
@@ -92,12 +116,24 @@ const MenuScreen = () => {
                 </View>
                 <View style={{ flex: 1, margin: 10 }}>
                     <Card overflow={"hidden"} flex={1} padding={20}>
-                        <Text style={[textVariants.textSubHeading, { color: Colors.primary }]}>Route Rate Monitor</Text>
+                        <View style={styles.headerContainer}>
+                            <Text style={[textVariants.textSubHeading, { color: Colors.primary }]}>Route Rate Monitor</Text>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('Route Rate Monitor')}
+                            >
+                                <Text style={{ color: Colors.primary }}>View All</Text>
+                            </TouchableOpacity>
+                        </View>
                         <FlatList
+                            ListEmptyComponent={() => (
+                                <View style={styles.emptyContainer}>
+                                    <Text style={styles.emptyText}>No data found</Text>
+                                </View>
+                            )}
                             nestedScrollEnabled
                             style={{ height: 200 }}
-                            data={[1, 2, 3, 4, 5, 6, 7]}
-                            renderItem={({ item }) => <RouteRateMonitorCard />}
+                            data={rateLocations.slice(0, 5)}
+                            renderItem={({ item }) => <RouteRateMonitorCard item={item} />}
                             keyExtractor={(item, index) => index.toString()}
                         />
                     </Card>
@@ -152,5 +188,21 @@ const styles = StyleSheet.create({
     },
     cardHeader: {
         position: "static"
-    }
+    },
+    emptyContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 20,
+    },
+    emptyText: {
+        color: Colors.primary,
+        fontSize: 16,
+    },
+    headerContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 10
+    },
 })

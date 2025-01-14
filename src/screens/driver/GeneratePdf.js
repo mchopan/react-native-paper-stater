@@ -3,235 +3,121 @@ import { Alert } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 export const createPDF = async ({ resData, user, setFilePath, loadDetails }) => {
-    // Extract driver data from resData
     const driverData = resData.driverData || {};
-
-    // Format the date
     const bookingDate = new Date(loadDetails.selectDate).toLocaleDateString();
     const currentDate = new Date().toLocaleDateString();
+    const biltyNo = `B${Date.now().toString().slice(-6)}`; // Generate 6-digit bilty number
+
+    // Calculate freight charges (example - you can modify the logic)
+    const baseRate = 1000; // Base rate per 100 km
+    const weightFactor = loadDetails.enterWeightKg / 100; // Rate multiplier based on weight
+    const estimatedAmount = baseRate * weightFactor;
+
+    // Define main data sections
+    const consignmentDetails = [
+        ['Bilty No.', biltyNo],
+        ['Date', bookingDate],
+        ['From', loadDetails.pickUpCityLocation],
+        ['To', loadDetails.dropCityLocation],
+        ['Vehicle No.', driverData.vehicleRegistrationNumber],
+        ['Vehicle Type', loadDetails.selectVehicleType]
+    ];
+
+    const goodsDetails = [
+        ['Type of Goods', loadDetails.selectGoodsType],
+        ['Weight (Ton)', loadDetails.enterWeightKg],
+        ['Payment Mode', loadDetails.advancePayment]
+    ];
+
+    const chargesDetails = [
+        ['Freight Charges', `₹${estimatedAmount}`],
+        ['Loading Charges', 'To Pay'],
+        ['Unloading Charges', 'To Pay'],
+        ['Total Amount', `₹${estimatedAmount}`]
+    ];
+
+    // Helper function to create table
+    const createTable = (rows) => rows
+        .map(([label, value]) => `
+            <tr>
+                <th>${label}</th>
+                <td>${value || ''}</td>
+            </tr>
+        `).join('');
 
     let options = {
         html: `<!DOCTYPE html>
         <html>
         <head>
-            <title>Angad Deep Roadlines</title>
             <style>
-                body {
-                    font-family: Arial, sans-serif;
-                }
-                table {
+                body { font-family: Arial, sans-serif; font-size: 12px; }
+                table { 
                     border-collapse: collapse;
                     width: 100%;
+                    margin-bottom: 15px;
                 }
                 th, td {
                     border: 1px solid black;
-                    padding: 8px;
+                    padding: 5px;
                     text-align: left;
                 }
-                th {
-                    background-color: #ddd;
+                th { 
+                    background-color: #f0f0f0;
+                    width: 40%;
+                }
+                .header { text-align: center; margin: 10px 0; }
+                .footer { 
+                    margin-top: 20px;
+                    display: flex;
+                    justify-content: space-between;
+                }
+                .company-title {
+                    font-size: 24px;
+                    font-weight: bold;
+                    margin: 5px 0;
+                }
+                .section-title {
+                    font-weight: bold;
+                    margin: 10px 0 5px 0;
                 }
             </style>
         </head>
         <body>
-        <center style='margin:10'>
-            <p style='text-align:center'>All disputes shall be settled at Jammu Jurisdiction</p>
-            <h4 style='text-align:center'> GRAMS : ADRI &nbsp;&nbsp;&nbsp; PAN : CSCPS1246N &nbsp;&nbsp;&nbsp; GSTIN : 01CSCPS1246N1ZP &nbsp;&nbsp;&nbsp; No. A 1684</h4>
-            <h1>ANGAD DEEP ROADLINES</h1>
-            <h3>FLEET OWNERS & TRANSPORT CONTRACTORS, CLEARING & FORWARDING AGENTS</h3>
-            <p>B.O: Shiva Colony, SIDCO Birpur Complex, Bari Brahmana, Samba (J&K)</p>
-            <p>Mobiles : 9149898208, 9796188416, 9596019343</p>
-            <h2>FULL TRUCK AVAILABLE FOR ALL OVER INDIA</h2>
-            <p>At Owner's Risk</p>
-            <p>Truck No. ${driverData.vehicleRegistrationNumber || ''}</p>
-            <table>
-                <tr>
-                    <th>Driver Name</th>
-                    <td>${driverData.name || ''}</td>
-                </tr>
-                <tr>
-                    <th>Driver Phone</th>
-                    <td>${driverData.phoneNumber || ''}</td>
-                </tr>
-                <tr>
-                    <th>Dealer Phone</th>
-                    <td>${loadDetails.dealerPhoneNumber || ''}</td>
-                </tr>
-                <tr>
-                    <th>Vehicle Number</th>
-                    <td>${driverData.vehicleRegistrationNumber || ''}</td>
-                </tr>
-                <tr>
-                    <th>Vehicle Type</th>
-                    <td>${loadDetails.selectVehicleType || ''}</td>
-                </tr>
-                <tr>
-                    <th>Goods Type</th>
-                    <td>${loadDetails.selectGoodsType || ''}</td>
-                </tr>
-                <tr>
-                    <th>Weight (KG)</th>
-                    <td>${loadDetails.enterWeightKg || ''}</td>
-                </tr>
-                <tr>
-                    <th>Booking Date</th>
-                    <td>${bookingDate}</td>
-                </tr>
-                <tr>
-                    <th>Payment Mode</th>
-                    <td>${loadDetails.advancePayment || ''}</td>
-                </tr>
-            </table>
+            <div class="header">
+                <div class="company-title">ANGAD DEEP ROADLINES</div>
+                <div>GSTIN: 01CSCPS1246N1ZP</div>
+                <div>B.O: Shiva Colony, SIDCO Birpur Complex, Bari Brahmana, Samba (J&K)</div>
+                <div>Contact: 9149898208, 9796188416</div>
+            </div>
 
-            <h3>Journey Details</h3>
-            <table>
-                <tr>
-                    <th>From Location</th>
-                    <td>${loadDetails.pickUpCityLocation || ''}</td>
-                </tr>
-                <tr>
-                    <th>To Location</th>
-                    <td>${loadDetails.dropCityLocation || ''}</td>
-                </tr>
-            </table>
-            
-            <table>
-                <tr>
-                    <th>Package</th>
-                    <th>DESCRIPTION</th>
-                    <th>Value Rs.</th>
-                    <th>P.</th>
-                    <th>Weight</th>
-                    <th>Weight</th>
-                    <th>Rate</th>
-                    <th>FREIGHT</th>
-                    <th></th>
-                </tr>
-                <tr>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th>Actual Kgs</th>
-                    <th>Gms</th>
-                    <th>Charged Kgs</th>
-                    <th>Gms</th>
-                    <th>Per</th>
-                    <th>Kg</th>
-                    <th>Paid</th>
-                    <th>To-Pay</th>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>FREIGHT</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>HAMALI CH.</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>HALTAGE</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>PRIVATE</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>T O T A L</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>GST @ ........%</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>Grand Total</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>Advance</td>
-                    <td></td>
-                    <td>Balance</td>
-                    <td></td>
-                </tr>
-            </table>
-            <p>Delivery From: ${loadDetails.pickUpCityLocation || ''} to ${loadDetails.dropCityLocation || ''}</p>
-            <p>Delivery From</p>
-            <p>1st White Copy: CONSIGNEE COPY, 2nd Pink Copy: Consignor Copy, 3rd Yellow Copy: DRIVER'S COPY, 4th Blue/Green Copy: Office Copy</p>
-            <p>Booked as Terms & Conditions Overleaf</p>
-            <p>Signature : ................................................</p>
-            <p>Driver Details: ${driverData.name || ''} (${driverData.phoneNumber || ''})</p>
-            <p>Vehicle: ${driverData.vehicleRegistrationNumber || ''}</p>
-            <p>Generated on: ${currentDate}</p>
-            </center>
+            <div class="section-title">CONSIGNMENT DETAILS</div>
+            <table>${createTable(consignmentDetails)}</table>
+
+            <div class="section-title">GOODS DETAILS</div>
+            <table>${createTable(goodsDetails)}</table>
+
+            <div class="section-title">CHARGES</div>
+            <table>${createTable(chargesDetails)}</table>
+
+            <div class="footer">
+                <div>
+                    <p>Driver: ${driverData.name || ''}</p>
+                    <p>Phone: ${driverData.phoneNumber || ''}</p>
+                </div>
+                <div>
+                    <p>Authorized Signatory</p>
+                    <br/>
+                    _________________
+                </div>
+            </div>
+
+            <div style="font-size: 10px; text-align: center; margin-top: 20px;">
+                <p>This is a computer generated bilty and does not require physical signature</p>
+                <p>All disputes subject to Jammu jurisdiction</p>
+            </div>
         </body>
         </html>`,
-        fileName: `transport_receipt_${Date.now()}`,
+        fileName: `bilty_${biltyNo}_${Date.now()}`,
         directory: 'Documents',
     };
 
@@ -240,15 +126,15 @@ export const createPDF = async ({ resData, user, setFilePath, loadDetails }) => 
         setFilePath(file.filePath);
         Toast.show({
             type: 'success',
-            text1: 'PDF created',
-            text2: `PDF has been saved to: ${file.filePath} `
+            text1: 'Bilty Generated',
+            text2: `Saved as: ${file.filePath}`
         });
     } catch (error) {
         console.error(error);
         Toast.show({
             type: 'error',
             text1: 'Error',
-            text2: 'Failed to create PDF'
+            text2: 'Failed to generate bilty'
         });
     }
 };
