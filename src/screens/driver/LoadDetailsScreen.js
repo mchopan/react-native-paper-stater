@@ -76,16 +76,18 @@ const PaymentSuccess = ({ setShowSuccessScreen }) => {
 
 const LoadDetailsScreen = () => {
 
-    const { paymentData } = useContext(MyContext)
-
-    const { user } = useContext(MyContext)
+    const { paymentData, user } = useContext(MyContext)
 
     const navigation = useNavigation()
     const route = useRoute();
     const { item } = route.params;
 
+    console.log(item, "item")
     const [modalVisible, setModalVisible] = useState(false);
     const [showSuccessScreen, setShowSuccessScreen] = useState(false)
+
+    // Check if vehicle types match
+    const isVehicleTypeMatched = user?.vehicleType === item?.selectVehicleType;
 
     const handleSubmit = () => {
         navigation.navigate("Home")
@@ -96,18 +98,27 @@ const LoadDetailsScreen = () => {
                 <Image style={{ width: 300, height: 120 }} resizeMode='contain' source={require("../../assets/loadingtruck.png")} />
             </View>
             <LoadDetailsCard item={item} />
-            <View style={styles.buttonContainer}>
 
-                {/* <CustomButton mode='contained' label="Accept and Pay" onPress={handleSubmit} /> */}
-                {
-                    user?.active == false ? <>
-                        <Payment label="Accept and Pay" item={item} />
-                        <CustomButton mode='outlined' label="Not Interested" onPress={handleSubmit} />
-                    </> : <>
+            {!isVehicleTypeMatched && (
+                <View style={{ padding: 10 }}>
+                    <Text style={{ fontSize: 10, color: Colors.orange, textAlign: "center" }}>
+                        Warning: Your vehicle type ({user?.vehicleType}) is different from the required vehicle type ({item?.selectVehicleType}) for this booking
+                    </Text>
+                </View>
+            )}
+
+            <View style={styles.buttonContainer}>
+                {user?.active ? (
+                    <>
                         <Text style={{ fontSize: 13, color: Colors.error, textAlign: "center" }}>An existing booking is already in progress</Text>
                         <CustomButton mode='outlined' label="Check Your Bookings" onPress={() => { navigation.navigate("Booking Summary") }} />
                     </>
-                }
+                ) : (
+                    <>
+                        <Payment label="Accept and Pay" item={item} />
+                        <CustomButton mode='outlined' label="Not Interested" onPress={handleSubmit} />
+                    </>
+                )}
             </View>
             <Modal
                 animationType="slide"

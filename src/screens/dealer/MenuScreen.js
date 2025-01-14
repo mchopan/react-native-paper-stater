@@ -74,6 +74,15 @@ const MenuScreen = () => {
     const bookingDatawithoutReverse = ongoingData.filter((item) => item.status == "ongoing")
     const bookingData = bookingDatawithoutReverse.reverse()
 
+    const getUniqueLocations = () => {
+        const locations = new Set();
+        rateLocations.forEach(rate => {
+            locations.add(rate.fromLocation);
+            locations.add(rate.toLocation);
+        });
+        return Array.from(locations);
+    };
+
     return (
         <ImageBackground style={{ flex: 1 }} source={require("../../assets/mapbg.png")}>
             <ScrollView
@@ -85,30 +94,19 @@ const MenuScreen = () => {
                 <View style={styles.overlay}>
                     <View style={styles.mainFormContainer}>
                         <Text style={[textVariants.textSubHeading, { color: Colors.primary }]}>Want to book a truck?</Text>
-                        {/* <LocationAutocomplete
+                        <LocationAutocomplete
                             value={pickUpLocation}
                             onChange={(text) => setPickUpLocation(text)}
                             placeholder="Pick Up City Location"
-                        /> */}
-                        {/* <LocationAutocomplete
+                            suggestions={getUniqueLocations()}
+                            zIndex={2}
+                        />
+                        <LocationAutocomplete
                             value={dropLocation}
                             onChange={(text) => setDropLocation(text)}
-                            placeholder="Drop City Lo   cation"
-                        /> */}
-
-                        <CustomInput
-                            type='text'
-                            keyboardType='default'
-                            label='Pick Up City Loaction'
-                            value={pickUpLocation}
-                            onChangeText={(text) => setPickUpLocation(text)}
-                        />
-                        <CustomInput
-                            type='text'
-                            keyboardType='default'
-                            label='Drop City Location'
-                            value={dropLocation}
-                            onChangeText={(text) => setDropLocation(text)}
+                            placeholder="Drop City Location"
+                            suggestions={getUniqueLocations()}
+                            zIndex={1}
                         />
 
                         <CustomButton mode='contained' label="Next" onPress={handleSubmit} />

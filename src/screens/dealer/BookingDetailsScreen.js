@@ -1,4 +1,4 @@
-import { Alert, Image, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Alert, Image, ScrollView, StyleSheet, Text, View, ActivityIndicator } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { Colors } from '../../theme/colors';
 import CustomInput from '../../components/CustomInput';
@@ -10,6 +10,8 @@ import { MyContext } from '../../store/MyContext';
 import Toast from 'react-native-toast-message';
 import BookingServices from '../../api/bookingServices';
 import Loading from '../../components/Loading';
+import LocationRateService from '../../api/locationRateService';
+import { useNavigation } from '@react-navigation/native';
 
 
 const vehicleTypeData = [
@@ -37,12 +39,14 @@ const goodsData = [
 
 
 const payment_mode = [
-    { "label": "Pay Online", "value": "Pay Online" },
-    { "label": "Cash in Hand", "value": "Cash in Hand" }
+    { "label": "Advance Payment", "value": "Advance Payment" },
+    { "label": "COD", "value": "COD" }
 ]
 
 
-const BookingDetailsScreen = ({ navigation }) => {
+const BookingDetailsScreen = () => {
+
+    const navigation = useNavigation()
 
     const {
         date, setDate,
@@ -53,8 +57,57 @@ const BookingDetailsScreen = ({ navigation }) => {
         weight, setWeight,
         paymentMode, setPaymentMode, user } = useContext(MyContext);
     const [isLoading, setIsLoading] = useState(false)
+    const [routeRate, setRouteRate] = useState(0)
 
-    console.log(user, "user")
+    const checkRouteRate = async () => {
+        if (!pickUpLocation || !dropLocation || !vehicleType?.value) {
+            Toast.show({
+                type: 'info',
+                text1: 'Please select pickup location, drop location and vehicle type',
+            });
+            return;
+        }
+
+        try {
+            setIsLoading(true);
+            const res = await LocationRateService.getRouteRateFromTo(
+                pickUpLocation,
+                dropLocation,
+                vehicleType.value
+            );
+
+            if (res.length === 0) {
+                Toast.show({
+                    type: 'info',
+                    text1: 'No rate found for this route',
+                    text2: 'Please contact support for rate information',
+                });
+                setRouteRate(0);
+            } else {
+                Toast.show({
+                    type: 'success',
+                    text1: 'Rate found for this route',
+                    text2: `₹${res[0].price}`,
+                });
+                setRouteRate(res[0].price);
+            }
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Error fetching route rate',
+                text2: error.message,
+            });
+            setRouteRate(0);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (pickUpLocation && dropLocation && vehicleType?.value) {
+            checkRouteRate();
+        }
+    }, [pickUpLocation, dropLocation, vehicleType]);
 
     const handleSubmit = async () => {
         if (vehicleType == "" || goods == "" || weight == "" || paymentMode == "") {
@@ -77,6 +130,7 @@ const BookingDetailsScreen = ({ navigation }) => {
                 enterWeightKg: weight,
                 advancePayment: paymentMode.value,
                 dealerPhoneNumber: user.phoneNumber,
+                freightRate: routeRate
             })
             if (res.status == 201) {
                 await BookingServices.sendPushNotificationsToDrivers(res.data._id)
@@ -200,7 +254,20 @@ const BookingDetailsScreen = ({ navigation }) => {
             <View style={styles.buttonContainer}>
                 <CustomButton mode='contained' label="Send Request To Selected Driver" onPress={handleSingleBit} />
                 <CustomButton mode='outlined' label="Send Request To All The Drivers" onPress={handleSubmit} />
+                <View style={styles.rateContainer}>
+                    {isLoading ? (
+                        <ActivityIndicator color={Colors.primary} />
+                    ) : (
+                        <>
+                            <Text style={styles.rateLabel}>Route Rate:</Text>
+                            <Text style={styles.rateValue}>
+                                {routeRate ? `₹${routeRate}` : 'Not available'}
+                            </Text>
+                        </>
+                    )}
+                </View>
             </View>
+
             {
                 isLoading && <Loading />
             }
@@ -254,5 +321,23 @@ const styles = StyleSheet.create({
         bottom: 10,
         justifyContent: 'center',
         paddingHorizontal: 20
+    },
+    rateContainer: {
+        padding: 12,
+        backgroundColor: Colors.whiteBackground,
+        borderRadius: 8,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    rateLabel: {
+        fontSize: 14,
+        fontFamily: 'GothicA1-SemiBold',
+        color: Colors.primary,
+    },
+    rateValue: {
+        fontSize: 16,
+        fontFamily: 'GothicA1-Bold',
+        color: Colors.primary,
     },
 });

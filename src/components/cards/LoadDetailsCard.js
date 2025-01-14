@@ -48,7 +48,7 @@ const LoadDetailsCard = ({ item }) => {
             <View >
                 <View style={{ margin: 10, flexDirection: "row" }}>
                     <Text style={{ fontSize: 14, fontWeight: "600", fontFamily: "GothicA1-Regular", color: Colors.primary }}>Freight: </Text>
-                    <Text style={{ fontSize: 14, fontWeight: "600", fontFamily: "GothicA1-Regular", color: Colors.gray }}> 100000</Text>
+                    <Text style={{ fontSize: 14, fontWeight: "600", fontFamily: "GothicA1-Regular", color: Colors.gray }}> ₹{item.freightRate}</Text>
                 </View>
                 <PlainLine />
             </View>

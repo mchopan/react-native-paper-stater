@@ -41,6 +41,16 @@ class LocationRateService {
         }
     }
 
+    static async getRouteRateFromTo(pickUpLocation, dropLocation, vehicleType) {
+        try {
+            const response = await axiosInstance.get(`location-rates-from-to/${pickUpLocation}/${dropLocation}/${vehicleType}`);
+            return response.data;
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
+    }
+
     static async updateLocationRate(id, data) {
         try {
             const response = await axiosInstance.put(`location-rates/${id}`, data);
@@ -60,6 +70,7 @@ class LocationRateService {
             throw error;
         }
     }
+
 }
 
 export default LocationRateService;

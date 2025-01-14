@@ -119,7 +119,7 @@ const BookingSummaryCard = ({ item, pending }) => {
         <View style={styles.cardContainer}>
             <View style={{ flexDirection: "row", justifyContent: "space-between", margin: 10 }}>
                 <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 14, fontWeight: "600", color: Colors.primary }}>{formatDisplayLocationName(item?.selectGoodsType)}</Text>
-                <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 14, fontWeight: "700", color: Colors.primary }}>₹ 10196</Text>
+                <Text style={{ fontFamily: "GothicA1-Regular", fontSize: 14, fontWeight: "700", color: Colors.primary }}>₹ {item?.freightRate}</Text>
             </View>
             <PlainLine />
             <View style={{ flexDirection: "row", alignItems: "center", gap: 5, margin: 10 }}>

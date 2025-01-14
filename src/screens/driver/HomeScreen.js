@@ -1,4 +1,4 @@
-import { Alert, ImageBackground, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, ImageBackground, ScrollView, StyleSheet, View, RefreshControl } from 'react-native';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import CustomButton from '../../components/CustomButton';
 import RequestCard from '../../components/cards/RequestCard';
@@ -23,6 +23,7 @@ const HomeScreen = () => {
     const [bookingDetails, setBookingDetails] = useState([]);
     // const [currentLocation, setCurrentLocation] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
 
     // const handleUpdateLocation = () => {
     //     getCurrentLocation();
@@ -96,9 +97,18 @@ const HomeScreen = () => {
     //     }
     // };
 
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        getBookings().finally(() => setRefreshing(false));
+    }, []);
+
     return (
         <ImageBackground style={{ flex: 1 }} source={require("../../assets/mapbg.png")}>
-            <ScrollView>
+            <ScrollView
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
+            >
                 {/* <View style={{ margin: 10 }}>
                     <CustomButton icon={require("../../assets/MapPinLight.png")} mode='outlined' label={isLoading ? " Updating..." : "Update Your Location"} onPress={handleUpdateLocation} />
                 </View> */}

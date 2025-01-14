@@ -1,6 +1,7 @@
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import { Alert } from 'react-native';
 import Toast from 'react-native-toast-message';
+import { Item } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
 
 export const createPDF = async ({ resData, user, setFilePath, loadDetails }) => {
     const driverData = resData.driverData || {};
@@ -9,9 +10,9 @@ export const createPDF = async ({ resData, user, setFilePath, loadDetails }) => 
     const biltyNo = `B${Date.now().toString().slice(-6)}`; // Generate 6-digit bilty number
 
     // Calculate freight charges (example - you can modify the logic)
-    const baseRate = 1000; // Base rate per 100 km
-    const weightFactor = loadDetails.enterWeightKg / 100; // Rate multiplier based on weight
-    const estimatedAmount = baseRate * weightFactor;
+    // const baseRate = loadDetails.freightRate; // Base rate per 100 km
+    // const weightFactor = loadDetails.enterWeightKg / 100; // Rate multiplier based on weight
+    // const estimatedAmount = baseRate * weightFactor;
 
     // Define main data sections
     const consignmentDetails = [
@@ -30,10 +31,10 @@ export const createPDF = async ({ resData, user, setFilePath, loadDetails }) => 
     ];
 
     const chargesDetails = [
-        ['Freight Charges', `₹${estimatedAmount}`],
+        ['Freight Charges', `₹${loadDetails.freightRate}`],
         ['Loading Charges', 'To Pay'],
         ['Unloading Charges', 'To Pay'],
-        ['Total Amount', `₹${estimatedAmount}`]
+        ['Total Amount', `₹${loadDetails.freightRate} excluding loading and unloading charges`]
     ];
 
     // Helper function to create table
