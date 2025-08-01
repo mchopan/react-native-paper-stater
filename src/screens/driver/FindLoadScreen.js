@@ -1,56 +1,55 @@
-import { FlatList, ImageBackground, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import { Colors } from '../../theme/colors'
-import CustomButton from '../../components/CustomButton'
-import SelectLoadCard from '../../components/cards/SelectLoadCard'
-import { useNavigation, useRoute } from '@react-navigation/native'
+import {FlatList, ImageBackground, StyleSheet, Text, View} from 'react-native';
+import React from 'react';
+import {Colors} from '../../theme/colors';
+import CustomButton from '../../components/CustomButton';
+import SelectLoadCard from '../../components/cards/SelectLoadCard';
+import {useNavigation, useRoute} from '@react-navigation/native';
 
-const FindLoadScreen = ({ }) => {
+const FindLoadScreen = ({}) => {
+  const navigation = useNavigation();
+  const route = useRoute();
 
-    const navigation = useNavigation()
-    const route = useRoute()
+  const {pickUpLocation, dropLocation, bookingDetails} = route.params;
 
-    const { pickUpLocation, dropLocation, bookingDetails } = route.params
+  const handleSubmit = () => {
+    navigation.navigate('Booking Summary');
+  };
 
-
-    const handleSubmit = () => {
-        navigation.navigate("Booking Summary")
-    }
-
-
-
-    return (
-        <ImageBackground style={{ flex: 1 }} source={require("../../assets/mapbg.png")}>
-            <View style={{ margin: 10 }}>
-                {/* <View style={[styles.buttonContainer, {
+  return (
+    <ImageBackground
+      style={{flex: 1}}
+      source={require('../../assets/mapbg.png')}>
+      <View style={{margin: 10}}>
+        {/* <View style={[styles.buttonContainer, {
                     backgroundColor: Colors.tertiary,
                 }]}>
                     <CustomButton direction='row' mode='contained' label="Date Posted" onPress={handleSubmit} />
                     <CustomButton direction='row' mode='contained' label="Vehicle Type" onPress={handleSubmit} />
                 </View> */}
-            </View>
-            <FlatList
-                data={bookingDetails.filter(item =>
-                    item.pickUpCityLocation === pickUpLocation &&
-                    item.dropCityLocation === dropLocation
-                )}
-                renderItem={({ item }) => (
-                    <>
-                        <SelectLoadCard item={item} />
-                    </>
-                )}
-            />
-        </ImageBackground>
-    )
-}
+      </View>
+      <FlatList
+        data={bookingDetails.filter(
+          item =>
+            item.pickUpCityLocation === pickUpLocation &&
+            item.dropCityLocation === dropLocation,
+        )}
+        renderItem={({item}) => (
+          <>
+            <SelectLoadCard item={item} />
+          </>
+        )}
+      />
+    </ImageBackground>
+  );
+};
 
-export default FindLoadScreen
+export default FindLoadScreen;
 
 const styles = StyleSheet.create({
-    buttonContainer: {
-        flexDirection: "row",
-        justifyContent: "space-around",
-        padding: 10,
-        borderRadius: 10
-    }
-})
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
+    borderRadius: 10,
+  },
+});

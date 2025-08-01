@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   TextInput,
@@ -8,10 +8,6 @@ import {
   StyleSheet,
 } from 'react-native';
 import {Colors} from '../theme/colors';
-
-type Suggestion = {
-  display_name: string;
-};
 
 type LocationAutocompleteProps = {
   placeholder: string;
@@ -84,14 +80,6 @@ const LocationAutocomplete = ({
       )}
     </View>
   );
-};
-
-const debounce = (func: (...args: any[]) => void, wait: number) => {
-  let timeout: NodeJS.Timeout;
-  return (...args: any[]) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  };
 };
 
 const styles = StyleSheet.create({

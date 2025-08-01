@@ -1,53 +1,60 @@
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
-import { Alert } from 'react-native';
+import {Alert} from 'react-native';
 import Toast from 'react-native-toast-message';
-import { Item } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
+import {Item} from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
 
-export const createPDF = async ({ resData, user, setFilePath, loadDetails }) => {
-    const driverData = resData.driverData || {};
-    const bookingDate = new Date(loadDetails.selectDate).toLocaleDateString();
-    const currentDate = new Date().toLocaleDateString();
-    const biltyNo = `B${Date.now().toString().slice(-6)}`; // Generate 6-digit bilty number
+export const createPDF = async ({resData, user, setFilePath, loadDetails}) => {
+  const driverData = resData.driverData || {};
+  const bookingDate = new Date(loadDetails.selectDate).toLocaleDateString();
+  const currentDate = new Date().toLocaleDateString();
+  const biltyNo = `B${Date.now().toString().slice(-6)}`; // Generate 6-digit bilty number
 
-    // Calculate freight charges (example - you can modify the logic)
-    // const baseRate = loadDetails.freightRate; // Base rate per 100 km
-    // const weightFactor = loadDetails.enterWeightKg / 100; // Rate multiplier based on weight
-    // const estimatedAmount = baseRate * weightFactor;
+  // Calculate freight charges (example - you can modify the logic)
+  // const baseRate = loadDetails.freightRate; // Base rate per 100 km
+  // const weightFactor = loadDetails.enterWeightKg / 100; // Rate multiplier based on weight
+  // const estimatedAmount = baseRate * weightFactor;
 
-    // Define main data sections
-    const consignmentDetails = [
-        ['Bilty No.', biltyNo],
-        ['Date', bookingDate],
-        ['From', loadDetails.pickUpCityLocation],
-        ['To', loadDetails.dropCityLocation],
-        ['Vehicle No.', driverData.vehicleRegistrationNumber],
-        ['Vehicle Type', loadDetails.selectVehicleType]
-    ];
+  // Define main data sections
+  const consignmentDetails = [
+    ['Bilty No.', biltyNo],
+    ['Date', bookingDate],
+    ['From', loadDetails.pickUpCityLocation],
+    ['To', loadDetails.dropCityLocation],
+    ['Vehicle No.', driverData.vehicleRegistrationNumber],
+    ['Vehicle Type', loadDetails.selectVehicleType],
+  ];
 
-    const goodsDetails = [
-        ['Type of Goods', loadDetails.selectGoodsType],
-        ['Weight (Ton)', loadDetails.enterWeightKg],
-        ['Payment Mode', loadDetails.advancePayment]
-    ];
+  const goodsDetails = [
+    ['Type of Goods', loadDetails.selectGoodsType],
+    ['Weight (Ton)', loadDetails.enterWeightKg],
+    ['Payment Mode', loadDetails.advancePayment],
+  ];
 
-    const chargesDetails = [
-        ['Freight Charges', `₹${loadDetails.freightRate}`],
-        ['Loading Charges', 'To Pay'],
-        ['Unloading Charges', 'To Pay'],
-        ['Total Amount', `₹${loadDetails.freightRate} excluding loading and unloading charges`]
-    ];
+  const chargesDetails = [
+    ['Freight Charges', `₹${loadDetails.freightRate}`],
+    ['Loading Charges', 'To Pay'],
+    ['Unloading Charges', 'To Pay'],
+    [
+      'Total Amount',
+      `₹${loadDetails.freightRate} excluding loading and unloading charges`,
+    ],
+  ];
 
-    // Helper function to create table
-    const createTable = (rows) => rows
-        .map(([label, value]) => `
+  // Helper function to create table
+  const createTable = rows =>
+    rows
+      .map(
+        ([label, value]) => `
             <tr>
                 <th>${label}</th>
                 <td>${value || ''}</td>
             </tr>
-        `).join('');
+        `,
+      )
+      .join('');
 
-    let options = {
-        html: `<!DOCTYPE html>
+  let options = {
+    html: `<!DOCTYPE html>
         <html>
         <head>
             <style>
@@ -118,24 +125,24 @@ export const createPDF = async ({ resData, user, setFilePath, loadDetails }) => 
             </div>
         </body>
         </html>`,
-        fileName: `bilty_${biltyNo}_${Date.now()}`,
-        directory: 'Documents',
-    };
+    fileName: `bilty_${biltyNo}_${Date.now()}`,
+    directory: 'Documents',
+  };
 
-    try {
-        let file = await RNHTMLtoPDF.convert(options);
-        setFilePath(file.filePath);
-        Toast.show({
-            type: 'success',
-            text1: 'Bilty Generated',
-            text2: `Saved as: ${file.filePath}`
-        });
-    } catch (error) {
-        console.error(error);
-        Toast.show({
-            type: 'error',
-            text1: 'Error',
-            text2: 'Failed to generate bilty'
-        });
-    }
+  try {
+    let file = await RNHTMLtoPDF.convert(options);
+    setFilePath(file.filePath);
+    Toast.show({
+      type: 'success',
+      text1: 'Bilty Generated',
+      text2: `Saved as: ${file.filePath}`,
+    });
+  } catch (error) {
+    console.error(error);
+    Toast.show({
+      type: 'error',
+      text1: 'Error',
+      text2: 'Failed to generate bilty',
+    });
+  }
 };

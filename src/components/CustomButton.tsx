@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 import React from 'react';
-import {Button, useTheme} from 'react-native-paper';
+import {Button} from 'react-native-paper';
 import {Colors} from '../theme/colors';
 
 type buttonTypeProps = {

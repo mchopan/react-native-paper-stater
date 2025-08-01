@@ -2,8 +2,8 @@ import axios from 'axios';
 import API_BASE_URL from './apiConfig';
 
 const instance = axios.create({
-    baseURL: API_BASE_URL,
-    withCredentials: true,
+  baseURL: API_BASE_URL,
+  withCredentials: true,
 });
 
 // instance.interceptors.request.use(

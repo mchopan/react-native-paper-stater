@@ -1,12 +1,10 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import {StyleSheet, Text, View} from 'react-native';
+import React from 'react';
 
-const Spacer = ({ space }) => {
-    return (
-        <View style={{ height: space || 5 }} />
-    )
-}
+const Spacer = ({space}) => {
+  return <View style={{height: space || 5}} />;
+};
 
-export default Spacer
+export default Spacer;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

@@ -1,61 +1,74 @@
-import React, { createContext, useState } from 'react';
+import React, {createContext, useState} from 'react';
 
 export const MyContext = createContext();
 
-export const MyContextProvider = ({ children }) => {
+export const MyContextProvider = ({children}) => {
+  const [vehicleType, setVehicleType] = useState('');
+  const [goods, setGoods] = useState('');
+  const [weight, setWeight] = useState('');
+  const [paymentMode, setPaymentMode] = useState('');
 
-    const [vehicleType, setVehicleType] = useState("")
-    const [goods, setGoods] = useState("")
-    const [weight, setWeight] = useState("")
-    const [paymentMode, setPaymentMode] = useState("")
+  const [phoneNumber, setPhoneNumber] = useState();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [user, setUser] = useState();
 
-    const [phoneNumber, setPhoneNumber] = useState()
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [user, setUser] = useState()
+  const [date, setDate] = useState(new Date());
+  const [pickUpLocation, setPickUpLocation] = useState('');
+  const [dropLocation, setDropLocation] = useState('');
 
-    const [date, setDate] = useState(new Date());
-    const [pickUpLocation, setPickUpLocation] = useState('');
-    const [dropLocation, setDropLocation] = useState('');
+  const [totalBids, setTotalBids] = useState([]);
+  const [negotiationData, setNegotiationData] = useState([]);
 
+  const [currentPlace, setCurrentPlace] = useState(null);
 
-    const [totalBids, setTotalBids] = useState([])
-    const [negotiationData, setNegotiationData] = useState([])
+  const [prices, setPrices] = useState([]);
+  const [item, setItem] = useState([]);
+  const [paymentData, setPaymentData] = useState();
 
-    const [currentPlace, setCurrentPlace] = useState(null);
+  const [filePath, setFilePath] = useState('');
 
-    const [prices, setPrices] = useState([]);
-    const [item, setItem] = useState([]);
-    const [setPaymentData, paymentData] = useState();
-
-    const [filePath, setFilePath] = useState('');
-
-    return (
-        <MyContext.Provider value={{
-            isAuthenticated,
-            setIsAuthenticated,
-            phoneNumber,
-            setPhoneNumber,
-            selectedFile,
-            setSelectedFile,
-            user,
-            setUser,
-            date, setDate,
-            pickUpLocation, setPickUpLocation,
-            dropLocation, setDropLocation,
-            vehicleType, setVehicleType,
-            goods, setGoods,
-            weight, setWeight,
-            paymentMode, setPaymentMode,
-            totalBids, setTotalBids,
-            negotiationData, setNegotiationData,
-            currentPlace, setCurrentPlace,
-            prices, setPrices,
-            item, setItem,
-            setPaymentData, paymentData,
-            filePath, setFilePath
-        }}>
-            {children}
-        </MyContext.Provider>
-    );
+  return (
+    <MyContext.Provider
+      value={{
+        isAuthenticated,
+        setIsAuthenticated,
+        phoneNumber,
+        setPhoneNumber,
+        selectedFile,
+        setSelectedFile,
+        user,
+        setUser,
+        date,
+        setDate,
+        pickUpLocation,
+        setPickUpLocation,
+        dropLocation,
+        setDropLocation,
+        vehicleType,
+        setVehicleType,
+        goods,
+        setGoods,
+        weight,
+        setWeight,
+        paymentMode,
+        setPaymentMode,
+        totalBids,
+        setTotalBids,
+        negotiationData,
+        setNegotiationData,
+        currentPlace,
+        setCurrentPlace,
+        prices,
+        setPrices,
+        item,
+        setItem,
+        setPaymentData,
+        paymentData,
+        filePath,
+        setFilePath,
+      }}>
+      {children}
+    </MyContext.Provider>
+  );
 };

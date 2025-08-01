@@ -2,7 +2,7 @@ import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {useTheme} from 'react-native-paper';
 import AuthNavigation from './src/navigation/auth';
-import {StatusBar} from 'react-native';
+import {StatusBar, StyleSheet} from 'react-native';
 import Toast from 'react-native-toast-message';
 import {MyContext} from './src/store/MyContext';
 import MainNavigation from './src/navigation/main';
@@ -67,7 +67,7 @@ export default function App() {
     }
   };
 
-  const getUserData = async () => {
+  const getUserData = React.useCallback(async () => {
     let userDataString = null;
     try {
       // Check if dealer data exists
@@ -98,7 +98,7 @@ export default function App() {
       console.error('Error retrieving user data:', error);
       return null;
     }
-  };
+  }, [setIsAuthenticated]);
 
   const fun = async () => {
     const data = await AsyncStorage.getItem('dealerData');
@@ -108,10 +108,10 @@ export default function App() {
   React.useEffect(() => {
     getUserData();
     fun();
-  }, []);
+  }, [getUserData]);
 
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
+    <GestureHandlerRootView style={styles.container}>
       <NavigationContainer>
         <StatusBar backgroundColor={theme.colors.primary} />
         {isAuthenticated ? <MainNavigation /> : <AuthNavigation />}
@@ -120,3 +120,9 @@ export default function App() {
     </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});

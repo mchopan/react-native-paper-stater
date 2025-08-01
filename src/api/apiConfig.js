@@ -1,4 +1,5 @@
-const API_BASE_URL = 'https://quickloadbe.cogweel.com/' //'http://185.199.52.115:4100/'
-// const API_BASE_URL = 'http://192.168.1.6:4100/' //local network
+import Config from 'react-native-config';
+
+const API_BASE_URL = Config.API_BASE_URL || 'https://quickloadbe.cogweel.com/';
 
 export default API_BASE_URL;

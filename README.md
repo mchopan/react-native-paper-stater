@@ -1,79 +1,207 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# QuickLoad - React Native App
 
-# Getting Started
+A comprehensive logistics and transportation management application built with React Native.
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+## 🚀 Features
 
-## Step 1: Start the Metro Server
+- **Dealer Registration & Management**: Complete dealer onboarding with document verification
+- **Driver Registration & Management**: Driver profiles with license and vehicle documentation
+- **Load Booking System**: Create and manage transportation bookings
+- **Real-time Negotiations**: Bid system for load pricing
+- **Location Services**: GPS-based pickup and delivery tracking
+- **Payment Integration**: Razorpay payment gateway integration
+- **Document Management**: PDF generation and file handling
+- **Push Notifications**: Firebase Cloud Messaging integration
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+## 📋 Prerequisites
 
-To start Metro, run the following command from the _root_ of your React Native project:
+Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions.
+
+### Required Tools
+
+- Node.js (>= 16.x)
+- React Native CLI
+- Android Studio (for Android development)
+- Xcode (for iOS development, macOS only)
+- Java Development Kit (JDK 11 or newer)
+
+## 🛠️ Installation
+
+### Step 1: Clone and Install Dependencies
 
 ```bash
-# using npm
+git clone <repository-url>
+cd quickload
+npm install
+```
+
+### Step 2: Environment Configuration
+
+1. Copy the environment template:
+
+```bash
+cp .env.example .env
+```
+
+2. Update `.env` with your configuration:
+
+```env
+API_BASE_URL=https://your-api-url.com/
+MYAPP_UPLOAD_STORE_PASSWORD=your_secure_password
+MYAPP_UPLOAD_KEY_PASSWORD=your_secure_password
+FIREBASE_API_KEY=your_firebase_api_key
+```
+
+### Step 3: Platform Setup
+
+#### Android Setup
+
+```bash
+cd android
+./gradlew clean
+cd ..
+```
+
+#### iOS Setup (macOS only)
+
+```bash
+cd ios
+pod install
+cd ..
+```
+
+## 🚀 Running the Application
+
+### Step 1: Start Metro Server
+
+```bash
 npm start
-
-# OR using Yarn
-yarn start
 ```
 
-## Step 2: Start your Application
+### Step 2: Run on Device/Emulator
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-### For Android
+#### Android
 
 ```bash
-# using npm
 npm run android
-
-# OR using Yarn
-yarn android
 ```
 
-### For iOS
+#### iOS
 
 ```bash
-# using npm
 npm run ios
-
-# OR using Yarn
-yarn ios
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+## 🧪 Testing
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+### Run Tests
 
-## Step 3: Modifying your App
+```bash
+npm test
+```
 
-Now that you have successfully run the app, let's modify it.
+### Run Linting
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+```bash
+npm run lint
+```
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+### Fix Linting Issues
 
-## Congratulations! :tada:
+```bash
+npm run lint -- --fix
+```
 
-You've successfully run and modified your React Native App. :partying_face:
+## 📱 Build for Production
 
-### Now what?
+### Android APK
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+```bash
+cd android
+./gradlew assembleRelease
+```
 
-# Troubleshooting
+### Android AAB (Play Store)
 
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+```bash
+cd android
+./gradlew bundleRelease
+```
 
-# Learn More
+### iOS (Xcode required)
 
-To learn more about React Native, take a look at the following resources:
+```bash
+npx react-native run-ios --configuration Release
+```
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+## 🏗️ Project Structure
+
+```
+src/
+├── api/                 # API services and configuration
+├── components/          # Reusable UI components
+├── navigation/          # Navigation configuration
+├── screens/            # Screen components
+│   ├── commonScreens/  # Shared screens
+│   ├── dealer/         # Dealer-specific screens
+│   └── driver/         # Driver-specific screens
+├── store/              # Context and state management
+└── assets/             # Images, fonts, and static files
+```
+
+## 🔧 Development Scripts
+
+- `npm start` - Start Metro bundler
+- `npm run android` - Run on Android
+- `npm run ios` - Run on iOS
+- `npm run lint` - Run ESLint
+- `npm run lint -- --fix` - Fix linting issues
+- `npm test` - Run tests
+
+## 🔒 Security
+
+See [SECURITY.md](./SECURITY.md) for security guidelines and best practices.
+
+## 📚 API Documentation
+
+The app connects to a backend API for:
+
+- User authentication
+- Booking management
+- Payment processing
+- File uploads
+- Push notifications
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run tests and linting
+5. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+1. **Metro bundler issues**: Clear cache with `npx react-native start --reset-cache`
+2. **Android build issues**: Clean with `cd android && ./gradlew clean`
+3. **iOS build issues**: Clean build folder in Xcode
+4. **Environment variables not loading**: Restart Metro bundler after changing `.env`
+
+### Getting Help
+
+- Check the [React Native Troubleshooting Guide](https://reactnative.dev/docs/troubleshooting)
+- Review the [Security Guidelines](./SECURITY.md)
+- Check the project issues on GitHub
+
+## 📚 Learn More
+
+- [React Native Documentation](https://reactnative.dev)
+- [React Native Paper](https://reactnativepaper.com/)
+- [React Navigation](https://reactnavigation.org/)
+- [Firebase for React Native](https://rnfirebase.io/)

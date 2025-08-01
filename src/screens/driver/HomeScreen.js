@@ -1,4 +1,11 @@
-import { Alert, ImageBackground, ScrollView, StyleSheet, View, RefreshControl } from 'react-native';
+import {
+  Alert,
+  ImageBackground,
+  ScrollView,
+  StyleSheet,
+  View,
+  RefreshControl,
+} from 'react-native';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import CustomButton from '../../components/CustomButton';
 import RequestCard from '../../components/cards/RequestCard';
@@ -13,120 +20,126 @@ import GeneratePdf from './GeneratePdf';
 import { UserTypeContext } from '../../store/UserTypeContext';
 
 const HomeScreen = () => {
+  const navigation = useNavigation();
 
-    const navigation = useNavigation();
+  const { user } = useContext(UserTypeContext);
 
-    const { user } = useContext(UserTypeContext)
+  // const { currentPlace, setCurrentPlace } = useContext(MyContext)
 
-    // const { currentPlace, setCurrentPlace } = useContext(MyContext)
+  const [bookingDetails, setBookingDetails] = useState([]);
+  // const [currentLocation, setCurrentLocation] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
-    const [bookingDetails, setBookingDetails] = useState([]);
-    // const [currentLocation, setCurrentLocation] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [refreshing, setRefreshing] = useState(false);
+  // const handleUpdateLocation = () => {
+  //     getCurrentLocation();
+  // };
 
-    // const handleUpdateLocation = () => {
-    //     getCurrentLocation();
-    // };
+  const getBookings = async () => {
+    setIsLoading(true);
+    try {
+      const response = await BookingServices.getAllBookings();
+      const allBookings = response.data;
+      const pendingBookings = allBookings.filter(
+        item => item.status === 'pending',
+      );
+      setBookingDetails([...pendingBookings].reverse());
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.log('driver', error);
+    }
+    setIsLoading(false);
+  };
 
+  useFocusEffect(
+    useCallback(() => {
+      getBookings();
+    }, []),
+  );
 
+  // const getCurrentLocation = () => {
+  //     setIsLoading(true);
+  //     Geolocation.getCurrentPosition(
+  //         position => {
+  //             setIsLoading(false);
+  //             const { latitude, longitude } = position.coords;
+  //             setCurrentLocation({ latitude, longitude });
+  //             console.log("Current Location", `Latitude: ${latitude}, Longitude: ${longitude}`);
+  //             getPlaceName(latitude, longitude);
+  //         },
+  //         error => {
+  //             setIsLoading(false);
+  //             if (error.code === 2) {
+  //                 promptForEnableLocationIfNeeded({ interval: 10000, fastInterval: 5000 })
+  //                     .then(data => {
+  //                         console.log("GPS enabled", data);
+  //                     })
+  //                     .catch(err => {
+  //                         console.error("Failed to enable GPS", err);
+  //                     });
+  //             } else {
+  //                 console.error("Error getting location", error);
+  //             }
+  //         },
+  //         { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000, distanceFilter: 1 }
+  //     );
+  // };
 
-    const getBookings = async () => {
-        setIsLoading(true)
-        try {
-            const response = await BookingServices.getAllBookings();
-            const allBookings = response.data;
-            const pendingBookings = allBookings.filter(item => item.status === "pending");
-            setBookingDetails([...pendingBookings].reverse());
-            setIsLoading(false)
-        } catch (error) {
-            setIsLoading(false)
-            console.log("driver", error)
-        }
-        setIsLoading(false)
-    };
+  // const getPlaceName = async (latitude, longitude) => {
+  //     try {
+  //         const response = await axios.get(`https://nominatim.openstreetmap.org/reverse`, {
+  //             params: {
+  //                 lat: latitude,
+  //                 lon: longitude,
+  //                 format: 'json'
+  //             }
+  //         });
+  //         const placeName = response.data.display_name;
+  //         setCurrentPlace(placeName);
+  //     } catch (error) {
+  //         console.error("Error fetching place name", error);
+  //     }
+  // };
 
-    useFocusEffect(
-        useCallback(() => {
-            getBookings();
-        }, [user])
-    );
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    getBookings().finally(() => setRefreshing(false));
+  }, []);
 
-
-    // const getCurrentLocation = () => {
-    //     setIsLoading(true);
-    //     Geolocation.getCurrentPosition(
-    //         position => {
-    //             setIsLoading(false);
-    //             const { latitude, longitude } = position.coords;
-    //             setCurrentLocation({ latitude, longitude });
-    //             console.log("Current Location", `Latitude: ${latitude}, Longitude: ${longitude}`);
-    //             getPlaceName(latitude, longitude);
-    //         },
-    //         error => {
-    //             setIsLoading(false);
-    //             if (error.code === 2) {
-    //                 promptForEnableLocationIfNeeded({ interval: 10000, fastInterval: 5000 })
-    //                     .then(data => {
-    //                         console.log("GPS enabled", data);
-    //                     })
-    //                     .catch(err => {
-    //                         console.error("Failed to enable GPS", err);
-    //                     });
-    //             } else {
-    //                 console.error("Error getting location", error);
-    //             }
-    //         },
-    //         { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000, distanceFilter: 1 }
-    //     );
-    // };
-
-    // const getPlaceName = async (latitude, longitude) => {
-    //     try {
-    //         const response = await axios.get(`https://nominatim.openstreetmap.org/reverse`, {
-    //             params: {
-    //                 lat: latitude,
-    //                 lon: longitude,
-    //                 format: 'json'
-    //             }
-    //         });
-    //         const placeName = response.data.display_name;
-    //         setCurrentPlace(placeName);
-    //     } catch (error) {
-    //         console.error("Error fetching place name", error);
-    //     }
-    // };
-
-    const onRefresh = useCallback(() => {
-        setRefreshing(true);
-        getBookings().finally(() => setRefreshing(false));
-    }, []);
-
-    return (
-        <ImageBackground style={{ flex: 1 }} source={require("../../assets/mapbg.png")}>
-            <ScrollView
-                refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                }
-            >
-                {/* <View style={{ margin: 10 }}>
+  return (
+    <ImageBackground
+      style={{ flex: 1 }}
+      source={require('../../assets/mapbg.png')}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+        {/* <View style={{ margin: 10 }}>
                     <CustomButton icon={require("../../assets/MapPinLight.png")} mode='outlined' label={isLoading ? " Updating..." : "Update Your Location"} onPress={handleUpdateLocation} />
                 </View> */}
-                <BookTruckCard bookingDetails={bookingDetails} title={"Want to find a load?"} />
-                {/* <GeneratePdf /> */}
-                <RequestCard isLoading={isLoading} bookingDetails={bookingDetails} title={"Shipment Requests"} />
-            </ScrollView>
-        </ImageBackground>
-    );
+        <BookTruckCard
+          bookingDetails={bookingDetails}
+          title={'Want to find a load?'}
+        />
+        {/* <GeneratePdf /> */}
+        <RequestCard
+          isLoading={isLoading}
+          bookingDetails={bookingDetails}
+          title={'Shipment Requests'}
+        />
+      </ScrollView>
+    </ImageBackground>
+  );
 };
 
 export default HomeScreen;
 
 const styles = StyleSheet.create({
-    buttonContainer: {
-        flexDirection: "row",
-        justifyContent: "space-around",
-        padding: 10,
-        borderRadius: 10
-    }
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
+    borderRadius: 10,
+  },
 });

@@ -5925,6 +5925,11 @@ react-native-android-location-enabler@^2.0.1:
   resolved "https://registry.npmjs.org/react-native-android-location-enabler/-/react-native-android-location-enabler-2.0.1.tgz"
   integrity sha512-hDNfQL4gImrmc6K6J44kd2iKrpPHc23V4stujNIg3I1LvYLT+kwWmfTGapeY0hl6EXACfaFdm/wBb4ggtNcnPA==
 
+react-native-config@^1.5.5:
+  version "1.5.5"
+  resolved "https://registry.npmjs.org/react-native-config/-/react-native-config-1.5.5.tgz"
+  integrity sha512-dGdLnBU0cd5xL5bF0ROTmHYbsstZnQKOEPfglvZi1vStvAjpld14X25K6mY3KGPTMWAzx6TbjKeq5dR+ILuMMA==
+
 react-native-date-picker@^5.0.0:
   version "5.0.0"
   resolved "https://registry.npmjs.org/react-native-date-picker/-/react-native-date-picker-5.0.0.tgz"

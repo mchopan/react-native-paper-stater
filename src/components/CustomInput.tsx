@@ -47,7 +47,7 @@ const CustomInput = ({
   const [showPassword, setShowPassword] = useState(true);
 
   const handleShowPassword = () => {
-    setShowPassword(pre => !showPassword);
+    setShowPassword(!showPassword);
   };
 
   switch (type) {
